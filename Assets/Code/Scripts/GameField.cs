@@ -55,7 +55,7 @@ public class GameField : MonoBehaviour
         bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition, _map);
         bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition, _map);
 
-        if (isFirstElementMoved && isSecondElementMoved)
+        if (!isFirstElementMoved && !isSecondElementMoved)
         {
             tmpCell = _map[firstYPosition, firstXPosition];
             tmpPosition = tmpCell.transform.position;
