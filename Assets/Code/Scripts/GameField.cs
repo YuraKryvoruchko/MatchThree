@@ -18,7 +18,7 @@ public class GameField : MonoBehaviour
 
     private bool _gameStarted = false;
 
-    private const int VERTICAL_MAP_SIZE = 5;
+    private const int VERTICAL_MAP_SIZE = 10;
     private const int HORIZONTAL_MAP_SIZE = 5;
 
     private const int BIG_BOMB = 9;
@@ -33,6 +33,20 @@ public class GameField : MonoBehaviour
         await MoveDownElements(_map);
         _gameStarted = true;
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Vector3[] lines = new Vector3[4];
+        lines[0] = new Vector3(-2.5f, 4, 0);
+        lines[1] = new Vector3(-2.5f + _interval * (HORIZONTAL_MAP_SIZE - 1), 4, 0);
+        lines[2] = new Vector3(-2.5f, 4f - _interval * (VERTICAL_MAP_SIZE - 1), 0);
+        lines[3] = new Vector3(-2.5f + _interval * (HORIZONTAL_MAP_SIZE - 1), 4f - _interval * (VERTICAL_MAP_SIZE - 1), 0);
+        Gizmos.DrawLine(lines[0], lines[1]);
+        Gizmos.DrawLine(lines[1], lines[3]);
+        Gizmos.DrawLine(lines[3], lines[2]);
+        Gizmos.DrawLine(lines[2], lines[0]);
+    }
+
     public async void Handle()
     {
         if (!_gameStarted)
