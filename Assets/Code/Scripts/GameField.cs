@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class GameField : MonoBehaviour
 {
+    [Header("Map Settings")]
+    [SerializeField] private int _verticalMapSize = 5;
+    [SerializeField] private int _horizontalMapSize = 5;
+    [SerializeField] private Transform _startMapPoint;
+    [Header("Cell Settings")]
     [SerializeField] private List<Cell> _cellPrefabs;
     [SerializeField] private float _interval;
     [Header("UI")]
@@ -18,9 +23,6 @@ public class GameField : MonoBehaviour
 
     private bool _gameStarted = false;
 
-    private const int VERTICAL_MAP_SIZE = 10;
-    private const int HORIZONTAL_MAP_SIZE = 5;
-
     private const int BIG_BOMB = 9;
     private const int BOMB = 8;
     private const int HORIZONTAL_ROCKET = 7;
@@ -29,7 +31,7 @@ public class GameField : MonoBehaviour
 
     private async void Start()
     {
-        _map = new Cell[VERTICAL_MAP_SIZE, HORIZONTAL_MAP_SIZE];
+        _map = new Cell[_verticalMapSize, _horizontalMapSize];
         await MoveDownElements(_map);
         _gameStarted = true;
     }
@@ -37,10 +39,13 @@ public class GameField : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Vector3[] lines = new Vector3[4];
-        lines[0] = new Vector3(-2.5f, 4, 0);
-        lines[1] = new Vector3(-2.5f + _interval * (HORIZONTAL_MAP_SIZE - 1), 4, 0);
-        lines[2] = new Vector3(-2.5f, 4f - _interval * (VERTICAL_MAP_SIZE - 1), 0);
-        lines[3] = new Vector3(-2.5f + _interval * (HORIZONTAL_MAP_SIZE - 1), 4f - _interval * (VERTICAL_MAP_SIZE - 1), 0);
+        lines[0] = new Vector3(_startMapPoint.position.x, _startMapPoint.position.y, 0);
+        lines[1] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
+            _startMapPoint.position.y, 0);
+        lines[2] = new Vector3(_startMapPoint.position.x, 
+            _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
+        lines[3] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
+            _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
         Gizmos.DrawLine(lines[0], lines[1]);
         Gizmos.DrawLine(lines[1], lines[3]);
         Gizmos.DrawLine(lines[3], lines[2]);
@@ -135,7 +140,7 @@ public class GameField : MonoBehaviour
 
     private int GetRightElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (xPosition + 1 >= HORIZONTAL_MAP_SIZE || map[yPosition, xPosition + 1] == null || map[yPosition, xPosition].Type != map[yPosition, xPosition + 1].Type)
+        if (xPosition + 1 >= _horizontalMapSize || map[yPosition, xPosition + 1] == null || map[yPosition, xPosition].Type != map[yPosition, xPosition + 1].Type)
             return 0;
 
         return 1 + GetRightElementsNumber(xPosition + 1, yPosition, map);
@@ -156,7 +161,7 @@ public class GameField : MonoBehaviour
     }
     private int GetDownElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (yPosition + 1 >= VERTICAL_MAP_SIZE || map[yPosition + 1, xPosition] == null || map[yPosition, xPosition].Type != map[yPosition + 1, xPosition].Type)
+        if (yPosition + 1 >= _verticalMapSize || map[yPosition + 1, xPosition] == null || map[yPosition, xPosition].Type != map[yPosition + 1, xPosition].Type)
             return 0;
 
         return 1 + GetDownElementsNumber(xPosition, yPosition + 1, map);
@@ -239,13 +244,13 @@ public class GameField : MonoBehaviour
     private async Task MoveDownElements(Cell[,] map)
     {
         bool areElementsMoved = false, areElementsHandled = false;
-        bool[,] needHandle = new bool[VERTICAL_MAP_SIZE, HORIZONTAL_MAP_SIZE];
+        bool[,] needHandle = new bool[_verticalMapSize, _horizontalMapSize];
         while (areElementsMoved == false || areElementsHandled == false)
         {
             areElementsMoved = true;
-            for (int i = 0; i < HORIZONTAL_MAP_SIZE; i++)
+            for (int i = 0; i < _horizontalMapSize; i++)
             {
-                for (int j = VERTICAL_MAP_SIZE - 1; j > 0; j--)
+                for (int j = _verticalMapSize - 1; j > 0; j--)
                 {
                     if (map[j, i] != null)
                         continue;
@@ -262,15 +267,16 @@ public class GameField : MonoBehaviour
                 }
                 if (map[0, i] == null)
                 {
-                    map[0, i] = Instantiate(GetRandomElement(), new Vector2(-2.5f + _interval * i, 4f), Quaternion.identity);
+                    map[0, i] = Instantiate(GetRandomElement(), 
+                        new Vector2(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y), Quaternion.identity);
                     needHandle[0, i] = true;
                 }
             }
             await Task.Delay(500);
             areElementsHandled = true;
-            for (int i = VERTICAL_MAP_SIZE - 1; i >= 0; i--)
+            for (int i = _verticalMapSize - 1; i >= 0; i--)
             {
-                for (int j = 0; j < HORIZONTAL_MAP_SIZE; j++)
+                for (int j = 0; j < _horizontalMapSize; j++)
                 {
                     if (needHandle[i, j] == false)
                         continue;

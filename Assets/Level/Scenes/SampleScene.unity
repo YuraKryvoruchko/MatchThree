@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.34693146, y: 0}
   m_AnchorMax: {x: 0.42000002, y: 0.1260448}
-  m_AnchoredPosition: {x: 1, y: 0.000061035156}
+  m_AnchoredPosition: {x: 1, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &22426034
@@ -541,7 +541,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.4937256, y: 0.0035156796}
   m_AnchorMax: {x: 0.5645099, y: 0.12956047}
-  m_AnchoredPosition: {x: -0.5, y: -1.999939}
+  m_AnchoredPosition: {x: -0.5, y: -1.9998779}
   m_SizeDelta: {x: 1, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &287015746
@@ -826,6 +826,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805e02c8ab89464419304cba0e688380, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _verticalMapSize: 5
+  _horizontalMapSize: 5
+  _startMapPoint: {fileID: 667648219}
   _cellPrefabs:
   - {fileID: 353735048193789870, guid: 802057d8317cb6747b06bc24c0301851, type: 3}
   - {fileID: 7098692114170833140, guid: 7f3216f677fc7cf40909d2b605157f89, type: 3}
@@ -845,7 +848,7 @@ Transform:
   m_GameObject: {fileID: 667648217}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.5, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
