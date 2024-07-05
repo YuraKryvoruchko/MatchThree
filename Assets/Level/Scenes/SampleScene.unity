@@ -886,6 +886,7 @@ MonoBehaviour:
   _verticalMapSize: 5
   _horizontalMapSize: 5
   _startMapPoint: {fileID: 667648219}
+  _availableCellTypes: 01000000020000000300000004000000
   _cellPrefabs:
   - {fileID: 353735048193789870, guid: 802057d8317cb6747b06bc24c0301851, type: 3}
   - {fileID: 7098692114170833140, guid: 7f3216f677fc7cf40909d2b605157f89, type: 3}

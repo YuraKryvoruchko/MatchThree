@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,8 +11,8 @@ public class GameField : MonoBehaviour
     [SerializeField] private int _verticalMapSize = 5;
     [SerializeField] private int _horizontalMapSize = 5;
     [SerializeField] private Transform _startMapPoint;
+    [SerializeField] private CellType[] _availableCellTypes;
     [Header("Cell Settings")]
-    [SerializeField] private List<Cell> _cellPrefabs;
     [SerializeField] private float _interval;
     [Header("UI")]
     [SerializeField] private InputField _firstXValue;
@@ -288,10 +289,10 @@ public class GameField : MonoBehaviour
     }
     private CellType GetRandomElementType()
     {
-        int index = UnityEngine.Random.Range(1, 5);
-        if (index == 5)
+        int index = UnityEngine.Random.Range(0, _availableCellTypes.Length);
+        if (index == _availableCellTypes.Length)
             index--;
 
-        return (CellType)index;
+        return _availableCellTypes[index];
     }
 }
