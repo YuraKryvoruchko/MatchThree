@@ -202,6 +202,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 22426032}
   m_CullTransparentMesh: 1
+--- !u!1 &80933698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 80933700}
+  - component: {fileID: 80933699}
+  m_Layer: 0
+  m_Name: CellPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &80933699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80933698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac10aeaf03bb2846a955696a322fa9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cellNumberPairs:
+  - Type: 1
+    CellPrefab: {fileID: 353735048193789870, guid: 802057d8317cb6747b06bc24c0301851, type: 3}
+    Count: 20
+  - Type: 2
+    CellPrefab: {fileID: 7098692114170833140, guid: 7f3216f677fc7cf40909d2b605157f89, type: 3}
+    Count: 20
+  - Type: 3
+    CellPrefab: {fileID: 7098692114170833140, guid: 9c85f1c3b5f5e394fb62fab3d77c1472, type: 3}
+    Count: 20
+  - Type: 4
+    CellPrefab: {fileID: 7098692114170833140, guid: 6455ce1eb33fd90429868672a5044678, type: 3}
+    Count: 20
+--- !u!4 &80933700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 80933698}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.7107396, y: 1.7859296, z: 0.8810926}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &89062139
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,6 +896,7 @@ MonoBehaviour:
   _firstYValue: {fileID: 1659038352}
   _secondXValue: {fileID: 1285204706}
   _secondYValue: {fileID: 941964782}
+  _cellPool: {fileID: 80933699}
 --- !u!4 &667648219
 Transform:
   m_ObjectHideFlags: 0
@@ -2105,7 +2163,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.216, y: 0}
   m_AnchorMax: {x: 0.28500003, y: 0.1260448}
-  m_AnchoredPosition: {x: 1.500061, y: 0}
+  m_AnchoredPosition: {x: 1.5000763, y: 0}
   m_SizeDelta: {x: 3, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1659038352
@@ -2432,5 +2490,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 166237402}
+  - {fileID: 80933700}
   - {fileID: 667648219}
   - {fileID: 904105626}

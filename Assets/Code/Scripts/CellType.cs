@@ -1,7 +1,7 @@
 ﻿public enum CellType
 {
-    Red,
-    Green,
-    Yellow,
-    Blue
+    Red = 1,
+    Green = 2,
+    Yellow = 3,
+    Blue = 4
 }

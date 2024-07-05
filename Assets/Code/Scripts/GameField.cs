@@ -18,20 +18,17 @@ public class GameField : MonoBehaviour
     [SerializeField] private InputField _firstYValue;
     [SerializeField] private InputField _secondXValue;
     [SerializeField] private InputField _secondYValue;
+    [Header("Other Services")]
+    [SerializeField] private FieldCellPool _cellPool;
 
     private Cell[,] _map;
-
+    
     private bool _gameStarted = false;
-
-    private const int BIG_BOMB = 9;
-    private const int BOMB = 8;
-    private const int HORIZONTAL_ROCKET = 7;
-    private const int VERTICAL_ROCKET = 6;
-    private const int PAPER = 5;
 
     private async void Start()
     {
         _map = new Cell[_verticalMapSize, _horizontalMapSize];
+
         await MoveDownElements(_map);
         _gameStarted = true;
     }
@@ -199,26 +196,26 @@ public class GameField : MonoBehaviour
     */
 
     private void DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
-        int downNumber, int rightUpNumber, int leftUpNumber, int rightDownNumber, int leftDownNumber, int createdElement, Cell[,] map)
+        int downNumber, int rightUpNumber, int leftUpNumber, int rightDownNumber, int leftDownNumber, CellType createdElement, Cell[,] map)
     {
         for (int i = 1; i <= rightNumber; i++)
         {
-            Destroy(map[yPosition, xPosition + i].gameObject);
+            _cellPool.ReturnCell(map[yPosition, xPosition + i]);
             map[yPosition, xPosition + i] = null;
         }
         for (int i = 1; i <= leftNumber; i++)
         {
-            Destroy(map[yPosition, xPosition - i].gameObject);
+            _cellPool.ReturnCell(map[yPosition, xPosition - i]);
             map[yPosition, xPosition - i] = null;
         }
         for (int i = 1; i <= upNumber; i++)
         {
-            Destroy(map[yPosition - i, xPosition].gameObject);
+            _cellPool.ReturnCell(map[yPosition - i, xPosition]);
             map[yPosition - i, xPosition] = null;
         }
         for (int i = 1; i <= downNumber; i++) 
-        { 
-            Destroy(map[yPosition + i, xPosition].gameObject);
+        {
+            _cellPool.ReturnCell(map[yPosition + i, xPosition]);
             map[yPosition + i, xPosition] = null;
         }
         //for (int i = 1; i <= rightUpNumber; i++)
@@ -232,12 +229,12 @@ public class GameField : MonoBehaviour
 
         if (createdElement == 0)
         {
-            Destroy(map[yPosition, xPosition].gameObject);
+            _cellPool.ReturnCell(map[yPosition, xPosition]);
             map[yPosition, xPosition] = null;
         }
         else
         {
-            map[yPosition, xPosition] = Instantiate(_cellPrefabs[createdElement - 1], map[yPosition, xPosition].transform.position, Quaternion.identity);
+            map[yPosition, xPosition] = _cellPool.GetCell(createdElement, map[yPosition, xPosition].transform.position, Quaternion.identity);
         }
     }
 
@@ -267,7 +264,7 @@ public class GameField : MonoBehaviour
                 }
                 if (map[0, i] == null)
                 {
-                    map[0, i] = Instantiate(GetRandomElement(), 
+                    map[0, i] = _cellPool.GetCell(GetRandomElementType(), 
                         new Vector2(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y), Quaternion.identity);
                     needHandle[0, i] = true;
                 }
@@ -289,12 +286,12 @@ public class GameField : MonoBehaviour
             }
         }
     }
-    private Cell GetRandomElement()
+    private CellType GetRandomElementType()
     {
-        int index = UnityEngine.Random.Range(0, _cellPrefabs.Count);
-        if (index == _cellPrefabs.Count)
+        int index = UnityEngine.Random.Range(1, 5);
+        if (index == 5)
             index--;
 
-        return _cellPrefabs[index];
+        return (CellType)index;
     }
 }
