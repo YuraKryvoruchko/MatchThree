@@ -25,14 +25,14 @@ public class GameField : MonoBehaviour
 
     private Cell[,] _map;
     
-    private bool _gameStarted = false;
+    private bool _gameBlock = true;
 
     private async void Start()
     {
         _map = new Cell[_verticalMapSize, _horizontalMapSize];
 
         await MoveDownElements(_map);
-        _gameStarted = true;
+        _gameBlock = false;
     }
     private void OnDrawGizmos()
     {
@@ -53,8 +53,10 @@ public class GameField : MonoBehaviour
 
     public async void Handle()
     {
-        if (!_gameStarted)
+        if (_gameBlock)
             return;
+
+        _gameBlock = true;
 
         int firstXPosition = Convert.ToInt32(_firstXValue.text);
         int firstYPosition = Convert.ToInt32(_firstYValue.text);
@@ -86,6 +88,8 @@ public class GameField : MonoBehaviour
         {
             await MoveDownElements(_map);
         }
+
+        _gameBlock = false;
     }
 
     private bool HandleMove(int xPosition, int yPosition, Cell[,] map)
