@@ -12,6 +12,7 @@ public class GameField : MonoBehaviour
     [SerializeField] private int _verticalMapSize = 5;
     [SerializeField] private int _horizontalMapSize = 5;
     [SerializeField] private Transform _startMapPoint;
+    [SerializeField] private Transform _cellContainer;
     [SerializeField] private CellType[] _availableCellTypes;
     [Header("Cell Settings")]
     [SerializeField] private float _interval;
@@ -29,6 +30,7 @@ public class GameField : MonoBehaviour
 
     private async void Start()
     {
+        _cellPool.Init();
         _map = new Cell[_verticalMapSize, _horizontalMapSize];
 
         await MoveDownElements(_map);
@@ -212,7 +214,8 @@ public class GameField : MonoBehaviour
                 if (map[0, i] == null)
                 {
                     map[0, i] = _cellPool.GetCell(GetRandomElementType(), 
-                        new Vector2(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y + _interval), Quaternion.identity);
+                        new Vector3(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y + _interval, 0), 
+                        Quaternion.identity, _cellContainer);
                     moveTasks.Add(map[0, i].MoveToWithTask(map[0, i].transform.position + Vector3.down * _interval, null));
                     needHandle[0, i] = true;
                 }
