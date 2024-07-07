@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public class GameField : MonoBehaviour
 {
@@ -96,36 +97,7 @@ public class GameField : MonoBehaviour
         int leftNumber = GetLeftElementsNumber(xPosition, yPosition, map);
         int upNumber = GetUpElementsNumber(xPosition, yPosition, map);
         int downNumber = GetDownElementsNumber(xPosition, yPosition, map);
-        /*int rightUpNumber = GetUpRightElementsNumber(xPosition, yPosition, map);
-        //int leftUpNumber = GetUpLeftElementsNumber(xPosition, yPosition, map);
-        //int rightDownNumber = GetDownRightElementsNumber(xPosition, yPosition, map);
-        //int leftDownNumber = GetDownLeftElementsNumber(xPosition, yPosition, map);
 
-        if (rightNumber + leftNumber >= 4)
-            DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, 0, 0, 0, BIG_BOMB, map);
-        else if (upNumber + downNumber >= 4)
-            DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, 0, 0, 0, BIG_BOMB, map);
-        else if (upNumber + leftNumber >= 4)
-            DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, 0, 0, 0, 0, BOMB, map);
-        else if (upNumber + rightNumber >= 4)
-            DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, 0, 0, 0, 0, BOMB, map);
-        else if (downNumber + leftNumber >= 4)
-            DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, 0, 0, 0, 0, BOMB, map);
-        else if (downNumber + rightNumber >= 4)
-            DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, 0, 0, 0, 0, BOMB, map);
-        else if (rightNumber + leftNumber >= 3)
-            DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, 0, 0, 0, HORIZONTAL_ROCKET, map);
-        else if (upNumber + downNumber >= 3)
-            DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, 0, 0, 0, VERTICAL_ROCKET, map);
-        else if (upNumber + leftNumber + leftUpNumber >= 3)
-            DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, 0, leftUpNumber, 0, 0, PAPER, map);
-        else if (upNumber + rightNumber + rightUpNumber >= 3 && rightUpNumber == 1)
-            DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, rightUpNumber, 0, 0, 0, PAPER, map);
-        else if (downNumber + rightNumber + rightDownNumber >= 3 && rightDownNumber == 1)
-            DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, 0, 0, rightDownNumber, 0, PAPER, map);
-        else if (downNumber + leftNumber + leftDownNumber >= 3 && leftDownNumber == 1)
-            DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, 0, 0, 0, leftDownNumber, PAPER, map);
-        else*/ 
         if (rightNumber + leftNumber >= 2)
             DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, 0, 0, 0, 0, map);
         else if (upNumber + downNumber >= 2)
@@ -164,37 +136,6 @@ public class GameField : MonoBehaviour
 
         return 1 + GetDownElementsNumber(xPosition, yPosition + 1, map);
     }
-
-    /*
-    private int GetUpRightElementsNumber(int xPosition, int yPosition, Cell[,] map)
-    {
-        if (xPosition + 1 >= HORIZONTAL_MAP_SIZE || yPosition - 1 < 0 || map[yPosition, xPosition].Type != map[yPosition - 1, xPosition + 1].Type)
-            return 0;
-
-        return 1 + GetUpRightElementsNumber(xPosition + 1, yPosition - 1, map);
-    }
-    private int GetUpLeftElementsNumber(int xPosition, int yPosition, Cell[,] map)
-    {
-        if (xPosition - 1 < 0 || yPosition - 1 < 0 || map[yPosition, xPosition].Type != map[yPosition - 1, xPosition - 1].Type)
-            return 0;
-
-        return 1 + GetUpLeftElementsNumber(xPosition - 1, yPosition - 1, map);
-    }
-    private int GetDownRightElementsNumber(int xPosition, int yPosition, Cell[,] map)
-    {
-        if (xPosition + 1 >= HORIZONTAL_MAP_SIZE || yPosition + 1 >= VERTICAL_MAP_SIZE || map[yPosition, xPosition].Type != map[yPosition + 1, xPosition + 1].Type)
-            return 0;
-
-        return 1 + GetDownRightElementsNumber(xPosition + 1, yPosition + 1, map);
-    }
-    private int GetDownLeftElementsNumber(int xPosition, int yPosition, Cell[,] map)
-    {
-        if (xPosition - 1 < 0 || yPosition + 1 >= VERTICAL_MAP_SIZE || map[yPosition, xPosition].Type != map[yPosition + 1, xPosition - 1].Type)
-            return 0;
-
-        return 1 + GetDownLeftElementsNumber(xPosition - 1, yPosition + 1, map);
-    }
-    */
 
     private void DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
         int downNumber, int rightUpNumber, int leftUpNumber, int rightDownNumber, int leftDownNumber, CellType createdElement, Cell[,] map)
@@ -246,6 +187,7 @@ public class GameField : MonoBehaviour
         while (areElementsMoved == false || areElementsHandled == false)
         {
             areElementsMoved = true;
+            List<UniTask> moveTasks = new List<UniTask>();
             for (int i = 0; i < _horizontalMapSize; i++)
             {
                 for (int j = _verticalMapSize - 1; j > 0; j--)
@@ -259,18 +201,19 @@ public class GameField : MonoBehaviour
                     map[j - 1, i] = null;
                     if (map[j, i] != null)
                     {
-                        map[j, i].transform.position += Vector3.down * _interval;
+                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval, null));
                         needHandle[j, i] = true;
                     }
                 }
                 if (map[0, i] == null)
                 {
                     map[0, i] = _cellPool.GetCell(GetRandomElementType(), 
-                        new Vector2(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y), Quaternion.identity);
+                        new Vector2(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y + _interval), Quaternion.identity);
+                    moveTasks.Add(map[0, i].MoveToWithTask(map[0, i].transform.position + Vector3.down * _interval, null));
                     needHandle[0, i] = true;
                 }
             }
-            await Task.Delay(500);
+            await UniTask.WhenAll(moveTasks);
             areElementsHandled = true;
             for (int i = _verticalMapSize - 1; i >= 0; i--)
             {

@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 public class Cell : MonoBehaviour
 {
     [SerializeField] private CellType _type;
+    [SerializeField] private float _moveSpeed = 3;
 
     public CellType Type { get => _type; }
     public bool IsMove { get; private set; }
@@ -21,7 +22,7 @@ public class Cell : MonoBehaviour
         IsMove = true;
         while (progress < 1)
         {
-            progress += Time.deltaTime;
+            progress += _moveSpeed * Time.deltaTime;
             transform.position = Vector3.Lerp(startPosition, endPosition, progress);
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
