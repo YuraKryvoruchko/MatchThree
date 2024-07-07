@@ -232,17 +232,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cellNumberPairs:
+  - Type: 0
+    CellPrefab: {fileID: -6854740434885365437, guid: acee07a288f7a07448d679087677f1e4, type: 3}
+    Count: 20
   - Type: 1
-    CellPrefab: {fileID: 353735048193789870, guid: 802057d8317cb6747b06bc24c0301851, type: 3}
+    CellPrefab: {fileID: 8212925149674459206, guid: 3d05d55489f1cae43aeb92738530c54d, type: 3}
     Count: 20
   - Type: 2
-    CellPrefab: {fileID: 7098692114170833140, guid: 7f3216f677fc7cf40909d2b605157f89, type: 3}
+    CellPrefab: {fileID: 4748903741656538637, guid: 297ef9e52e80faf4eba6c7470fc8fa3f, type: 3}
     Count: 20
   - Type: 3
-    CellPrefab: {fileID: 7098692114170833140, guid: 9c85f1c3b5f5e394fb62fab3d77c1472, type: 3}
-    Count: 20
-  - Type: 4
-    CellPrefab: {fileID: 7098692114170833140, guid: 6455ce1eb33fd90429868672a5044678, type: 3}
+    CellPrefab: {fileID: 1633047594622282236, guid: 8e190d001ccddb34fbdda6e8d5a6e8d8, type: 3}
     Count: 20
 --- !u!4 &80933700
 Transform:
@@ -918,7 +918,7 @@ MonoBehaviour:
   _verticalMapSize: 5
   _horizontalMapSize: 5
   _startMapPoint: {fileID: 667648219}
-  _availableCellTypes: 01000000020000000300000004000000
+  _availableCellTypes: 00000000010000000200000003000000
   _interval: 1.2
   _firstXValue: {fileID: 1597171576}
   _firstYValue: {fileID: 1659038352}

@@ -103,9 +103,9 @@ public class GameField : MonoBehaviour
         int downNumber = GetDownElementsNumber(xPosition, yPosition, map);
 
         if (rightNumber + leftNumber >= 2)
-            DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, 0, 0, 0, 0, map);
+            DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, map);
         else if (upNumber + downNumber >= 2)
-            DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, 0, 0, 0, 0, map);
+            DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, map);
         else
             return false;
 
@@ -142,7 +142,7 @@ public class GameField : MonoBehaviour
     }
 
     private void DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
-        int downNumber, int rightUpNumber, int leftUpNumber, int rightDownNumber, int leftDownNumber, CellType createdElement, Cell[,] map)
+        int downNumber, CellType createdElement, Cell[,] map)
     {
         for (int i = 1; i <= rightNumber; i++)
         {
