@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 166237402}
   - component: {fileID: 166237401}
   - component: {fileID: 166237403}
+  - component: {fileID: 166237404}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -498,6 +499,53 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
+--- !u!114 &166237404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 166237399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09909023624b6034884c8dc962550d0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _swipeResistance: 100
+  _positionAction:
+    m_Name: Position
+    m_Type: 0
+    m_ExpectedControlType: Vector2
+    m_Id: 5edd4dc9-2025-4032-a7cc-f52b0885371c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 24d4d769-08d1-49e3-9487-c91d1235a465
+      m_Path: <Touchscreen>/position
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Position
+      m_Flags: 0
+    m_Flags: 0
+  _pressAction:
+    m_Name: Press
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: cd49a018-b72c-4b39-b332-4a41f63b8415
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: fe63141e-d7e8-4254-ac03-5bcc47416165
+      m_Path: <Touchscreen>/Press
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Press
+      m_Flags: 0
+    m_Flags: 0
 --- !u!1 &281884211
 GameObject:
   m_ObjectHideFlags: 0
