@@ -12,7 +12,8 @@ public class GameField : MonoBehaviour
     [SerializeField] private int _horizontalMapSize = 5;
     [SerializeField] private Transform _startMapPoint;
     [SerializeField] private Transform _cellContainer;
-    [SerializeField] private CellType[] _availableCellTypes;
+    [SerializeField] private CellType[] _availableRandomCellTypes;
+    [SerializeField] private CellConfig[] _cellConfigs;
     [Header("Cell Settings")]
     [SerializeField] private float _interval;
     [Header("UI")]
@@ -27,10 +28,22 @@ public class GameField : MonoBehaviour
     
     private bool _gameBlock = true;
 
+    [Serializable]
+    private class CellConfig
+    {
+        public int X, Y;
+        public CellType Type; 
+    }
+
     private async void Start()
     {
         _cellPool.Init();
         _map = new Cell[_verticalMapSize, _horizontalMapSize];
+        for(int i = 0; i < _cellConfigs.Length; i++)
+        {
+            _map[_cellConfigs[i].Y, _cellConfigs[i].X] = _cellPool.GetCell(_cellConfigs[i].Type,
+                GetElementPosition(_cellConfigs[i].X, _cellConfigs[i].Y), Quaternion.identity, _cellContainer);
+        }
 
         await MoveDownElements(_map);
         _gameBlock = false;
@@ -63,11 +76,16 @@ public class GameField : MonoBehaviour
         int firstYPosition = Convert.ToInt32(_firstYValue.text);
         int secondXPosition = Convert.ToInt32(_secondXValue.text);
         int secondYPosition = Convert.ToInt32(_secondYValue.text);
+        if (_map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
+        {
+            _gameBlock = true;
+            return;
+        }
 
         Cell tmpCell = _map[firstYPosition, firstXPosition];
         Vector3 tmpPosition = tmpCell.transform.position;
-        UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, null);
-        UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, null);
+        UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position);
+        UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition);
         _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
         _map[secondYPosition, secondXPosition] = tmpCell;
 
@@ -80,8 +98,8 @@ public class GameField : MonoBehaviour
         {
             tmpCell = _map[firstYPosition, firstXPosition];
             tmpPosition = tmpCell.transform.position;
-            firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, null);
-            secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, null);
+            firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position);
+            secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition);
             _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
             _map[secondYPosition, secondXPosition] = tmpCell;
 
@@ -167,14 +185,6 @@ public class GameField : MonoBehaviour
             _cellPool.ReturnCell(map[yPosition + i, xPosition]);
             map[yPosition + i, xPosition] = null;
         }
-        //for (int i = 1; i <= rightUpNumber; i++)
-        //    Destroy(map[yPosition - i, xPosition + i].gameObject);
-        //for (int i = 1; i <= leftUpNumber; i++)
-        //    Destroy(map[yPosition - i, xPosition - i].gameObject);
-        //for (int i = 1; i <= rightDownNumber; i++)
-        //    Destroy(map[yPosition + i, xPosition + i].gameObject);
-        //for (int i = 1; i <= leftDownNumber; i++)
-        //    Destroy(map[yPosition + i, xPosition - i].gameObject);
 
         if (createdElement == 0)
         {
@@ -187,7 +197,7 @@ public class GameField : MonoBehaviour
         }
     }
 
-    private async Task MoveDownElements(Cell[,] map)
+    private async UniTask MoveDownElements(Cell[,] map)
     {
         bool areElementsMoved = false, areElementsHandled = false;
         bool[,] needHandle = new bool[_verticalMapSize, _horizontalMapSize];
@@ -201,6 +211,8 @@ public class GameField : MonoBehaviour
                 {
                     if (map[j, i] != null)
                         continue;
+                    if (map[j - 1, i] != null && map[j - 1, i].IsStatic)
+                        continue;
 
                     areElementsMoved = false;
 
@@ -208,17 +220,22 @@ public class GameField : MonoBehaviour
                     map[j - 1, i] = null;
                     if (map[j, i] != null)
                     {
-                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval, null));
+                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval));
                         needHandle[j, i] = true;
                     }
                 }
-                if (map[0, i] == null)
+                int upperElementIndex;
+                for (upperElementIndex = 0; upperElementIndex < _verticalMapSize; upperElementIndex++)
                 {
-                    map[0, i] = _cellPool.GetCell(GetRandomElementType(), 
-                        new Vector3(_startMapPoint.position.x + _interval * i, _startMapPoint.position.y + _interval, 0), 
-                        Quaternion.identity, _cellContainer);
-                    moveTasks.Add(map[0, i].MoveToWithTask(map[0, i].transform.position + Vector3.down * _interval, null));
-                    needHandle[0, i] = true;
+                    if (map[upperElementIndex, i] == null || !map[upperElementIndex, i].IsStatic)
+                        break;
+                }
+                if (map[upperElementIndex, i] == null)
+                {
+                    map[upperElementIndex, i] = _cellPool.GetCell(GetRandomElementType(), 
+                        GetElementPosition(i, upperElementIndex - 1), Quaternion.identity, _cellContainer);
+                    moveTasks.Add(map[upperElementIndex, i].MoveToWithTask(GetElementPosition(i, upperElementIndex)));
+                    needHandle[upperElementIndex, i] = true;
                 }
             }
             await UniTask.WhenAll(moveTasks);
@@ -240,10 +257,15 @@ public class GameField : MonoBehaviour
     }
     private CellType GetRandomElementType()
     {
-        int index = UnityEngine.Random.Range(0, _availableCellTypes.Length);
-        if (index == _availableCellTypes.Length)
+        int index = UnityEngine.Random.Range(0, _availableRandomCellTypes.Length);
+        if (index == _availableRandomCellTypes.Length)
             index--;
 
-        return _availableCellTypes[index];
+        return _availableRandomCellTypes[index];
+    }
+    private Vector2 GetElementPosition(int xIndex, int yIndex)
+    {
+        return new Vector2(_startMapPoint.position.x + _interval * xIndex, 
+            _startMapPoint.position.y - _interval * yIndex);
     }
 }

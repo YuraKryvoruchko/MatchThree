@@ -3,5 +3,6 @@
     Apple,
     Banana,
     Grape,
-    Orange
+    Orange,
+    Static
 }

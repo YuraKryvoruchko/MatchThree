@@ -244,6 +244,9 @@ MonoBehaviour:
   - Type: 3
     CellPrefab: {fileID: 1633047594622282236, guid: 8e190d001ccddb34fbdda6e8d5a6e8d8, type: 3}
     Count: 40
+  - Type: 4
+    CellPrefab: {fileID: 8518706724278060428, guid: 0000525475aedeb42bb008d012a5f63a, type: 3}
+    Count: 40
 --- !u!4 &80933700
 Transform:
   m_ObjectHideFlags: 0
@@ -2555,6 +2558,19 @@ MonoBehaviour:
   _startMapPoint: {fileID: 667648219}
   _cellContainer: {fileID: 1784152975}
   _availableCellTypes: 00000000010000000200000003000000
+  _cells:
+  - X: 0
+    Y: 0
+    Type: 4
+  - X: 7
+    Y: 0
+    Type: 4
+  - X: 7
+    Y: 7
+    Type: 4
+  - X: 0
+    Y: 7
+    Type: 4
   _interval: 1
   _firstXValue: {fileID: 1597171576}
   _firstYValue: {fileID: 1659038352}
