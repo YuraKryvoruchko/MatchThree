@@ -2557,8 +2557,8 @@ MonoBehaviour:
   _horizontalMapSize: 8
   _startMapPoint: {fileID: 667648219}
   _cellContainer: {fileID: 1784152975}
-  _availableCellTypes: 00000000010000000200000003000000
-  _cells:
+  _availableRandomCellTypes: 00000000010000000200000003000000
+  _cellConfigs:
   - X: 0
     Y: 0
     Type: 4
