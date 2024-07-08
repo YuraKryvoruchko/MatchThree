@@ -2790,7 +2790,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1658689104}
         m_TargetAssemblyTypeName: GameField, Assembly-CSharp
         m_MethodName: Handle
         m_Mode: 1

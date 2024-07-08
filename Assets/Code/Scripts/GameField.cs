@@ -1,4 +1,3 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -67,12 +66,12 @@ public class GameField : MonoBehaviour
 
         Cell tmpCell = _map[firstYPosition, firstXPosition];
         Vector3 tmpPosition = tmpCell.transform.position;
-        _map[firstYPosition, firstXPosition].transform.position = _map[secondYPosition, secondXPosition].transform.position;
-        _map[secondYPosition, secondXPosition].transform.position = tmpPosition;
+        UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, null);
+        UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, null);
         _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
         _map[secondYPosition, secondXPosition] = tmpCell;
 
-        await Task.Delay(250);
+        await UniTask.WhenAll(firstMoveTask, secondMoveTask);
 
         bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition, _map);
         bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition, _map);
@@ -81,10 +80,12 @@ public class GameField : MonoBehaviour
         {
             tmpCell = _map[firstYPosition, firstXPosition];
             tmpPosition = tmpCell.transform.position;
-            _map[firstYPosition, firstXPosition].transform.position = _map[secondYPosition, secondXPosition].transform.position;
-            _map[secondYPosition, secondXPosition].transform.position = tmpPosition;
+            firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, null);
+            secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, null);
             _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
             _map[secondYPosition, secondXPosition] = tmpCell;
+
+            await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
         else
         {
