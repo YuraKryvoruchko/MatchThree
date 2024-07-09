@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputService : MonoBehaviour
+public class SwipeDetection : MonoBehaviour
 {
     [SerializeField] private float _swipeResistance;
     [SerializeField] private InputAction _positionAction;
@@ -12,13 +12,18 @@ public class InputService : MonoBehaviour
 
     private Vector2 CurrentPosition { get => _positionAction.ReadValue<Vector2>(); }
 
+    public event Action<Vector2> OnStartSwipe;
     public event Action<Vector2> OnSwipe;
 
     private void OnEnable()
     {
         _positionAction.Enable();
         _pressAction.Enable();
-        _pressAction.performed += _ => { _initialPosition = CurrentPosition; };
+        _pressAction.performed += _ =>
+        {
+            _initialPosition = CurrentPosition;
+            OnStartSwipe?.Invoke(_initialPosition);
+        };
         _pressAction.canceled += _ => DetectSwipe();
     }
     private void OnDisable()
