@@ -87,8 +87,8 @@ public class GameField : MonoBehaviour
 
         Cell tmpCell = _map[firstYPosition, firstXPosition];
         Vector3 tmpPosition = tmpCell.transform.position;
-        UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position);
-        UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition);
+        UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, false);
+        UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
         _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
         _map[secondYPosition, secondXPosition] = tmpCell;
 
@@ -101,8 +101,8 @@ public class GameField : MonoBehaviour
         {
             tmpCell = _map[firstYPosition, firstXPosition];
             tmpPosition = tmpCell.transform.position;
-            firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position);
-            secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition);
+            firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, false);
+            secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
             _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
             _map[secondYPosition, secondXPosition] = tmpCell;
 
@@ -223,7 +223,7 @@ public class GameField : MonoBehaviour
                     map[j - 1, i] = null;
                     if (map[j, i] != null)
                     {
-                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval));
+                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval, false));
                         needHandle[j, i] = true;
                     }
                 }

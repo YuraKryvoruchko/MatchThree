@@ -20,7 +20,11 @@ public class Cell : MonoBehaviour
     }
     public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action onComplete = null)
     {
-        Vector3 startPosition = transform.position;
+        Vector3 startPosition = Vector3.zero;
+        if(inLocal)
+            startPosition = transform.localPosition;
+        else
+            startPosition = transform.position;
 
         float progress = 0;
         IsMove = true;
