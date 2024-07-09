@@ -1,17 +1,26 @@
 ﻿using System;
 using UnityEngine;
 
-public class CellMover : MonoBehaviour
+public class CellSwipeDetection : MonoBehaviour
 {
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private SwipeDetection _swipeDetection;
 
+    private Vector2 _cellPosition;
+
     private float RAY_DISTANCE = 100F;
+
+    public event Action<Vector2, Vector2> OnTrySwipeCellWithGetDirection;
 
     private void OnEnable()
     {
         _swipeDetection.OnStartSwipe += GetCellFromPosition;
         _swipeDetection.OnSwipe += MoveCell;
+    }
+    private void OnDisable()
+    {
+        _swipeDetection.OnStartSwipe -= GetCellFromPosition;
+        _swipeDetection.OnSwipe -= MoveCell;
     }
 
     private void GetCellFromPosition(Vector2 screenPosition)
@@ -21,9 +30,11 @@ public class CellMover : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, RAY_DISTANCE);
         if (hit.collider == null)
             return;
+
+        _cellPosition = hit.collider.transform.position;
     }
     private void MoveCell(Vector2 swipeDirection)
     {
-        throw new NotImplementedException();
+        OnTrySwipeCellWithGetDirection?.Invoke(_cellPosition, swipeDirection);
     }
 }

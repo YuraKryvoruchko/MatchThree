@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 
 public class GameField : MonoBehaviour
@@ -15,13 +14,9 @@ public class GameField : MonoBehaviour
     [SerializeField] private CellConfig[] _cellConfigs;
     [Header("Cell Settings")]
     [SerializeField] private float _interval;
-    [Header("UI")]
-    [SerializeField] private InputField _firstXValue;
-    [SerializeField] private InputField _firstYValue;
-    [SerializeField] private InputField _secondXValue;
-    [SerializeField] private InputField _secondYValue;
     [Header("Other Services")]
     [SerializeField] private FieldCellPool _cellPool;
+    [SerializeField] private CellSwipeDetection _cellSwipeDetection;
 
     private Cell[,] _map;
     
@@ -34,6 +29,14 @@ public class GameField : MonoBehaviour
         public CellType Type; 
     }
 
+    private void OnEnable()
+    {
+        _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
+    }
+    private void OnDisable()
+    {
+        _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
+    }
     private async void Start()
     {
         _cellPool.Init();
@@ -64,17 +67,18 @@ public class GameField : MonoBehaviour
         Gizmos.DrawLine(lines[2], lines[0]);
     }
 
-    public async void Handle()
+    public async void Handle(Vector2 cellPosition, Vector2 swipeDirection)
     {
         if (_gameBlock)
             return;
 
         _gameBlock = true;
 
-        int firstXPosition = Convert.ToInt32(_firstXValue.text);
-        int firstYPosition = Convert.ToInt32(_firstYValue.text);
-        int secondXPosition = Convert.ToInt32(_secondXValue.text);
-        int secondYPosition = Convert.ToInt32(_secondYValue.text);
+        swipeDirection = swipeDirection.normalized;
+        int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
+        int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
+        int secondXPosition = firstXPosition + Mathf.RoundToInt(swipeDirection.x);
+        int secondYPosition = firstYPosition - Mathf.RoundToInt(swipeDirection.y);
         if (_map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
         {
             _gameBlock = true;
