@@ -916,10 +916,6 @@ MonoBehaviour:
     Y: 7
     Type: 4
   _interval: 1
-  _firstXValue: {fileID: 0}
-  _firstYValue: {fileID: 0}
-  _secondXValue: {fileID: 0}
-  _secondYValue: {fileID: 0}
   _cellPool: {fileID: 80933699}
   _cellSwipeDetection: {fileID: 166237405}
 --- !u!1 &1784152974
