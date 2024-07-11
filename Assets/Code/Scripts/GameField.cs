@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 
 public class GameField : MonoBehaviour
 {
@@ -202,29 +203,41 @@ public class GameField : MonoBehaviour
 
     private async UniTask MoveDownElements(Cell[,] map)
     {
-        bool areElementsMoved = false, areElementsHandled = false;
-        bool[,] needHandle = new bool[_verticalMapSize, _horizontalMapSize];
-        while (areElementsMoved == false || areElementsHandled == false)
+        int x = 0, y = 0;
+        bool areElementsMoved = false;
+        do
         {
             areElementsMoved = true;
-            List<UniTask> moveTasks = new List<UniTask>();
             for (int i = 0; i < _horizontalMapSize; i++)
             {
+                int lowerElementIndex = 0;
                 for (int j = _verticalMapSize - 1; j > 0; j--)
                 {
-                    if (map[j, i] != null)
-                        continue;
-                    if (map[j - 1, i] != null && map[j - 1, i].IsStatic)
-                        continue;
-
-                    areElementsMoved = false;
-
-                    map[j, i] = map[j - 1, i];
-                    map[j - 1, i] = null;
-                    if (map[j, i] != null)
+                    if(map[j, i] == null)
                     {
-                        moveTasks.Add(map[j, i].MoveToWithTask(map[j, i].transform.position + Vector3.down * _interval, false));
-                        needHandle[j, i] = true;
+                        areElementsMoved = false;
+                        if (lowerElementIndex < j)
+                            lowerElementIndex = j;
+                    }
+                    else
+                    {
+                        if (map[j, i].IsStatic)
+                            continue;
+
+                        if (map[j, i].IsMove)
+                        {
+                            areElementsMoved = false;
+                            continue;
+                        }
+
+                        if (lowerElementIndex <= j)
+                            continue;
+
+                        areElementsMoved = false;
+                        map[lowerElementIndex, i] = map[j, i];
+                        map[j, i] = null;
+                        map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
+                        lowerElementIndex--;
                     }
                 }
                 int upperElementIndex;
@@ -235,27 +248,39 @@ public class GameField : MonoBehaviour
                 }
                 if (map[upperElementIndex, i] == null)
                 {
-                    map[upperElementIndex, i] = _cellPool.GetCell(GetRandomElementType(), 
-                        GetElementPosition(i, upperElementIndex - 1), Quaternion.identity, _cellContainer);
-                    moveTasks.Add(map[upperElementIndex, i].MoveToWithTask(GetElementPosition(i, upperElementIndex)));
-                    needHandle[upperElementIndex, i] = true;
+                    Vector2 pos = GetElementPosition(i, upperElementIndex - 1 * lowerElementIndex);
+                    map[lowerElementIndex, i] = _cellPool.GetCell(GetRandomElementType(),
+                        new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
+                    map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
+                    areElementsMoved = false;
                 }
-            }
-            await UniTask.WhenAll(moveTasks);
-            areElementsHandled = true;
-            for (int i = _verticalMapSize - 1; i >= 0; i--)
-            {
-                for (int j = 0; j < _horizontalMapSize; j++)
+                else
                 {
-                    if (needHandle[i, j] == false)
+                    if (map[upperElementIndex, i].IsMove)
+                    {
+                        areElementsMoved = false;
+                        continue;
+                    }
+                    if (lowerElementIndex <= upperElementIndex)
                         continue;
 
-                    if (HandleMove(j, i, map) == true)
-                        areElementsHandled = false;
-                    else
-                        needHandle[i, j] = false;
+                    areElementsMoved = false;
+                    map[lowerElementIndex, i] = map[upperElementIndex, i];
+                    map[upperElementIndex, i] = null;
+                    map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
+                    lowerElementIndex--;
                 }
             }
+            await UniTask.Yield();
+        } while (!areElementsMoved);
+
+        void DoCallback(Cell cell)
+        {
+            x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
+            y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
+            bool handled = HandleMove(x, y, map);
+            if (handled == true)
+                areElementsMoved = false;
         }
     }
     private CellType GetRandomElementType()

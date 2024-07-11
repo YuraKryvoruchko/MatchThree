@@ -14,11 +14,11 @@ public class Cell : MonoBehaviour
     public bool IsMove { get; private set; }
     public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
 
-    public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action onComplete = null)
+    public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
     {
         await MoveToWithTask(endPosition, inLocal, onComplete);
     }
-    public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action onComplete = null)
+    public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
     {
         Vector3 startPosition = Vector3.zero;
         if(inLocal)
@@ -26,6 +26,7 @@ public class Cell : MonoBehaviour
         else
             startPosition = transform.position;
 
+        Vector3 delta = endPosition - startPosition;
         float progress = 0;
         IsMove = true;
         while (progress < 1)
@@ -43,6 +44,6 @@ public class Cell : MonoBehaviour
         else
             transform.position = endPosition;
         IsMove = false;
-        onComplete?.Invoke();
+        onComplete?.Invoke(this);
     }
 }
