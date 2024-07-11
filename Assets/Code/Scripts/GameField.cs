@@ -82,7 +82,7 @@ public class GameField : MonoBehaviour
         int secondYPosition = firstYPosition - Mathf.RoundToInt(swipeDirection.y);
         if (_map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
         {
-            _gameBlock = true;
+            _gameBlock = false;
             return;
         }
 
@@ -210,12 +210,13 @@ public class GameField : MonoBehaviour
             areElementsMoved = true;
             for (int i = 0; i < _horizontalMapSize; i++)
             {
-                int lowerElementIndex = 0;
+                int lowerElementIndex = 0, spawnQueue = 0;
                 for (int j = _verticalMapSize - 1; j > 0; j--)
                 {
                     if(map[j, i] == null)
                     {
                         areElementsMoved = false;
+                        spawnQueue++;
                         if (lowerElementIndex < j)
                             lowerElementIndex = j;
                     }
@@ -248,7 +249,7 @@ public class GameField : MonoBehaviour
                 }
                 if (map[upperElementIndex, i] == null)
                 {
-                    Vector2 pos = GetElementPosition(i, upperElementIndex - 1 * lowerElementIndex);
+                    Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue - 1);
                     map[lowerElementIndex, i] = _cellPool.GetCell(GetRandomElementType(),
                         new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
                     map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
