@@ -6,7 +6,7 @@ public class Cell : MonoBehaviour
 {
     [Header("Basic Settings")]
     [SerializeField] private CellType _type;
-    [SerializeField] private float _moveSpeed = 3;
+    [SerializeField] private float _moveSpeedPerSecond;
     [Header("Features")]
     [SerializeField] private bool _isStatic = false;
 
@@ -26,12 +26,14 @@ public class Cell : MonoBehaviour
         else
             startPosition = transform.position;
 
-        Vector3 delta = endPosition - startPosition;
-        float progress = 0;
+        float distance = Vector3.Distance(startPosition, endPosition);
+        float maxTime = distance / _moveSpeedPerSecond;
+        float currentTime = 0f, progress = 0f;
         IsMove = true;
         while (progress < 1)
         {
-            progress += _moveSpeed * Time.deltaTime;
+            currentTime += Time.deltaTime;
+            progress += currentTime / maxTime;
             if(inLocal)
                 transform.localPosition = Vector3.Lerp(startPosition, endPosition, progress);
             else
