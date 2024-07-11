@@ -11,42 +11,59 @@ public class Cell : MonoBehaviour
     [Header("Features")]
     [SerializeField] private bool _isStatic = false;
 
+    private Vector3 _startPosition;
+    private Vector3 _endPosition;
+    private float _distance;
+    private float _maxTime;
+    private float _currentTime;
+    private float _progress;
+
     public CellType Type { get => _type; }
     public bool IsMove { get; private set; }
     public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
 
     public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
     {
-        await MoveToWithTask(endPosition, inLocal, onComplete);
+        if (IsMove)
+            SetupParameters(endPosition, inLocal);
+        else
+            await MoveToWithTask(endPosition, inLocal, onComplete);
     }
     public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
     {
-        Vector3 startPosition = Vector3.zero;
-        if(inLocal)
-            startPosition = transform.localPosition;
-        else
-            startPosition = transform.position;
+        SetupParameters(endPosition, inLocal);
 
-        float distance = Vector3.Distance(startPosition, endPosition);
-        float maxTime = distance / _moveSpeedPerSecond;
-        float currentTime = 0f, progress = 0f;
         IsMove = true;
-        while (progress < 1)
+        while (_progress < 1)
         {
-            currentTime += Time.deltaTime;
-            progress += currentTime / maxTime;
+            _currentTime += Time.deltaTime;
+            _progress += _currentTime / _maxTime;
             if(inLocal)
-                transform.localPosition = Vector3.Lerp(startPosition, endPosition, progress);
+                transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, _progress);
             else
-                transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+                transform.position = Vector3.Lerp(_startPosition, _endPosition, _progress);
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
 
         if (inLocal)
-            transform.localPosition = endPosition;
+            transform.localPosition = _endPosition;
         else
-            transform.position = endPosition;
+            transform.position = _endPosition;
         IsMove = false;
         onComplete?.Invoke(this);
+    }
+
+    private void SetupParameters(Vector3 endPosition, bool inLocal = true)
+    {
+        _endPosition = endPosition;
+        if (inLocal)
+            _startPosition = transform.localPosition;
+        else
+            _startPosition = transform.position;
+
+        _distance = Vector3.Distance(_startPosition, endPosition);
+        _maxTime = _distance / _moveSpeedPerSecond;
+        _progress = 0f;
+        _currentTime = 0f;
     }
 }

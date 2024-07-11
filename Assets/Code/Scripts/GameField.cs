@@ -139,28 +139,32 @@ public class GameField : MonoBehaviour
 
     private int GetRightElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (xPosition + 1 >= _horizontalMapSize || map[yPosition, xPosition + 1] == null || map[yPosition, xPosition].Type != map[yPosition, xPosition + 1].Type)
+        if (xPosition + 1 >= _horizontalMapSize || map[yPosition, xPosition + 1] == null ||
+            map[yPosition, xPosition + 1].IsMove || map[yPosition, xPosition].Type != map[yPosition, xPosition + 1].Type)
             return 0;
 
         return 1 + GetRightElementsNumber(xPosition + 1, yPosition, map);
     }
     private int GetLeftElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (xPosition - 1 < 0 || map[yPosition, xPosition - 1] == null || map[yPosition, xPosition].Type != map[yPosition, xPosition - 1].Type)
+        if (xPosition - 1 < 0 || map[yPosition, xPosition - 1] == null || map[yPosition, xPosition - 1].IsMove ||
+            map[yPosition, xPosition].Type != map[yPosition, xPosition - 1].Type)
             return 0;
 
         return 1 + GetLeftElementsNumber(xPosition - 1, yPosition, map);
     }
     private int GetUpElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (yPosition - 1 < 0 || map[yPosition - 1, xPosition] == null || map[yPosition, xPosition].Type != map[yPosition - 1, xPosition].Type)
+        if (yPosition - 1 < 0 || map[yPosition - 1, xPosition] == null || map[yPosition - 1, xPosition].IsMove ||
+            map[yPosition, xPosition].Type != map[yPosition - 1, xPosition].Type)
             return 0;
 
         return 1 + GetUpElementsNumber(xPosition, yPosition - 1, map);
     }
     private int GetDownElementsNumber(int xPosition, int yPosition, Cell[,] map)
     {
-        if (yPosition + 1 >= _verticalMapSize || map[yPosition + 1, xPosition] == null || map[yPosition, xPosition].Type != map[yPosition + 1, xPosition].Type)
+        if (yPosition + 1 >= _verticalMapSize || map[yPosition + 1, xPosition] == null || map[yPosition + 1, xPosition].IsMove ||
+            map[yPosition, xPosition].Type != map[yPosition + 1, xPosition].Type)
             return 0;
 
         return 1 + GetDownElementsNumber(xPosition, yPosition + 1, map);
@@ -210,13 +214,12 @@ public class GameField : MonoBehaviour
             areElementsMoved = true;
             for (int i = 0; i < _horizontalMapSize; i++)
             {
-                int lowerElementIndex = 0, spawnQueue = 0;
-                for (int j = _verticalMapSize - 1; j > 0; j--)
+                int lowerElementIndex = 0;
+                for (int j = _verticalMapSize - 1; j >= 0; j--)
                 {
-                    if(map[j, i] == null)
+                    if (map[j, i] == null)
                     {
                         areElementsMoved = false;
-                        spawnQueue++;
                         if (lowerElementIndex < j)
                             lowerElementIndex = j;
                     }
@@ -226,10 +229,7 @@ public class GameField : MonoBehaviour
                             continue;
 
                         if (map[j, i].IsMove)
-                        {
                             areElementsMoved = false;
-                            continue;
-                        }
 
                         if (lowerElementIndex <= j)
                             continue;
@@ -241,35 +241,23 @@ public class GameField : MonoBehaviour
                         lowerElementIndex--;
                     }
                 }
-                int upperElementIndex;
+                int upperElementIndex, spawnQueue = 0;
                 for (upperElementIndex = 0; upperElementIndex < _verticalMapSize; upperElementIndex++)
                 {
                     if (map[upperElementIndex, i] == null || !map[upperElementIndex, i].IsStatic)
                         break;
                 }
-                if (map[upperElementIndex, i] == null)
+                for (int j = _verticalMapSize - 1; j >= 0; j--)
                 {
-                    Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue - 1);
-                    map[lowerElementIndex, i] = _cellPool.GetCell(GetRandomElementType(),
-                        new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
-                    map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
-                    areElementsMoved = false;
-                }
-                else
-                {
-                    if (map[upperElementIndex, i].IsMove)
-                    {
-                        areElementsMoved = false;
-                        continue;
-                    }
-                    if (lowerElementIndex <= upperElementIndex)
+                    if (map[j, i] != null)
                         continue;
 
+                    spawnQueue++;
+                    Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue);
+                    map[j, i] = _cellPool.GetCell(GetRandomElementType(),
+                        new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
+                    map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
                     areElementsMoved = false;
-                    map[lowerElementIndex, i] = map[upperElementIndex, i];
-                    map[upperElementIndex, i] = null;
-                    map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
-                    lowerElementIndex--;
                 }
             }
             await UniTask.Yield();
