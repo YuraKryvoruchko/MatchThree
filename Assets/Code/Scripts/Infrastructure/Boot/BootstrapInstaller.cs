@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Core.Infrastructure
+namespace Core.Infrastructure.Boot
 {
     public class BootstrapInstaller : MonoInstaller
     {
