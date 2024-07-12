@@ -15,8 +15,8 @@ public class GameField : MonoBehaviour
     [Header("Cell Settings")]
     [SerializeField] private float _interval;
     [Header("Other Services")]
-    [SerializeField] private FieldCellPool _cellPool;
-    
+
+    private ICellFabric _cellFabric;
     private CellSwipeDetection _cellSwipeDetection;
 
     private Cell[,] _map;
@@ -31,8 +31,9 @@ public class GameField : MonoBehaviour
     }
 
     [Inject]
-    private void Construct(CellSwipeDetection cellSwipeDetection)
+    private void Construct(ICellFabric cellFabric, CellSwipeDetection cellSwipeDetection)
     {
+        _cellFabric = cellFabric;
         _cellSwipeDetection = cellSwipeDetection;
         _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
     }
@@ -43,11 +44,11 @@ public class GameField : MonoBehaviour
     }
     private async void Start()
     {
-        _cellPool.Init();
+        _cellFabric.Init();
         _map = new Cell[_verticalMapSize, _horizontalMapSize];
         for(int i = 0; i < _cellConfigs.Length; i++)
         {
-            _map[_cellConfigs[i].Y, _cellConfigs[i].X] = _cellPool.GetCell(_cellConfigs[i].Type,
+            _map[_cellConfigs[i].Y, _cellConfigs[i].X] = _cellFabric.GetCell(_cellConfigs[i].Type,
                 GetElementPosition(_cellConfigs[i].X, _cellConfigs[i].Y), Quaternion.identity, _cellContainer);
         }
 
@@ -178,33 +179,33 @@ public class GameField : MonoBehaviour
     {
         for (int i = 1; i <= rightNumber; i++)
         {
-            _cellPool.ReturnCell(map[yPosition, xPosition + i]);
+            _cellFabric.ReturnCell(map[yPosition, xPosition + i]);
             map[yPosition, xPosition + i] = null;
         }
         for (int i = 1; i <= leftNumber; i++)
         {
-            _cellPool.ReturnCell(map[yPosition, xPosition - i]);
+            _cellFabric.ReturnCell(map[yPosition, xPosition - i]);
             map[yPosition, xPosition - i] = null;
         }
         for (int i = 1; i <= upNumber; i++)
         {
-            _cellPool.ReturnCell(map[yPosition - i, xPosition]);
+            _cellFabric.ReturnCell(map[yPosition - i, xPosition]);
             map[yPosition - i, xPosition] = null;
         }
         for (int i = 1; i <= downNumber; i++) 
         {
-            _cellPool.ReturnCell(map[yPosition + i, xPosition]);
+            _cellFabric.ReturnCell(map[yPosition + i, xPosition]);
             map[yPosition + i, xPosition] = null;
         }
 
         if (createdElement == 0)
         {
-            _cellPool.ReturnCell(map[yPosition, xPosition]);
+            _cellFabric.ReturnCell(map[yPosition, xPosition]);
             map[yPosition, xPosition] = null;
         }
         else
         {
-            map[yPosition, xPosition] = _cellPool.GetCell(createdElement, map[yPosition, xPosition].transform.position, Quaternion.identity);
+            map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, map[yPosition, xPosition].transform.position, Quaternion.identity);
         }
     }
 
@@ -257,7 +258,7 @@ public class GameField : MonoBehaviour
 
                     spawnQueue++;
                     Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue);
-                    map[j, i] = _cellPool.GetCell(GetRandomElementType(),
+                    map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
                         new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
                     map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
                     areElementsMoved = false;

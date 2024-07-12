@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldCellPool : MonoBehaviour
+public class FieldCellPool : MonoBehaviour, ICellFabric
 {
     [SerializeField] private CellNumberPair[] _cellNumberPairs;
 
@@ -21,7 +21,7 @@ public class FieldCellPool : MonoBehaviour
         _disabledCells = new Dictionary<CellType, Queue<Cell>>();
     }
 
-    public void Init()
+    void ICellFabric.Init()
     {
         foreach(CellNumberPair pair in _cellNumberPairs)
         {
@@ -34,7 +34,7 @@ public class FieldCellPool : MonoBehaviour
             }
         }
     }
-    public Cell GetCell(CellType type, Vector3 position, Quaternion rotation, Transform parent = null)
+    Cell ICellFabric.GetCell(CellType type, Vector3 position, Quaternion rotation, Transform parent = null)
     {
         Cell cell = _disabledCells[type].Dequeue();
         cell.transform.parent = parent;
@@ -43,7 +43,7 @@ public class FieldCellPool : MonoBehaviour
         cell.gameObject.SetActive(true);
         return cell;
     }
-    public void ReturnCell(Cell cell)
+    void ICellFabric.ReturnCell(Cell cell)
     {
         cell.gameObject.SetActive(false);
         _disabledCells[cell.Type].Enqueue(cell);

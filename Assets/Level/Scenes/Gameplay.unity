@@ -684,6 +684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3c4d4f2c86b0f45a70fa2a0fe62a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fieldCellPool: {fileID: 80933699}
   _swipeDetection: {fileID: 1408872457}
   _mainCamera: {fileID: 519420031}
 --- !u!114 &1408872459
@@ -902,7 +903,6 @@ MonoBehaviour:
     Y: 7
     Type: 4
   _interval: 1
-  _cellPool: {fileID: 80933699}
 --- !u!1 &1784152974
 GameObject:
   m_ObjectHideFlags: 0
