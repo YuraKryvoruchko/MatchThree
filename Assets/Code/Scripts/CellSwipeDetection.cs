@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using Zenject;
 
-public class CellSwipeDetection : MonoBehaviour
+public class CellSwipeDetection : IInitializable, IDisposable
 {
-    [SerializeField] private Camera _mainCamera;
-    [SerializeField] private SwipeDetection _swipeDetection;
+    private Camera _mainCamera;
+    private SwipeDetection _swipeDetection;
 
     private Vector2 _cellPosition;
 
@@ -12,12 +13,18 @@ public class CellSwipeDetection : MonoBehaviour
 
     public event Action<Vector2, Vector2> OnTrySwipeCellWithGetDirection;
 
-    private void OnEnable()
+    public CellSwipeDetection(Camera mainCamera, SwipeDetection swipeDetection)
+    {
+        _mainCamera = mainCamera;
+        _swipeDetection = swipeDetection;
+    }
+
+    void IInitializable.Initialize()
     {
         _swipeDetection.OnStartSwipe += GetCellFromPosition;
         _swipeDetection.OnSwipe += MoveCell;
     }
-    private void OnDisable()
+    void IDisposable.Dispose()
     {
         _swipeDetection.OnStartSwipe -= GetCellFromPosition;
         _swipeDetection.OnSwipe -= MoveCell;

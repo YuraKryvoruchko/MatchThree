@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
+using Zenject;
 
 public class GameField : MonoBehaviour
 {
@@ -17,7 +16,8 @@ public class GameField : MonoBehaviour
     [SerializeField] private float _interval;
     [Header("Other Services")]
     [SerializeField] private FieldCellPool _cellPool;
-    [SerializeField] private CellSwipeDetection _cellSwipeDetection;
+    
+    private CellSwipeDetection _cellSwipeDetection;
 
     private Cell[,] _map;
     
@@ -30,11 +30,14 @@ public class GameField : MonoBehaviour
         public CellType Type; 
     }
 
-    private void OnEnable()
+    [Inject]
+    private void Construct(CellSwipeDetection cellSwipeDetection)
     {
+        _cellSwipeDetection = cellSwipeDetection;
         _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
     }
-    private void OnDisable()
+
+    private void OnDestroy()
     {
         _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
     }
