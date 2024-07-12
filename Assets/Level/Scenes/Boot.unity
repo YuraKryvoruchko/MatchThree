@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mainMenuSceneReference:
-    m_AssetGUID: 2cda990e2423bbf4892e6590ba056729
+    m_AssetGUID: fd946f7ef756de9448dd1cfb2d804425
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
