@@ -94,6 +94,32 @@ namespace Core.Gameplay
                 return;
             }
 
+            await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
+
+            bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition, _map);
+            bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition, _map);
+
+            if (!isFirstElementMoved && !isSecondElementMoved)
+                await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
+            else
+                await MoveDownElements(_map);
+
+
+            _gameBlock = false;
+        }
+        public async void UsePowerUp(IPowerUP powerUP, int xPosition, int yPosition)
+        {
+            powerUP.Init(this);
+            _gameBlock = true;
+
+            await powerUP.Execute(xPosition, yPosition);
+            await MoveDownElements(_map);
+
+            _gameBlock = false;
+        }
+
+        private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
+        {
             Cell tmpCell = _map[firstYPosition, firstXPosition];
             Vector3 tmpPosition = tmpCell.transform.position;
             UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, false);
@@ -102,27 +128,6 @@ namespace Core.Gameplay
             _map[secondYPosition, secondXPosition] = tmpCell;
 
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
-
-            bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition, _map);
-            bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition, _map);
-
-            if (!isFirstElementMoved && !isSecondElementMoved)
-            {
-                tmpCell = _map[firstYPosition, firstXPosition];
-                tmpPosition = tmpCell.transform.position;
-                firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, false);
-                secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
-                _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
-                _map[secondYPosition, secondXPosition] = tmpCell;
-
-                await UniTask.WhenAll(firstMoveTask, secondMoveTask);
-            }
-            else
-            {
-                await MoveDownElements(_map);
-            }
-
-            _gameBlock = false;
         }
 
         private bool HandleMove(int xPosition, int yPosition, Cell[,] map)
@@ -135,7 +140,15 @@ namespace Core.Gameplay
             int upNumber = GetUpElementsNumber(xPosition, yPosition, map);
             int downNumber = GetDownElementsNumber(xPosition, yPosition, map);
 
-            if (rightNumber + leftNumber >= 2)
+            if (upNumber + leftNumber >= 4)
+                DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb, map);
+            else if (upNumber + rightNumber >= 4)
+                DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb, map);
+            else if (downNumber + leftNumber >= 4)
+                DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb, map);
+            else if (downNumber + rightNumber >= 4)
+                DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb, map);
+            else if (rightNumber + leftNumber >= 2)
                 DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, map);
             else if (upNumber + downNumber >= 2)
                 DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, map);
@@ -202,15 +215,12 @@ namespace Core.Gameplay
                 map[yPosition + i, xPosition] = null;
             }
 
+            _cellFabric.ReturnCell(map[yPosition, xPosition]);
             if (createdElement == 0)
-            {
-                _cellFabric.ReturnCell(map[yPosition, xPosition]);
                 map[yPosition, xPosition] = null;
-            }
             else
-            {
                 map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, map[yPosition, xPosition].transform.position, Quaternion.identity);
-            }
+
         }
 
         private async UniTask MoveDownElements(Cell[,] map)

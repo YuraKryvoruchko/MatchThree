@@ -281,6 +281,9 @@ MonoBehaviour:
   - Type: 4
     CellPrefab: {fileID: 8518706724278060428, guid: 0000525475aedeb42bb008d012a5f63a, type: 3}
     Count: 40
+  - Type: 5
+    CellPrefab: {fileID: 2227249691555154089, guid: 96eb602f8305d134091d6d02e5c40e50, type: 3}
+    Count: 10
 --- !u!4 &80933700
 Transform:
   m_ObjectHideFlags: 0
@@ -1102,8 +1105,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 80933700}
   - {fileID: 1408872456}
+  - {fileID: 80933700}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
