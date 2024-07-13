@@ -36,7 +36,8 @@ namespace Core.UI
 
         private async void LoadLongMode()
         {
-            var gamePlayScene = await _sceneService.LoadSceneAsync(_gamePlayScene.AssetGUID, UnityEngine.SceneManagement.LoadSceneMode.Additive, false);
+            var gamePlayScene = await _sceneService.LoadSceneAsync(_gamePlayScene.AssetGUID, 
+                UnityEngine.SceneManagement.LoadSceneMode.Additive, false);
             await _sceneService.UnloadSceneAsync(_mainMenuScene.AssetGUID);
             await gamePlayScene.ActivateAsync();
         }
