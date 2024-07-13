@@ -8,15 +8,9 @@ namespace Code.Infrastructure.Loading
 {
     public class LoadingScreen : MonoBehaviour
     {
-        #region Fields
-
         [Header("UI Elements")]
         [SerializeField] private Slider _progressSlider;
         [SerializeField] private TMP_Text _descriptionText;
-
-        #endregion
-
-        #region Public Methods
 
         public async UniTask Load(Queue<ILoadingOperation> loadingOperations)
         {
@@ -29,15 +23,9 @@ namespace Code.Infrastructure.Loading
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void OnUpdateProgress(float progress)
         {
             _progressSlider.value = progress;
         }
-
-        #endregion
     }
 }

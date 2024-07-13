@@ -7,13 +7,7 @@ namespace Code.Infrastructure.Loading
 {
     public class LocalAssetLoader
     {
-        #region Fields
-
         private GameObject _cachedObject;
-
-        #endregion
-
-        #region Public Methods
 
         public async UniTask<T> Load<T>(string assetId, Transform parent = null)
         {
@@ -33,7 +27,5 @@ namespace Code.Infrastructure.Loading
             Addressables.ReleaseInstance(_cachedObject);
             _cachedObject = null;
         }
-
-        #endregion
     }
 }
