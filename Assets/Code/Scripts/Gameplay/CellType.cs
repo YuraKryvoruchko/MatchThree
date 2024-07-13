@@ -6,6 +6,7 @@
         Banana,
         Grape,
         Orange,
-        Static
+        Static,
+        Bomb
     }
 }
