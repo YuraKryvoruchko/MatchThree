@@ -2,6 +2,7 @@
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Zenject;
+using Core.Infrastructure.Service;
 
 namespace Core.Infrastructure.Boot
 {
@@ -9,10 +10,18 @@ namespace Core.Infrastructure.Boot
     {
         [SerializeField] private AssetReference _mainMenuSceneReference;
 
+        private SceneService _sceneService;
+
+        [Inject]
+        private void Construct(SceneService sceneService)
+        {
+            _sceneService = sceneService;
+        }
+
         public async void Initialize()
         {
             await Addressables.InitializeAsync();
-            await Addressables.LoadSceneAsync(_mainMenuSceneReference, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+            await _sceneService.LoadSceneAsync(_mainMenuSceneReference.AssetGUID, UnityEngine.SceneManagement.LoadSceneMode.Additive);
         }
     }
 }
