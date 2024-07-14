@@ -1663,7 +1663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1611777742721509997, guid: e76728621bf45ab4887a518b0dfd739d, type: 3}
       propertyPath: m_Name
-      value: PowerUp
+      value: BombAbilityButton
       objectReference: {fileID: 0}
     - target: {fileID: 1611777743113961664, guid: e76728621bf45ab4887a518b0dfd739d, type: 3}
       propertyPath: m_Sprite
@@ -1831,7 +1831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61171e6bd132540488f7c718e5147c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bombPowerUpButton: {fileID: 729579200}
+  _bombAbilityButton: {fileID: 0}
   _gameField: {fileID: 1658689104}
 --- !u!1 &846535944
 GameObject:
@@ -4109,7 +4109,7 @@ GameObject:
   - component: {fileID: 2095063738}
   - component: {fileID: 2095063739}
   m_Layer: 5
-  m_Name: PowerUpContainer
+  m_Name: AbilityContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

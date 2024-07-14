@@ -12,6 +12,7 @@ namespace Core.Gameplay
         [SerializeField] private float _moveSpeedPerSecond;
         [Header("Features")]
         [SerializeField] private bool _isStatic = false;
+        [SerializeField] private bool _isSpecial = false;
 
         private Vector3 _startPosition;
         private Vector3 _endPosition;
@@ -23,7 +24,9 @@ namespace Core.Gameplay
         public CellType Type { get => _type; }
         public bool IsMove { get; private set; }
         public bool IsExplode { get; private set; }
+
         public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
+        public bool IsSpecial { get => _isSpecial; private set => _isSpecial = value; }
 
         public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {

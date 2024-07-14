@@ -113,15 +113,15 @@ namespace Core.Gameplay
 
             _gameBlock = false;
         }
-        public async void UsePowerUp(IPowerUp powerUP, int xPosition, int yPosition)
+        public async void UseAbility(IAbility ability, int xPosition, int yPosition)
         {
             if (_gameBlock)
                 return;
 
-            powerUP.Init(this);
+            ability.Init(this);
             _gameBlock = true;
 
-            await powerUP.Execute(xPosition, yPosition);
+            await ability.Execute(xPosition, yPosition);
             await MoveDownElements();
 
             _gameBlock = false;
@@ -155,8 +155,7 @@ namespace Core.Gameplay
 
         private async UniTask<bool> HandleMove(int xPosition, int yPosition)
         {
-            Debug.Log($"{yPosition}, {xPosition}");
-            if (_map[yPosition, xPosition] == null)
+            if (_map[yPosition, xPosition] == null || _map[yPosition, xPosition].IsSpecial)
                 return false;
 
             int rightNumber = GetRightElementsNumber(xPosition, yPosition);

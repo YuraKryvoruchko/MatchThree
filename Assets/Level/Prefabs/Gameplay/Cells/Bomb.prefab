@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: _type
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: -6854740434885365437, guid: acee07a288f7a07448d679087677f1e4, type: 3}
+      propertyPath: _isSpecial
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1393836645415585421, guid: acee07a288f7a07448d679087677f1e4, type: 3}
       propertyPath: m_Name
       value: Bomb

@@ -2,15 +2,15 @@
 
 namespace Core.Gameplay
 {
-    public class BombPowerUp : IPowerUp
+    public class BombAbility : IAbility
     {
         private GameField _gameField;
 
-        void IPowerUp.Init(GameField gameField)
+        void IAbility.Init(GameField gameField)
         {
             _gameField = gameField;
         }
-        async UniTask IPowerUp.Execute(int xPosition, int yPosition)
+        async UniTask IAbility.Execute(int xPosition, int yPosition)
         {
             await UniTask.WhenAll(
                 _gameField.ExplodeCell(xPosition, yPosition),
