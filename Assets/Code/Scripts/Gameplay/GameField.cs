@@ -27,6 +27,9 @@ namespace Core.Gameplay
     
         private bool _gameBlock = true;
 
+        public int VerticalSize { get => _verticalMapSize; }
+        public int HorizontalSize { get => _horizontalMapSize; }
+
         [Serializable]
         private class CellConfig
         {
@@ -56,7 +59,7 @@ namespace Core.Gameplay
                     GetElementPosition(_cellConfigs[i].X, _cellConfigs[i].Y), Quaternion.identity, _cellContainer);
             }
 
-            await MoveDownElements(_map);
+            await MoveDownElements();
             _gameBlock = false;
         }
         private void OnDrawGizmos()
@@ -96,26 +99,39 @@ namespace Core.Gameplay
 
             await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
 
-            bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition, _map);
-            bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition, _map);
+            bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition);
+            bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition);
 
             if (!isFirstElementMoved && !isSecondElementMoved)
                 await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
             else
-                await MoveDownElements(_map);
+                await MoveDownElements();
 
 
             _gameBlock = false;
         }
-        public async void UsePowerUp(IPowerUP powerUP, int xPosition, int yPosition)
+        public async void UsePowerUp(IPowerUp powerUP, int xPosition, int yPosition)
         {
+            if (_gameBlock)
+                return;
+
             powerUP.Init(this);
             _gameBlock = true;
 
             await powerUP.Execute(xPosition, yPosition);
-            await MoveDownElements(_map);
+            await MoveDownElements();
 
             _gameBlock = false;
+        }
+        public void ExplodeCell(int xPosition, int yPosition)
+        {
+            if (xPosition > _verticalMapSize || xPosition < 0 
+                || yPosition > _horizontalMapSize || yPosition < 0 || _map[yPosition, xPosition].IsStatic)
+            {
+                return;
+            }
+
+            DeleteElements(xPosition, yPosition, 0, 0, 0, 0, 0);
         }
 
         private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
@@ -130,100 +146,100 @@ namespace Core.Gameplay
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
 
-        private bool HandleMove(int xPosition, int yPosition, Cell[,] map)
+        private bool HandleMove(int xPosition, int yPosition)
         {
-            if (map[yPosition, xPosition] == null)
+            if (_map[yPosition, xPosition] == null)
                 return false;
 
-            int rightNumber = GetRightElementsNumber(xPosition, yPosition, map);
-            int leftNumber = GetLeftElementsNumber(xPosition, yPosition, map);
-            int upNumber = GetUpElementsNumber(xPosition, yPosition, map);
-            int downNumber = GetDownElementsNumber(xPosition, yPosition, map);
+            int rightNumber = GetRightElementsNumber(xPosition, yPosition);
+            int leftNumber = GetLeftElementsNumber(xPosition, yPosition);
+            int upNumber = GetUpElementsNumber(xPosition, yPosition);
+            int downNumber = GetDownElementsNumber(xPosition, yPosition);
 
             if (upNumber + leftNumber >= 4)
-                DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb, map);
+                DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
             else if (upNumber + rightNumber >= 4)
-                DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb, map);
+                DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
             else if (downNumber + leftNumber >= 4)
-                DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb, map);
+                DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
             else if (downNumber + rightNumber >= 4)
-                DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb, map);
+                DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
             else if (rightNumber + leftNumber >= 2)
-                DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0, map);
+                DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0);
             else if (upNumber + downNumber >= 2)
-                DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0, map);
+                DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0);
             else
                 return false;
 
             return true;
         }
 
-        private int GetRightElementsNumber(int xPosition, int yPosition, Cell[,] map)
+        private int GetRightElementsNumber(int xPosition, int yPosition)
         {
-            if (xPosition + 1 >= _horizontalMapSize || map[yPosition, xPosition + 1] == null ||
-                map[yPosition, xPosition + 1].IsMove || map[yPosition, xPosition].Type != map[yPosition, xPosition + 1].Type)
+            if (xPosition + 1 >= _horizontalMapSize || _map[yPosition, xPosition + 1] == null ||
+                _map[yPosition, xPosition + 1].IsMove || _map[yPosition, xPosition].Type != _map[yPosition, xPosition + 1].Type)
                 return 0;
 
-            return 1 + GetRightElementsNumber(xPosition + 1, yPosition, map);
+            return 1 + GetRightElementsNumber(xPosition + 1, yPosition);
         }
-        private int GetLeftElementsNumber(int xPosition, int yPosition, Cell[,] map)
+        private int GetLeftElementsNumber(int xPosition, int yPosition)
         {
-            if (xPosition - 1 < 0 || map[yPosition, xPosition - 1] == null || map[yPosition, xPosition - 1].IsMove ||
-                map[yPosition, xPosition].Type != map[yPosition, xPosition - 1].Type)
+            if (xPosition - 1 < 0 || _map[yPosition, xPosition - 1] == null || _map[yPosition, xPosition - 1].IsMove ||
+                _map[yPosition, xPosition].Type != _map[yPosition, xPosition - 1].Type)
                 return 0;
 
-            return 1 + GetLeftElementsNumber(xPosition - 1, yPosition, map);
+            return 1 + GetLeftElementsNumber(xPosition - 1, yPosition);
         }
-        private int GetUpElementsNumber(int xPosition, int yPosition, Cell[,] map)
+        private int GetUpElementsNumber(int xPosition, int yPosition)
         {
-            if (yPosition - 1 < 0 || map[yPosition - 1, xPosition] == null || map[yPosition - 1, xPosition].IsMove ||
-                map[yPosition, xPosition].Type != map[yPosition - 1, xPosition].Type)
+            if (yPosition - 1 < 0 || _map[yPosition - 1, xPosition] == null || _map[yPosition - 1, xPosition].IsMove ||
+                _map[yPosition, xPosition].Type != _map[yPosition - 1, xPosition].Type)
                 return 0;
 
-            return 1 + GetUpElementsNumber(xPosition, yPosition - 1, map);
+            return 1 + GetUpElementsNumber(xPosition, yPosition - 1);
         }
-        private int GetDownElementsNumber(int xPosition, int yPosition, Cell[,] map)
+        private int GetDownElementsNumber(int xPosition, int yPosition)
         {
-            if (yPosition + 1 >= _verticalMapSize || map[yPosition + 1, xPosition] == null || map[yPosition + 1, xPosition].IsMove ||
-                map[yPosition, xPosition].Type != map[yPosition + 1, xPosition].Type)
+            if (yPosition + 1 >= _verticalMapSize || _map[yPosition + 1, xPosition] == null || _map[yPosition + 1, xPosition].IsMove ||
+                _map[yPosition, xPosition].Type != _map[yPosition + 1, xPosition].Type)
                 return 0;
 
-            return 1 + GetDownElementsNumber(xPosition, yPosition + 1, map);
+            return 1 + GetDownElementsNumber(xPosition, yPosition + 1);
         }
 
         private void DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
-            int downNumber, CellType createdElement, Cell[,] map)
+            int downNumber, CellType createdElement)
         {
             for (int i = 1; i <= rightNumber; i++)
             {
-                _cellFabric.ReturnCell(map[yPosition, xPosition + i]);
-                map[yPosition, xPosition + i] = null;
+                _cellFabric.ReturnCell(_map[yPosition, xPosition + i]);
+                _map[yPosition, xPosition + i] = null;
             }
             for (int i = 1; i <= leftNumber; i++)
             {
-                _cellFabric.ReturnCell(map[yPosition, xPosition - i]);
-                map[yPosition, xPosition - i] = null;
+                _cellFabric.ReturnCell(_map[yPosition, xPosition - i]);
+                _map[yPosition, xPosition - i] = null;
             }
             for (int i = 1; i <= upNumber; i++)
             {
-                _cellFabric.ReturnCell(map[yPosition - i, xPosition]);
-                map[yPosition - i, xPosition] = null;
+                _cellFabric.ReturnCell(_map[yPosition - i, xPosition]);
+                _map[yPosition - i, xPosition] = null;
             }
             for (int i = 1; i <= downNumber; i++) 
             {
-                _cellFabric.ReturnCell(map[yPosition + i, xPosition]);
-                map[yPosition + i, xPosition] = null;
+                _cellFabric.ReturnCell(_map[yPosition + i, xPosition]);
+                _map[yPosition + i, xPosition] = null;
             }
 
-            _cellFabric.ReturnCell(map[yPosition, xPosition]);
+            _cellFabric.ReturnCell(_map[yPosition, xPosition]);
             if (createdElement == 0)
-                map[yPosition, xPosition] = null;
+                _map[yPosition, xPosition] = null;
             else
-                map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, map[yPosition, xPosition].transform.position, Quaternion.identity);
+                _map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, _map[yPosition, xPosition].transform.position, Quaternion.identity);
 
         }
 
-        private async UniTask MoveDownElements(Cell[,] map)
+        private async UniTask MoveDownElements()
         {
             int x = 0, y = 0;
             bool areElementsMoved = false;
@@ -235,7 +251,7 @@ namespace Core.Gameplay
                     int lowerElementIndex = 0;
                     for (int j = _verticalMapSize - 1; j >= 0; j--)
                     {
-                        if (map[j, i] == null)
+                        if (_map[j, i] == null)
                         {
                             areElementsMoved = false;
                             if (lowerElementIndex < j)
@@ -243,38 +259,38 @@ namespace Core.Gameplay
                         }
                         else
                         {
-                            if (map[j, i].IsStatic)
+                            if (_map[j, i].IsStatic)
                                 continue;
 
-                            if (map[j, i].IsMove)
+                            if (_map[j, i].IsMove)
                                 areElementsMoved = false;
 
                             if (lowerElementIndex <= j)
                                 continue;
 
                             areElementsMoved = false;
-                            map[lowerElementIndex, i] = map[j, i];
-                            map[j, i] = null;
-                            map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
+                            _map[lowerElementIndex, i] = _map[j, i];
+                            _map[j, i] = null;
+                            _map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
                             lowerElementIndex--;
                         }
                     }
                     int upperElementIndex, spawnQueue = 0;
                     for (upperElementIndex = 0; upperElementIndex < _verticalMapSize; upperElementIndex++)
                     {
-                        if (map[upperElementIndex, i] == null || !map[upperElementIndex, i].IsStatic)
+                        if (_map[upperElementIndex, i] == null || !_map[upperElementIndex, i].IsStatic)
                             break;
                     }
                     for (int j = _verticalMapSize - 1; j >= 0; j--)
                     {
-                        if (map[j, i] != null)
+                        if (_map[j, i] != null)
                             continue;
 
                         spawnQueue++;
                         Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue);
-                        map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
+                        _map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
                             new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
-                        map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
+                        _map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
                         areElementsMoved = false;
                     }
                 }
@@ -285,7 +301,7 @@ namespace Core.Gameplay
             {
                 x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
                 y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
-                bool handled = HandleMove(x, y, map);
+                bool handled = HandleMove(x, y);
                 if (handled == true)
                     areElementsMoved = false;
             }

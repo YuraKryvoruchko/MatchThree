@@ -2,7 +2,7 @@
 
 namespace Core.Gameplay
 {
-    public interface IPowerUP
+    public interface IPowerUp
     {
         void Init(GameField gameField);
         UniTask Execute(int xPosition, int yPosition);
