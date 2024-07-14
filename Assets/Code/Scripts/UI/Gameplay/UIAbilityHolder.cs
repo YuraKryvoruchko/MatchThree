@@ -10,7 +10,8 @@ namespace Core.UI.Gameplay
     public class UIAbilityHolder : MonoBehaviour
     {
         [SerializeField] private Button _bombAbilityButton;
-        
+        [SerializeField] private Button _ziperAbilityButton;
+
         private GameField _gameField;
         private AbilityThrowMode _abilityThrowMode;
 
@@ -24,10 +25,12 @@ namespace Core.UI.Gameplay
         private void Start()
         {
             _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new BombAbility()));
+            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new ZipperAbility()));
         }
         private void OnDestroy()
         {
             _bombAbilityButton.onClick.RemoveAllListeners();
+            _ziperAbilityButton.onClick.RemoveAllListeners();
         }
         private void ActiveAbilityThrowMode(IAbility ability)
         {
