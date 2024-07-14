@@ -113,6 +113,12 @@ namespace Core.Gameplay
 
             _gameBlock = false;
         }
+        public void UseAbility(IAbility ability, Vector3 cellPosition)
+        {
+            int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
+            int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
+            UseAbility(ability, firstXPosition, firstYPosition);
+        }
         public async void UseAbility(IAbility ability, int xPosition, int yPosition)
         {
             if (_gameBlock)
@@ -318,7 +324,6 @@ namespace Core.Gameplay
             {
                 x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
                 y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
-                Debug.Log($"{cell.name}: {cell.transform.position}, {y}, {x}", cell);
                 bool handled = await HandleMove(x, y);
                 if (handled == true)
                     areElementsMoved = false;

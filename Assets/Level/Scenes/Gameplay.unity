@@ -1831,8 +1831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61171e6bd132540488f7c718e5147c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bombAbilityButton: {fileID: 0}
-  _gameField: {fileID: 1658689104}
+  _bombAbilityButton: {fileID: 729579200}
 --- !u!1 &846535944
 GameObject:
   m_ObjectHideFlags: 0
@@ -2450,6 +2449,7 @@ MonoBehaviour:
   _fieldCellPool: {fileID: 80933699}
   _swipeDetection: {fileID: 1408872457}
   _mainCamera: {fileID: 519420031}
+  _gameField: {fileID: 1658689104}
 --- !u!114 &1408872459
 MonoBehaviour:
   m_ObjectHideFlags: 0

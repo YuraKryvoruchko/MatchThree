@@ -1,33 +1,40 @@
-﻿using UnityEngine;
-using Core.Gameplay.Input;
+﻿using Core.Gameplay.Input;
 
 namespace Core.Gameplay { 
     public class AbilityThrowMode
     {
-        private CellSwipeDetection _cellSwipeDetection;
+        private CellClickDetection _cellClickDetection;
         private GameField _gameField;
 
         private IAbility _ability;
 
-        public AbilityThrowMode(GameField gameField, CellSwipeDetection cellSwipeDetection)
+        public bool IsActive { get; private set; }
+
+        public AbilityThrowMode(GameField gameField, CellClickDetection cellClickDetection)
         {
             _gameField = gameField;
-            _cellSwipeDetection = cellSwipeDetection;
+            _cellClickDetection = cellClickDetection;
         }
 
-        public void Handle(Vector2 cellPosition, Vector2 swipeDirection)
+        public void Handle(Cell cell)
         {
-            _gameField.UseAbility(_ability, (int)cellPosition.x, (int)cellPosition.y);
+            _gameField.UseAbility(_ability, cell.transform.position);
         }
         public void EnableAbilityhrowMode(IAbility ability)
         {
             _ability = ability;
-            _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
+            _cellClickDetection.OnCellClick += Handle;
+            IsActive = true;
         }
         public void DisableAbilityThrowMode()
         {
             _ability = null;
-            _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
+            _cellClickDetection.OnCellClick -= Handle;
+            IsActive = false;
+        }
+        public void ChangeAbility(IAbility ability)
+        {
+            _ability = ability;
         }
     }
 }
