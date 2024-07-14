@@ -7,6 +7,7 @@ namespace Core.Infrastructure.Factories
 {
     public class FieldCellPool : MonoBehaviour, ICellFabric
     {
+        [SerializeField] private Transform _cellContainer;
         [SerializeField] private CellNumberPair[] _cellNumberPairs;
 
         private Dictionary<CellType, Queue<Cell>> _disabledCells;
@@ -31,7 +32,7 @@ namespace Core.Infrastructure.Factories
                 _disabledCells.Add(pair.Type, new Queue<Cell>());
                 for (int i = 0; i < pair.Count; i++)
                 {
-                    Cell cell = Instantiate(pair.CellPrefab, new Vector3(0, 100, 0), Quaternion.identity);
+                    Cell cell = Instantiate(pair.CellPrefab, new Vector3(0, 100, 0), Quaternion.identity, _cellContainer);
                     cell.gameObject.SetActive(false);
                     _disabledCells[pair.Type].Enqueue(cell);
                 }
@@ -50,6 +51,7 @@ namespace Core.Infrastructure.Factories
         void ICellFabric.ReturnCell(Cell cell)
         {
             cell.gameObject.SetActive(false);
+            cell.transform.parent = _cellContainer;
             _disabledCells[cell.Type].Enqueue(cell);
         }
     }

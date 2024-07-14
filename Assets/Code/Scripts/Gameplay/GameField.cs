@@ -85,7 +85,6 @@ namespace Core.Gameplay
                 return;
 
             _gameBlock = true;
-
             swipeDirection = swipeDirection.normalized;
             int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
             int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
@@ -112,7 +111,6 @@ namespace Core.Gameplay
             else
                 await MoveDownElements();
 
-
             _gameBlock = false;
         }
         public async void UsePowerUp(IPowerUp powerUP, int xPosition, int yPosition)
@@ -130,17 +128,17 @@ namespace Core.Gameplay
         }
         public async UniTask ExplodeCell(int xPosition, int yPosition)
         {
-            if (xPosition > _verticalMapSize || xPosition < 0 
-                || yPosition > _horizontalMapSize || yPosition < 0 || _map[yPosition, xPosition].IsStatic)
+            if (xPosition > _verticalMapSize || xPosition < 0 || yPosition > _horizontalMapSize || yPosition < 0 
+                || _map[yPosition, xPosition].IsStatic || _map[yPosition, xPosition].IsMove || _map[yPosition, xPosition].IsExplode)
             {
                 return;
             }
             Cell cell = _map[yPosition, xPosition];
-            await cell.Explode().ContinueWith(() =>
-            {
-                _cellFabric.ReturnCell(cell);
-                _map[yPosition, xPosition] = null;
-            });
+            await cell.Explode();
+            if (cell.IsMove)
+                Debug.LogError("Cell move when it's exploded!", cell);
+            _map[yPosition, xPosition] = null;
+            _cellFabric.ReturnCell(cell);
         }
 
         private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
@@ -157,6 +155,7 @@ namespace Core.Gameplay
 
         private async UniTask<bool> HandleMove(int xPosition, int yPosition)
         {
+            Debug.Log($"{yPosition}, {xPosition}");
             if (_map[yPosition, xPosition] == null)
                 return false;
 
@@ -186,7 +185,8 @@ namespace Core.Gameplay
         private int GetRightElementsNumber(int xPosition, int yPosition)
         {
             if (xPosition + 1 >= _horizontalMapSize || _map[yPosition, xPosition + 1] == null ||
-                _map[yPosition, xPosition + 1].IsMove || _map[yPosition, xPosition].Type != _map[yPosition, xPosition + 1].Type)
+                _map[yPosition, xPosition + 1].IsMove ||
+                _map[yPosition, xPosition + 1].IsExplode || _map[yPosition, xPosition].Type != _map[yPosition, xPosition + 1].Type)
                 return 0;
 
             return 1 + GetRightElementsNumber(xPosition + 1, yPosition);
@@ -194,6 +194,7 @@ namespace Core.Gameplay
         private int GetLeftElementsNumber(int xPosition, int yPosition)
         {
             if (xPosition - 1 < 0 || _map[yPosition, xPosition - 1] == null || _map[yPosition, xPosition - 1].IsMove ||
+                _map[yPosition, xPosition - 1].IsExplode ||
                 _map[yPosition, xPosition].Type != _map[yPosition, xPosition - 1].Type)
                 return 0;
 
@@ -202,6 +203,7 @@ namespace Core.Gameplay
         private int GetUpElementsNumber(int xPosition, int yPosition)
         {
             if (yPosition - 1 < 0 || _map[yPosition - 1, xPosition] == null || _map[yPosition - 1, xPosition].IsMove ||
+                _map[yPosition - 1, xPosition].IsExplode ||
                 _map[yPosition, xPosition].Type != _map[yPosition - 1, xPosition].Type)
                 return 0;
 
@@ -210,6 +212,7 @@ namespace Core.Gameplay
         private int GetDownElementsNumber(int xPosition, int yPosition)
         {
             if (yPosition + 1 >= _verticalMapSize || _map[yPosition + 1, xPosition] == null || _map[yPosition + 1, xPosition].IsMove ||
+                _map[yPosition + 1, xPosition].IsExplode ||
                 _map[yPosition, xPosition].Type != _map[yPosition + 1, xPosition].Type)
                 return 0;
 
@@ -246,15 +249,15 @@ namespace Core.Gameplay
             await UniTask.WhenAll(tasks);
             if (createdElement != 0)
             {
-                _map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, GetElementPosition(xPosition, yPosition), Quaternion.identity);
-                Debug.Log("Created special cell");
+                _map[yPosition, xPosition] = 
+                    _cellFabric.GetCell(createdElement, GetElementPosition(xPosition, yPosition), Quaternion.identity, _cellContainer);
             }
         }
 
         private async UniTask MoveDownElements()
         {
             int x = 0, y = 0;
-            bool areElementsMoved = false, areElementsExploded = true;
+            bool areElementsMoved = false;
             do
             {
                 areElementsMoved = true;
@@ -274,11 +277,14 @@ namespace Core.Gameplay
                             if (_map[j, i].IsStatic)
                                 continue;
 
-                            if (_map[j, i].IsMove)
+                            if (_map[j, i].IsMove || _map[j, i].IsExplode)
                                 areElementsMoved = false;
+                            if (_map[j, i].IsExplode)
+                                continue;
 
                             if (lowerElementIndex <= j)
                                 continue;
+
 
                             areElementsMoved = false;
                             _map[lowerElementIndex, i] = _map[j, i];
@@ -313,6 +319,7 @@ namespace Core.Gameplay
             {
                 x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
                 y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
+                Debug.Log($"{cell.name}: {cell.transform.position}, {y}, {x}", cell);
                 bool handled = await HandleMove(x, y);
                 if (handled == true)
                     areElementsMoved = false;

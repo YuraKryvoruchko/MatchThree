@@ -22,6 +22,7 @@ namespace Core.Gameplay
 
         public CellType Type { get => _type; }
         public bool IsMove { get; private set; }
+        public bool IsExplode { get; private set; }
         public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
 
         public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
@@ -57,9 +58,9 @@ namespace Core.Gameplay
 
         public async UniTask Explode()
         {
-            IsMove = true;
+            IsExplode = true;
             await transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).AsyncWaitForCompletion().AsUniTask();
-            IsMove = false;
+            IsExplode = false;
         }
 
         private void SetupParameters(Vector3 endPosition, bool inLocal = true)
