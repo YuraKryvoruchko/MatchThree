@@ -55,6 +55,13 @@ namespace Core.Gameplay
             onComplete?.Invoke(this);
         }
 
+        public async UniTask Explode()
+        {
+            IsMove = true;
+            await transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).AsyncWaitForCompletion().AsUniTask();
+            IsMove = false;
+        }
+
         private void SetupParameters(Vector3 endPosition, bool inLocal = true)
         {
             _endPosition = endPosition;

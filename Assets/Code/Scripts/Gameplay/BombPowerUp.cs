@@ -12,15 +12,17 @@ namespace Core.Gameplay
         }
         async UniTask IPowerUp.Execute(int xPosition, int yPosition)
         {
-            _gameField.ExplodeCell(xPosition, yPosition);
-            _gameField.ExplodeCell(xPosition + 1, yPosition);
-            _gameField.ExplodeCell(xPosition - 1, yPosition);
-            _gameField.ExplodeCell(xPosition, yPosition + 1);
-            _gameField.ExplodeCell(xPosition, yPosition - 1);
-            _gameField.ExplodeCell(xPosition + 1, yPosition + 1);
-            _gameField.ExplodeCell(xPosition + 1, yPosition - 1);
-            _gameField.ExplodeCell(xPosition - 1, yPosition + 1);
-            _gameField.ExplodeCell(xPosition - 1, yPosition - 1);
+            await UniTask.WhenAll(
+                _gameField.ExplodeCell(xPosition, yPosition),
+                _gameField.ExplodeCell(xPosition + 1, yPosition),
+                _gameField.ExplodeCell(xPosition - 1, yPosition),
+                _gameField.ExplodeCell(xPosition, yPosition + 1),
+                _gameField.ExplodeCell(xPosition, yPosition - 1),
+                _gameField.ExplodeCell(xPosition + 1, yPosition + 1),
+                _gameField.ExplodeCell(xPosition + 1, yPosition - 1),
+                _gameField.ExplodeCell(xPosition - 1, yPosition + 1),
+                _gameField.ExplodeCell(xPosition - 1, yPosition - 1)
+            );
         }
     }
 }

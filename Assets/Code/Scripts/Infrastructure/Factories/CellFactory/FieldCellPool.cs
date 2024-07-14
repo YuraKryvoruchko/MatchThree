@@ -43,6 +43,7 @@ namespace Core.Infrastructure.Factories
             cell.transform.parent = parent;
             cell.transform.localPosition = position;
             cell.transform.localRotation = rotation;
+            cell.transform.localScale = Vector3.one;
             cell.gameObject.SetActive(true);
             return cell;
         }

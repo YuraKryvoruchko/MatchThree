@@ -99,9 +99,14 @@ namespace Core.Gameplay
 
             await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
 
-            bool isFirstElementMoved = HandleMove(firstXPosition, firstYPosition);
-            bool isSecondElementMoved = HandleMove(secondXPosition, secondYPosition);
-
+            bool isFirstElementMoved = false, isSecondElementMoved = false;
+            await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
+                .ContinueWith((result) =>
+                {
+                    isFirstElementMoved = result.Item1;
+                    isSecondElementMoved = result.Item2;
+                });
+                
             if (!isFirstElementMoved && !isSecondElementMoved)
                 await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
             else
@@ -123,15 +128,19 @@ namespace Core.Gameplay
 
             _gameBlock = false;
         }
-        public void ExplodeCell(int xPosition, int yPosition)
+        public async UniTask ExplodeCell(int xPosition, int yPosition)
         {
             if (xPosition > _verticalMapSize || xPosition < 0 
                 || yPosition > _horizontalMapSize || yPosition < 0 || _map[yPosition, xPosition].IsStatic)
             {
                 return;
             }
-
-            DeleteElements(xPosition, yPosition, 0, 0, 0, 0, 0);
+            Cell cell = _map[yPosition, xPosition];
+            await cell.Explode().ContinueWith(() =>
+            {
+                _cellFabric.ReturnCell(cell);
+                _map[yPosition, xPosition] = null;
+            });
         }
 
         private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
@@ -146,7 +155,7 @@ namespace Core.Gameplay
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
 
-        private bool HandleMove(int xPosition, int yPosition)
+        private async UniTask<bool> HandleMove(int xPosition, int yPosition)
         {
             if (_map[yPosition, xPosition] == null)
                 return false;
@@ -157,17 +166,17 @@ namespace Core.Gameplay
             int downNumber = GetDownElementsNumber(xPosition, yPosition);
 
             if (upNumber + leftNumber >= 4)
-                DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
+                await DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
             else if (upNumber + rightNumber >= 4)
-                DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
+                await DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
             else if (downNumber + leftNumber >= 4)
-                DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
+                await DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
             else if (downNumber + rightNumber >= 4)
-                DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
+                await DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
             else if (rightNumber + leftNumber >= 2)
-                DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0);
+                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0);
             else if (upNumber + downNumber >= 2)
-                DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0);
+                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0);
             else
                 return false;
 
@@ -207,42 +216,45 @@ namespace Core.Gameplay
             return 1 + GetDownElementsNumber(xPosition, yPosition + 1);
         }
 
-        private void DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
+        private async UniTask DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
             int downNumber, CellType createdElement)
         {
+            UniTask[] tasks = new UniTask[rightNumber + leftNumber + upNumber + downNumber + 1];
+            int generalIndex = 0;
             for (int i = 1; i <= rightNumber; i++)
             {
-                _cellFabric.ReturnCell(_map[yPosition, xPosition + i]);
-                _map[yPosition, xPosition + i] = null;
+                tasks[generalIndex] = ExplodeCell(xPosition + i, yPosition);
+                generalIndex++;
             }
             for (int i = 1; i <= leftNumber; i++)
             {
-                _cellFabric.ReturnCell(_map[yPosition, xPosition - i]);
-                _map[yPosition, xPosition - i] = null;
+                tasks[generalIndex] = ExplodeCell(xPosition - i, yPosition);
+                generalIndex++;
             }
             for (int i = 1; i <= upNumber; i++)
             {
-                _cellFabric.ReturnCell(_map[yPosition - i, xPosition]);
-                _map[yPosition - i, xPosition] = null;
+                tasks[generalIndex] = ExplodeCell(xPosition, yPosition - i);
+                generalIndex++;
             }
             for (int i = 1; i <= downNumber; i++) 
             {
-                _cellFabric.ReturnCell(_map[yPosition + i, xPosition]);
-                _map[yPosition + i, xPosition] = null;
+                tasks[generalIndex] = ExplodeCell(xPosition, yPosition + i);
+                generalIndex++;
             }
 
-            _cellFabric.ReturnCell(_map[yPosition, xPosition]);
-            if (createdElement == 0)
-                _map[yPosition, xPosition] = null;
-            else
-                _map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, _map[yPosition, xPosition].transform.position, Quaternion.identity);
-
+            tasks[generalIndex] = ExplodeCell(xPosition, yPosition);
+            await UniTask.WhenAll(tasks);
+            if (createdElement != 0)
+            {
+                _map[yPosition, xPosition] = _cellFabric.GetCell(createdElement, GetElementPosition(xPosition, yPosition), Quaternion.identity);
+                Debug.Log("Created special cell");
+            }
         }
 
         private async UniTask MoveDownElements()
         {
             int x = 0, y = 0;
-            bool areElementsMoved = false;
+            bool areElementsMoved = false, areElementsExploded = true;
             do
             {
                 areElementsMoved = true;
@@ -297,11 +309,11 @@ namespace Core.Gameplay
                 await UniTask.Yield();
             } while (!areElementsMoved);
 
-            void DoCallback(Cell cell)
+            async void DoCallback(Cell cell)
             {
                 x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
                 y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
-                bool handled = HandleMove(x, y);
+                bool handled = await HandleMove(x, y);
                 if (handled == true)
                     areElementsMoved = false;
             }
