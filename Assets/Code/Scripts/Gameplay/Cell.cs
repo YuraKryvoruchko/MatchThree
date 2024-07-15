@@ -2,7 +2,6 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Core.Infrastructure.Factories;
 
 namespace Core.Gameplay
 {
@@ -10,11 +9,12 @@ namespace Core.Gameplay
     {
         [Header("Basic Settings")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        [SerializeField] private CellType _type;
         [SerializeField] private float _moveSpeedPerSecond;
-        [Header("Features")]
-        [SerializeField] private bool _isStatic = false;
-        [SerializeField] private bool _isSpecial = false;
+        
+        private CellType _type;
+
+        private bool _isStatic = false;
+        private bool _isSpecial = false;
 
         private Vector3 _startPosition;
         private Vector3 _endPosition;
@@ -41,13 +41,13 @@ namespace Core.Gameplay
         public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {
             if (IsMove)
-                SetupParameters(endPosition, inLocal);
+                SetupMoveParameters(endPosition, inLocal);
             else
                 await MoveToWithTask(endPosition, inLocal, onComplete);
         }
         public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {
-            SetupParameters(endPosition, inLocal);
+            SetupMoveParameters(endPosition, inLocal);
 
             IsMove = true;
             while (_progress < 1)
@@ -76,7 +76,7 @@ namespace Core.Gameplay
             IsExplode = false;
         }
 
-        private void SetupParameters(Vector3 endPosition, bool inLocal = true)
+        private void SetupMoveParameters(Vector3 endPosition, bool inLocal = true)
         {
             _endPosition = endPosition;
             if (inLocal)

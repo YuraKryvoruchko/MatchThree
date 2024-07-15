@@ -245,46 +245,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 80933700}
-  - component: {fileID: 80933699}
   m_Layer: 0
-  m_Name: CellPool
+  m_Name: CellStackContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &80933699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 80933698}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ac10aeaf03bb2846a955696a322fa9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cellContainer: {fileID: 80933700}
-  _cellNumberPairs:
-  - Type: 0
-    CellPrefab: {fileID: -6854740434885365437, guid: acee07a288f7a07448d679087677f1e4, type: 3}
-    Count: 40
-  - Type: 1
-    CellPrefab: {fileID: 8212925149674459206, guid: 3d05d55489f1cae43aeb92738530c54d, type: 3}
-    Count: 40
-  - Type: 2
-    CellPrefab: {fileID: 4748903741656538637, guid: 297ef9e52e80faf4eba6c7470fc8fa3f, type: 3}
-    Count: 40
-  - Type: 3
-    CellPrefab: {fileID: 1633047594622282236, guid: 8e190d001ccddb34fbdda6e8d5a6e8d8, type: 3}
-    Count: 40
-  - Type: 4
-    CellPrefab: {fileID: 8518706724278060428, guid: 0000525475aedeb42bb008d012a5f63a, type: 3}
-    Count: 40
-  - Type: 5
-    CellPrefab: {fileID: 2227249691555154089, guid: 96eb602f8305d134091d6d02e5c40e50, type: 3}
-    Count: 10
 --- !u!4 &80933700
 Transform:
   m_ObjectHideFlags: 0
@@ -2184,10 +2151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3c4d4f2c86b0f45a70fa2a0fe62a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fieldCellPool: {fileID: 80933699}
-  _swipeDetection: {fileID: 1408872457}
   _mainCamera: {fileID: 519420031}
   _gameField: {fileID: 1658689104}
+  _swipeDetection: {fileID: 1408872457}
   _cellFabricConfig:
     CellPrefab: {fileID: -6854740434885365437, guid: 02116af72d403284d891ef602cc6ff18, type: 3}
     CellConfigs:

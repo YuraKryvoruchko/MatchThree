@@ -9,10 +9,9 @@ namespace Core.Infrastructure.Gameplay
 {
     public class GameplayInstaller : MonoInstaller
     {
-        [SerializeField] private FieldCellPool _fieldCellPool;
-        [SerializeField] private SwipeDetection _swipeDetection;
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private GameField _gameField;
+        [SerializeField] private SwipeDetection _swipeDetection;
         [SerializeField] private FieldCellFabric.FieldCellFabricConfig _cellFabricConfig;
 
         public override void InstallBindings()
