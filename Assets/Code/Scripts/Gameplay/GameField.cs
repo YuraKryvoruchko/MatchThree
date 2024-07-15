@@ -285,7 +285,10 @@ namespace Core.Gameplay
                             if (_map[j, i].IsMove || _map[j, i].IsExplode)
                                 areElementsMoved = false;
                             if (_map[j, i].IsExplode)
+                            {
+                                lowerElementIndex = 0;
                                 continue;
+                            }
 
                             if (lowerElementIndex <= j)
                                 continue;
