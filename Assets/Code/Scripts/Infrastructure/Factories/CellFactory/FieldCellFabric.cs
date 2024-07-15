@@ -43,6 +43,12 @@ namespace Core.Infrastructure.Factories
         }
         Cell ICellFabric.GetCell(CellType type, Vector3 position, Quaternion rotation, Transform parent = null)
         {
+            if (_cellStack.Count == 0)
+            {
+                throw new Exception($"The stack is empty when a cell is selected. Input parameters: Type: {type}; " +
+                    $"Position: {position}; Rotation: {rotation}; Parent: {parent}");  
+            }
+
             Cell cell = _cellStack.Pop();
             cell.transform.parent = parent;
             cell.transform.localPosition = position;
