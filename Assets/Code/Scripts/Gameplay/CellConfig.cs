@@ -2,7 +2,7 @@
 
 namespace Core.Gameplay
 {
-    [CreateAssetMenu(fileName = "CellConfig", menuName = "SO/Gameplay", order = 1)]
+    [CreateAssetMenu(fileName = "CellConfig", menuName = "SO/Gameplay/CellConfig", order = 1)]
     public class CellConfig : ScriptableObject
     {
         [Header("Visual")]

@@ -17,6 +17,7 @@ namespace Core.Infrastructure.Gameplay
         public override void InstallBindings()
         {
             BindCellFabric();
+            BindAbilityFabric();
             BindSwipeDetection();
             BindCellClickDetection();
             BindCellSwipeDetection();
@@ -31,6 +32,13 @@ namespace Core.Infrastructure.Gameplay
                 .To<FieldCellFabric>()
                 .AsSingle()
                 .WithArguments(_cellFabricConfig);
+        }
+        private void BindAbilityFabric()
+        {
+            Container
+                .Bind<IAbilityFactory>()
+                .To<AbilityFactory>()
+                .AsSingle();
         }
         private void BindSwipeDetection()
         {

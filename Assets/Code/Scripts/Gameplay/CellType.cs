@@ -7,6 +7,7 @@
         Grape,
         Orange,
         Static,
-        Bomb
+        Bomb,
+        Zipper
     }
 }

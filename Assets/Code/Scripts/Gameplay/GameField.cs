@@ -21,6 +21,7 @@ namespace Core.Gameplay
         [Header("Other Services")]
 
         private ICellFabric _cellFabric;
+        private IAbilityFactory _abilityFactory;
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
@@ -38,9 +39,10 @@ namespace Core.Gameplay
         }
 
         [Inject]
-        private void Construct(ICellFabric cellFabric, CellSwipeDetection cellSwipeDetection)
+        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, CellSwipeDetection cellSwipeDetection)
         {
             _cellFabric = cellFabric;
+            _abilityFactory = abilityFactory;
             _cellSwipeDetection = cellSwipeDetection;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
         }
@@ -97,14 +99,28 @@ namespace Core.Gameplay
             }
 
             await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
-
+            Cell firstCell = _map[firstYPosition, firstXPosition];
+            Cell secondCell = _map[secondYPosition, secondXPosition];
             bool isFirstElementMoved = false, isSecondElementMoved = false;
-            await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
-                .ContinueWith((result) =>
-                {
-                    isFirstElementMoved = result.Item1;
-                    isSecondElementMoved = result.Item2;
-                });
+            if ((firstCell.IsSpecial && !secondCell.IsSpecial) || (!firstCell.IsSpecial && secondCell.IsSpecial))
+            {
+                Cell specialCell = firstCell.IsSpecial ? firstCell : secondCell;
+                isFirstElementMoved = true;
+                isSecondElementMoved = true;
+                UseAbility(_abilityFactory.GetAbility(specialCell.Type), specialCell.transform.position);
+            }
+            else if(firstCell.IsSpecial && secondCell.IsSpecial)
+            {
+
+            }
+            else { 
+                await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
+                    .ContinueWith((result) =>
+                    {
+                        isFirstElementMoved = result.Item1;
+                        isSecondElementMoved = result.Item2;
+                    });
+            }
                 
             if (!isFirstElementMoved && !isSecondElementMoved)
                 await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
@@ -121,9 +137,6 @@ namespace Core.Gameplay
         }
         public async void UseAbility(IAbility ability, int xPosition, int yPosition)
         {
-            if (_gameBlock)
-                return;
-
             ability.Init(this);
             _gameBlock = true;
 
@@ -145,6 +158,10 @@ namespace Core.Gameplay
                 Debug.LogError("Cell move when it's exploded!", cell);
             _map[yPosition, xPosition] = null;
             _cellFabric.ReturnCell(cell);
+        }
+        public Cell GetCell(int xPosition, int yPosition)
+        {
+            return _map[yPosition, xPosition];
         }
 
         private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
