@@ -13,6 +13,7 @@ namespace Core.Infrastructure.Gameplay
         [SerializeField] private SwipeDetection _swipeDetection;
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private GameField _gameField;
+        [SerializeField] private FieldCellFabric.FieldCellFabricConfig _cellFabricConfig;
 
         public override void InstallBindings()
         {
@@ -28,8 +29,9 @@ namespace Core.Infrastructure.Gameplay
         {
             Container
                 .Bind<ICellFabric>()
-                .FromInstance(_fieldCellPool)
-                .AsSingle();
+                .To<FieldCellFabric>()
+                .AsSingle()
+                .WithArguments(_cellFabricConfig);
         }
         private void BindSwipeDetection()
         {

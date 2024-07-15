@@ -2,12 +2,14 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Core.Infrastructure.Factories;
 
 namespace Core.Gameplay
 {
     public class Cell : MonoBehaviour
     {
         [Header("Basic Settings")]
+        [SerializeField] private SpriteRenderer _spriteRenderer;
         [SerializeField] private CellType _type;
         [SerializeField] private float _moveSpeedPerSecond;
         [Header("Features")]
@@ -27,6 +29,14 @@ namespace Core.Gameplay
 
         public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
         public bool IsSpecial { get => _isSpecial; private set => _isSpecial = value; }
+
+        public void Init(CellConfig config)
+        {
+            _spriteRenderer.sprite = config.Icon;
+            _type = config.Type;
+            _isSpecial = config.IsSpecial;
+            _isStatic = config.IsStatic;
+        }
 
         public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {

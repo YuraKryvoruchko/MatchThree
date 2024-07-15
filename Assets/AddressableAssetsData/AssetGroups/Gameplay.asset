@@ -16,32 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 75b6cc158061ac042883c9f0eefa85ea
-  m_SerializeEntries:
-  - m_GUID: acee07a288f7a07448d679087677f1e4
-    m_Address: Gameplay/Cells/Apple.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3d05d55489f1cae43aeb92738530c54d
-    m_Address: Gameplay/Cells/Banana.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 297ef9e52e80faf4eba6c7470fc8fa3f
-    m_Address: Gameplay/Cells/Grape.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 8e190d001ccddb34fbdda6e8d5a6e8d8
-    m_Address: Gameplay/Cells/Orange.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0000525475aedeb42bb008d012a5f63a
-    m_Address: Gameplay/Cells/Static.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
