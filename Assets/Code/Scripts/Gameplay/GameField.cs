@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Zenject;
@@ -109,10 +110,6 @@ namespace Core.Gameplay
                 isSecondElementMoved = true;
                 UseAbility(_abilityFactory.GetAbility(specialCell.Type), specialCell.transform.position);
             }
-            else if(firstCell.IsSpecial && secondCell.IsSpecial)
-            {
-
-            }
             else { 
                 await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
                     .ContinueWith((result) =>
@@ -162,6 +159,19 @@ namespace Core.Gameplay
         public Cell GetCell(int xPosition, int yPosition)
         {
             return _map[yPosition, xPosition];
+        }
+        public List<Cell> GetAllOfType(CellType type)
+        {
+            List<Cell> list = new List<Cell>();
+            for(int i = 0; i < _horizontalMapSize; i++)
+            {
+                for(int j = 0; j < _verticalMapSize; j++)
+                {
+                    if (_map[j, i].Type == type)
+                        list.Add(_map[j, i]);
+                }
+            }
+            return list;
         }
 
         private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)

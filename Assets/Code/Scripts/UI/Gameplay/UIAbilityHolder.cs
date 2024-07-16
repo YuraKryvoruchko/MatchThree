@@ -11,6 +11,7 @@ namespace Core.UI.Gameplay
     {
         [SerializeField] private Button _bombAbilityButton;
         [SerializeField] private Button _ziperAbilityButton;
+        [SerializeField] private Button _superAbilityButton;
 
         private GameField _gameField;
         private AbilityThrowMode _abilityThrowMode;
@@ -26,11 +27,13 @@ namespace Core.UI.Gameplay
         {
             _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new BombAbility()));
             _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new ZipperAbility()));
+            _superAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new SuperAbility()));
         }
         private void OnDestroy()
         {
             _bombAbilityButton.onClick.RemoveAllListeners();
             _ziperAbilityButton.onClick.RemoveAllListeners();
+            _superAbilityButton.onClick.RemoveAllListeners();
         }
         private void ActiveAbilityThrowMode(IAbility ability)
         {

@@ -16,7 +16,47 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 75b6cc158061ac042883c9f0eefa85ea
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 02116af72d403284d891ef602cc6ff18
+    m_Address: Cell
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a422b408c8c8ce14d86d2a701bcddb7c
+    m_Address: bg_Board
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f5f4b68deb43474f9d4eaf1e64aeed8
+    m_Address: GrapeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a099021626b8944d81de7bd6710bdb3
+    m_Address: BananaConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09b0ac1f48d1d524fa7a9226a3b11de1
+    m_Address: StaticCellConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d34f1eccd38108e45bf338f36b10f610
+    m_Address: BombConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f68bb8afb201794fb7ccd56562df8a9
+    m_Address: OrangeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b07e11fe5b772bf4d90813eb39738ef9
+    m_Address: AppleConfig
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
