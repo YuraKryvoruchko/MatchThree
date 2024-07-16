@@ -18,7 +18,7 @@ namespace Core.Gameplay
             for (int i = 0; i < cellList.Count; i++)
             {
                 if(!cellList[i].IsExplode)
-                    tasks[i] = cellList[i].Explode();
+                    tasks[i] = _gameField.ExplodeCell(cellList[i]);
             }
             await UniTask.WhenAll(tasks);
         }

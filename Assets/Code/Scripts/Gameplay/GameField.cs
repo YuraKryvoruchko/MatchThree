@@ -142,6 +142,12 @@ namespace Core.Gameplay
 
             _gameBlock = false;
         }
+        public async UniTask ExplodeCell(Cell cell)
+        {
+            int xPosition = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
+            int yPosition = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
+            await ExplodeCell(xPosition, yPosition);
+        }
         public async UniTask ExplodeCell(int xPosition, int yPosition)
         {
             if (xPosition > _verticalMapSize || xPosition < 0 || yPosition > _horizontalMapSize || yPosition < 0 
