@@ -7,8 +7,9 @@ namespace Core.Gameplay
     {
         [Header("Visual")]
         public Sprite Icon;
-        [Header("Type")]
+        [Header("Settings")]
         public CellType Type;
+        public int Score;
         [Header("Features")]
         public bool IsStatic = false;
         public bool IsSpecial = false;

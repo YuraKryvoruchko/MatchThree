@@ -165,8 +165,9 @@ namespace Core.Gameplay
             if (cell.IsMove)
                 Debug.LogError("Cell move when it's exploded!", cell);
             _map[yPosition, xPosition] = null;
+            int score = cell.Score;
             _cellFabric.ReturnCell(cell);
-            OnExplodeCellWithScore?.Invoke(10);
+            OnExplodeCellWithScore?.Invoke(score);
         }
         public Cell GetCell(int xPosition, int yPosition)
         {

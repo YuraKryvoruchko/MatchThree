@@ -13,6 +13,8 @@ namespace Core.Gameplay
         
         private CellType _type;
 
+        private CellConfig _config;
+
         private bool _isStatic = false;
         private bool _isSpecial = false;
 
@@ -24,6 +26,7 @@ namespace Core.Gameplay
         private float _progress;
 
         public CellType Type { get => _type; }
+        public int Score { get => _config.Score; }
         public bool IsMove { get; private set; }
         public bool IsExplode { get; private set; }
 
@@ -36,6 +39,7 @@ namespace Core.Gameplay
             _type = config.Type;
             _isSpecial = config.IsSpecial;
             _isStatic = config.IsStatic;
+            _config = config;
         }
 
         public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
