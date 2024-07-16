@@ -32,6 +32,9 @@ namespace Core.Gameplay
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
 
+        public event Action OnMove;
+        public event Action<int> OnExplodeCellWithScore;
+
         [Serializable]
         private class CellConfig
         {
@@ -99,6 +102,7 @@ namespace Core.Gameplay
                 return;
             }
 
+            OnMove?.Invoke();
             await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
             Cell firstCell = _map[firstYPosition, firstXPosition];
             Cell secondCell = _map[secondYPosition, secondXPosition];
@@ -134,6 +138,7 @@ namespace Core.Gameplay
         }
         public async void UseAbility(IAbility ability, int xPosition, int yPosition)
         {
+            OnMove?.Invoke();
             ability.Init(this);
             _gameBlock = true;
 
@@ -161,6 +166,7 @@ namespace Core.Gameplay
                 Debug.LogError("Cell move when it's exploded!", cell);
             _map[yPosition, xPosition] = null;
             _cellFabric.ReturnCell(cell);
+            OnExplodeCellWithScore?.Invoke(10);
         }
         public Cell GetCell(int xPosition, int yPosition)
         {

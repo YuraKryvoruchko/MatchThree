@@ -1,6 +1,7 @@
 ﻿using Core.Gameplay.Input;
 
-namespace Core.Gameplay { 
+namespace Core.Gameplay
+{
     public class AbilityThrowMode
     {
         private CellClickDetection _cellClickDetection;

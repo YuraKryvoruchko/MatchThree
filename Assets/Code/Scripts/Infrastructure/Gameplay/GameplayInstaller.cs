@@ -23,6 +23,7 @@ namespace Core.Infrastructure.Gameplay
             BindCellSwipeDetection();
             BindGameField();
             BindAbilityThrowMode();
+            BindGameScoreTracking();
         }
 
         private void BindCellFabric()
@@ -72,6 +73,12 @@ namespace Core.Infrastructure.Gameplay
         {
             Container
                 .Bind<AbilityThrowMode>()
+                .AsSingle();
+        }
+        private void BindGameScoreTracking()
+        {
+            Container
+                .BindInterfacesAndSelfTo<GameScoreTracking>()
                 .AsSingle();
         }
     }
