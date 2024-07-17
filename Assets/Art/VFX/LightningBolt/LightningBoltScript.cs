@@ -88,6 +88,7 @@ namespace DigitalRuby.LightningBolt
         [System.NonSerialized]
         public System.Random RandomGenerator = new System.Random();
 
+        //Changed by ZYMA
         [SerializeField] private LineRenderer lineRenderer;
 
         private List<KeyValuePair<Vector3, Vector3>> segments = new List<KeyValuePair<Vector3, Vector3>>();
@@ -285,17 +286,16 @@ namespace DigitalRuby.LightningBolt
             SelectOffsetFromAnimationMode();
         }
 
-        private void Start()
-        {
-            orthographic = (Camera.main != null && Camera.main.orthographic);
-            //lineRenderer = GetComponent<LineRenderer>();
-            lineRenderer.positionCount = 0;
-            UpdateFromMaterialChange();
-        }
+        // Changed by ZYMA
+        //private void Start()
+        //{
+        //    Init();
+        //}
 
         private void Update()
         {
-            orthographic = (Camera.main != null && Camera.main.orthographic);
+            // Changed by ZYMA
+            //orthographic = (Camera.main != null && Camera.main.orthographic);
             if (timer <= 0.0f)
             {
                 if (ManualMode)
@@ -309,6 +309,15 @@ namespace DigitalRuby.LightningBolt
                 }
             }
             timer -= Time.deltaTime;
+        }
+
+        //Created by ZYMA
+        public void Init()
+        {
+            orthographic = (Camera.main != null && Camera.main.orthographic);
+            lineRenderer = GetComponent<LineRenderer>();
+            lineRenderer.positionCount = 0;
+            UpdateFromMaterialChange();
         }
 
         /// <summary>
