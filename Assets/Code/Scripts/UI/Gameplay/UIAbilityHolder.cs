@@ -26,7 +26,7 @@ namespace Core.UI.Gameplay
         private void Start()
         {
             _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new BombAbility()));
-            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new ZipperAbility()));
+            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new LightingBoltAbility(null)));
             _superAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new SuperAbility()));
         }
         private void OnDestroy()

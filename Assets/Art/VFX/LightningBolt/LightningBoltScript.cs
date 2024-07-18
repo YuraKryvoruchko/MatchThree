@@ -98,6 +98,8 @@ namespace DigitalRuby.LightningBolt
         private int animationOffsetIndex;
         private int animationPingPongDirection = 1;
         private bool orthographic;
+        // Added by ZYMA
+        private bool isPaused;
 
         private void GetPerpendicularVector(ref Vector3 directionNormalized, out Vector3 side)
         {
@@ -296,6 +298,11 @@ namespace DigitalRuby.LightningBolt
         {
             // Changed by ZYMA
             //orthographic = (Camera.main != null && Camera.main.orthographic);
+
+            // Added by ZYMA
+            if (isPaused)
+                return;
+
             if (timer <= 0.0f)
             {
                 if (ManualMode)
@@ -311,13 +318,18 @@ namespace DigitalRuby.LightningBolt
             timer -= Time.deltaTime;
         }
 
-        //Created by ZYMA
+        // Added by ZYMA
         public void Init()
         {
             orthographic = (Camera.main != null && Camera.main.orthographic);
             lineRenderer = GetComponent<LineRenderer>();
             lineRenderer.positionCount = 0;
             UpdateFromMaterialChange();
+        }
+        // Added by ZYMA
+        public void SetPause(bool value)
+        {
+            this.isPaused = value;
         }
 
         /// <summary>

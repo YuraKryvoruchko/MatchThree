@@ -13,7 +13,7 @@ namespace Core.Infrastructure.Factories
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
                 { CellType.Bomb, new BombAbility() },
-                { CellType.Zipper, new ZipperAbility() }
+                { CellType.Zipper, new LightingBoltAbility(null) }
             };
         }
 
