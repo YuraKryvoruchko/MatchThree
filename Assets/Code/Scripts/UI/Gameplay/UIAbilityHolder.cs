@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using Core.Gameplay;
+using Core.Infrastructure.Factories;
 
 namespace Core.UI.Gameplay
 {
@@ -13,20 +13,20 @@ namespace Core.UI.Gameplay
         [SerializeField] private Button _ziperAbilityButton;
         [SerializeField] private Button _superAbilityButton;
 
-        private GameField _gameField;
+        private IAbilityFactory _abilityFactory;
         private AbilityThrowMode _abilityThrowMode;
 
         [Inject]
-        private void Construct(GameField gameField, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAbilityFactory abilityFactory, AbilityThrowMode abilityThrowMode)
         {
+            _abilityFactory = abilityFactory;
             _abilityThrowMode = abilityThrowMode;
-            _gameField = gameField;
         }
 
         private void Start()
         {
-            _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new BombAbility()));
-            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new LightingBoltAbility(null)));
+            _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Bomb)));
+            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Zipper)));
             _superAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new SuperAbility()));
         }
         private void OnDestroy()

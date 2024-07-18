@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.AddressableAssets;
 using Core.Gameplay;
 
 namespace Core.Infrastructure.Factories
@@ -8,12 +9,18 @@ namespace Core.Infrastructure.Factories
     {
         private Dictionary<CellType, IAbility> _cellAbilityDictionary;
 
-        public AbilityFactory() 
+        [Serializable]
+        public class AbilityFactoryConfig
+        {
+            public AssetReference LightingBoltEffectPrefabReference;
+        }
+
+        public AbilityFactory(AbilityFactoryConfig config) 
         {
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
                 { CellType.Bomb, new BombAbility() },
-                { CellType.Zipper, new LightingBoltAbility(null) }
+                { CellType.Zipper, new LightingBoltAbility(config.LightingBoltEffectPrefabReference) }
             };
         }
 

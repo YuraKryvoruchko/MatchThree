@@ -13,6 +13,7 @@ namespace Core.Infrastructure.Gameplay
         [SerializeField] private GameField _gameField;
         [SerializeField] private SwipeDetection _swipeDetection;
         [SerializeField] private FieldCellFabric.FieldCellFabricConfig _cellFabricConfig;
+        [SerializeField] private AbilityFactory.AbilityFactoryConfig _abilityFactoryConfig;
 
         public override void InstallBindings()
         {
@@ -25,7 +26,7 @@ namespace Core.Infrastructure.Gameplay
             BindAbilityThrowMode();
             BindGameScoreTracking();
         }
-
+        
         private void BindCellFabric()
         {
             Container
@@ -39,7 +40,8 @@ namespace Core.Infrastructure.Gameplay
             Container
                 .Bind<IAbilityFactory>()
                 .To<AbilityFactory>()
-                .AsSingle();
+                .AsSingle()
+                .WithArguments(_abilityFactoryConfig);
         }
         private void BindSwipeDetection()
         {
