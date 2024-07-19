@@ -47,6 +47,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80470d52b250cf34f83808dd6803e5d7
+    m_Address: hungry_bat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c5627402d68cd642b43a000a0e53686
+    m_Address: hungry_bat_blur
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c40c52e69f4a55b46854e41d6dcf9d38
+    m_Address: CellAtlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
