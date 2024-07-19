@@ -13,13 +13,14 @@ namespace Core.Infrastructure.Factories
         public class AbilityFactoryConfig
         {
             public AssetReference LightingBoltEffectPrefabReference;
+            public AssetReference BombEffectPrefabReference;
         }
 
         public AbilityFactory(AbilityFactoryConfig config) 
         {
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
-                { CellType.Bomb, new BombAbility() },
+                { CellType.Bomb, new BombAbility(config.BombEffectPrefabReference) },
                 { CellType.Zipper, new LightingBoltAbility(config.LightingBoltEffectPrefabReference) }
             };
         }
