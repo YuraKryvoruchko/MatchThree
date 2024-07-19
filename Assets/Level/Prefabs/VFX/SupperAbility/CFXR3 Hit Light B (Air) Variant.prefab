@@ -70,7 +70,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8771972552311404798, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
       propertyPath: stopAction
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8771972552311404798, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
       propertyPath: InitialModule.gravitySource

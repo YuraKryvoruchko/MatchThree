@@ -380,6 +380,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: SuperAbilityEffect
       objectReference: {fileID: 0}
+    - target: {fileID: 6344897445786710425, guid: 94544fa4b297d4f42835ec22b9f5c781, type: 3}
+      propertyPath: _lineSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6344897445786710425, guid: 94544fa4b297d4f42835ec22b9f5c781, type: 3}
+      propertyPath: _explosionPrefabReference.m_AssetGUID
+      value: c200d821c4a1bfe4aacb87719516199b
+      objectReference: {fileID: 0}
+    - target: {fileID: 6344897445786710425, guid: 94544fa4b297d4f42835ec22b9f5c781, type: 3}
+      propertyPath: _explosionPrefabReference.m_EditorAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
