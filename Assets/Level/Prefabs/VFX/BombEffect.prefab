@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
       propertyPath: m_Name
-      value: CFXR Explosion Smoke 2 Solo (HDR) Variant
+      value: BombEffect
       objectReference: {fileID: 0}
     - target: {fileID: 725748389856807726, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
       propertyPath: m_Enabled
@@ -128,7 +128,8 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 725748389856807726, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
     m_RemovedGameObjects:
     - {fileID: 725748389192728894, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
     m_AddedGameObjects: []

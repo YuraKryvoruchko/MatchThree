@@ -28,12 +28,17 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e31c720355f5c2143b0a4ca338183d8c
-    m_Address: VFX/LightningBoltPrefab
+    m_Address: VFX/LightningBoltPrefab.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2dee2a952f046be458b928bf213e2c20
-    m_Address: VFX/CFXR Explosion Smoke 2 Solo (HDR) Variant
+    m_Address: VFX/BombEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94544fa4b297d4f42835ec22b9f5c781
+    m_Address: VFX/SuperAbilityEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

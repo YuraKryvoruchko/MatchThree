@@ -218,7 +218,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
@@ -228,7 +228,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.21333319
+        value: 0.22627735
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -236,8 +236,8 @@ LineRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.8793705
-        value: 0.21333319
+        time: 0.9968085
+        value: 0.22627735
         inSlope: 0
         outSlope: 0
         tangentMode: 0
