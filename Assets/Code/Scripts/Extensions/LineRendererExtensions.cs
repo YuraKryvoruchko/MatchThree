@@ -5,11 +5,11 @@ namespace Core.Extensions
 {
     public static class LineRendererExtensions
     {
-        public static void MoveTo(this LineRenderer line, int index, Vector3 to, float speed)
+        public static void MoveTo(this LineRenderer line, int index, Vector3 to, float speed, System.Action<LineRenderer> OnCallback = null)
         {
-            MoveToAsync(line, index, to, speed).Forget();
+            MoveToAsync(line, index, to, speed, OnCallback).Forget();
         }
-        public static async UniTask MoveToAsync(this LineRenderer line, int index, Vector3 to, float speed)
+        public static async UniTask MoveToAsync(this LineRenderer line, int index, Vector3 to, float speed, System.Action<LineRenderer> OnCallback = null)
         {
             Vector3 startPoint = line.GetPosition(0);
             float progress = 0f;
@@ -20,6 +20,7 @@ namespace Core.Extensions
                 await UniTask.Yield();
             }
             line.SetPosition(index, to);
+            OnCallback?.Invoke(line);
         }
     }
 }

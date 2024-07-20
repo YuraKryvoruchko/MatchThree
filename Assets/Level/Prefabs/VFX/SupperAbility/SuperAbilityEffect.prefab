@@ -85,7 +85,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.044620514
+        value: 0.11691666
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -97,8 +97,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.92993367, g: 1, b: 0, a: 1}
+      key1: {r: 1, g: 0.992571, b: 0.514151, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -122,7 +122,7 @@ LineRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
@@ -183,7 +183,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineSpeed: 10
+  _lineCreatingDelayInSeconds: 0.1
   _explosionPrefab: {fileID: 8771290867492630907, guid: c200d821c4a1bfe4aacb87719516199b, type: 3}
+  _lightGlowPrefab: {fileID: 9186446616439801708, guid: f97e3f3ba5607604ebbb92526081acf2, type: 3}
   _linePrefab: {fileID: 368252265928462493}
   _audioSource: {fileID: 2294940227059202231}
 --- !u!82 &2294940227059202231
