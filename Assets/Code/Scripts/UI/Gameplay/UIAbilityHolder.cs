@@ -15,6 +15,8 @@ namespace Core.UI.Gameplay
         private IAbilityFactory _abilityFactory;
         private AbilityThrowMode _abilityThrowMode;
 
+        private Button _clickedButton;
+
         [Inject]
         private void Construct(IAbilityFactory abilityFactory, AbilityThrowMode abilityThrowMode)
         {
@@ -24,9 +26,9 @@ namespace Core.UI.Gameplay
 
         private void Start()
         {
-            _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Bomb)));
-            _lightningBoltAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.LightningBolt)));
-            _supperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Supper)));
+            _bombAbilityButton.onClick.AddListener(() => HandleButtonClick(_bombAbilityButton, CellType.Bomb));
+            _lightningBoltAbilityButton.onClick.AddListener(() => HandleButtonClick(_lightningBoltAbilityButton, CellType.LightningBolt));
+            _supperAbilityButton.onClick.AddListener(() => HandleButtonClick(_supperAbilityButton, CellType.Supper));
         }
         private void OnDestroy()
         {
@@ -34,12 +36,24 @@ namespace Core.UI.Gameplay
             _lightningBoltAbilityButton.onClick.RemoveAllListeners();
             _supperAbilityButton.onClick.RemoveAllListeners();
         }
-        private void ActiveAbilityThrowMode(IAbility ability)
+
+        private void HandleButtonClick(Button button, CellType type)
         {
-            if (_abilityThrowMode.IsActive)
-                _abilityThrowMode.ChangeAbility(ability);
+            if(button == _clickedButton && _abilityThrowMode.IsActive)
+            {
+                _clickedButton = null;
+                _abilityThrowMode.DisableAbilityThrowMode();
+            }
             else
-                _abilityThrowMode.EnableAbilityhrowMode(ability);
+            {
+                _clickedButton = button;
+
+                IAbility ability = _abilityFactory.GetAbility(type);
+                if (_abilityThrowMode.IsActive)
+                    _abilityThrowMode.ChangeAbility(ability);
+                else
+                    _abilityThrowMode.EnableAbilityhrowMode(ability);
+            }
         }
     }
 }

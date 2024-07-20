@@ -1,4 +1,5 @@
-﻿using Core.Gameplay.Input;
+﻿using System;
+using Core.Gameplay.Input;
 
 namespace Core.Gameplay
 {
@@ -11,6 +12,9 @@ namespace Core.Gameplay
 
         public bool IsActive { get; private set; }
 
+        public event Action OnEnableMode;
+        public event Action OnDisableMode;
+
         public AbilityThrowMode(GameField gameField, CellClickDetection cellClickDetection)
         {
             _gameField = gameField;
@@ -20,18 +24,21 @@ namespace Core.Gameplay
         public void Handle(Cell cell)
         {
             _gameField.UseAbility(_ability, cell.transform.position);
+            DisableAbilityThrowMode();
         }
         public void EnableAbilityhrowMode(IAbility ability)
         {
             _ability = ability;
             _cellClickDetection.OnCellClick += Handle;
             IsActive = true;
+            OnEnableMode?.Invoke();
         }
         public void DisableAbilityThrowMode()
         {
             _ability = null;
             _cellClickDetection.OnCellClick -= Handle;
             IsActive = false;
+            OnDisableMode?.Invoke();
         }
         public void ChangeAbility(IAbility ability)
         {

@@ -239,7 +239,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 332634783505397520}
   m_Father: {fileID: 332634783093661117}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -318,7 +319,6 @@ RectTransform:
   m_Children:
   - {fileID: 5854920117739711955}
   - {fileID: 332634783032970557}
-  - {fileID: 332634783505397520}
   - {fileID: 332634782635806334}
   m_Father: {fileID: 1599200173192068328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -405,7 +405,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 332634783093661114}
+  m_TargetGraphic: {fileID: 332634783032970554}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -439,7 +439,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 332634783093661117}
+  m_Father: {fileID: 332634783032970557}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -517,7 +517,6 @@ RectTransform:
   m_Children:
   - {fileID: 5155899160424613477}
   - {fileID: 1319684128491136651}
-  - {fileID: 1319684128554540198}
   - {fileID: 1319684128886728136}
   m_Father: {fileID: 1599200173192068328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -547,7 +546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -604,7 +603,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 1319684128430192140}
+  m_TargetGraphic: {fileID: 1319684128491136652}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -637,7 +636,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1319684128554540198}
   m_Father: {fileID: 1319684128430192139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -713,7 +713,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1319684128430192139}
+  m_Father: {fileID: 1319684128491136651}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1272,7 +1272,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3403137690702679325}
+  m_Father: {fileID: 2465430138580736837}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1350,7 +1350,6 @@ RectTransform:
   m_Children:
   - {fileID: 4221185676804684015}
   - {fileID: 2465430138580736837}
-  - {fileID: 2684857083198674575}
   - {fileID: 175060962289029280}
   m_Father: {fileID: 1599200173192068328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1437,7 +1436,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 7622122374889485482}
+  m_TargetGraphic: {fileID: 3621083019141407084}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -1531,8 +1530,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bombAbilityButton: {fileID: 5137339698743844640}
-  _ziperAbilityButton: {fileID: 1362458756532421748}
-  _superAbilityButton: {fileID: 7827360718832506018}
+  _lightningBoltAbilityButton: {fileID: 0}
+  _supperAbilityButton: {fileID: 0}
 --- !u!1 &6262060571005457694
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,7 +1636,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2684857083198674575}
   m_Father: {fileID: 3403137690702679325}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

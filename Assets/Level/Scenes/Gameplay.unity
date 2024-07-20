@@ -1798,8 +1798,9 @@ GameObject:
   - component: {fileID: 998002726}
   - component: {fileID: 998002728}
   - component: {fileID: 998002727}
+  - component: {fileID: 998002729}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ThrowModeVignette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1837,14 +1838,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0.009433985, g: 0.009433985, b: 0.009433985, a: 0}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 63b91d07ce9154c45967b2efaaf94733, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1862,6 +1863,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998002725}
   m_CullTransparentMesh: 1
+--- !u!114 &998002729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998002725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d404e15c8aec1a04b882c7e57b3bda35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vingnetteColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  _vingnetteTimeDelay: 1
+  _vingnetteImage: {fileID: 998002727}
 --- !u!1 &1060475806
 GameObject:
   m_ObjectHideFlags: 0
@@ -3889,6 +3905,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1554704515}
     m_Modifications:
+    - target: {fileID: 332634783093661114, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 332634783093661114, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 332634783093661114, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 332634783093661114, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 332634783093661116, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
       propertyPath: m_Name
       value: LightningBoltAbilityButton
@@ -3924,6 +3956,22 @@ PrefabInstance:
     - target: {fileID: 1319684128430192139, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319684128430192140, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319684128430192140, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319684128430192140, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1319684128430192140, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3403137690702679325, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4024,6 +4072,14 @@ PrefabInstance:
     - target: {fileID: 5361908026844737291, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
       propertyPath: m_Name
       value: Footer
+      objectReference: {fileID: 0}
+    - target: {fileID: 7351034056719722109, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7677397017416074102, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8926274306018973150, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
       propertyPath: _supperAbilityButton
