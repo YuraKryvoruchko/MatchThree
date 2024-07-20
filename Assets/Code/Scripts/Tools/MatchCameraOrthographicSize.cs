@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Core.Tools
@@ -11,12 +12,12 @@ namespace Core.Tools
 
         private Camera _camera;
 
-        void Start()
+        private void Start()
         {
             _camera = GetComponent<Camera>();
         }
 
-        void Update()
+        private void Update()
         {
             float widthUnitsPerPixel = _sceneWidth / Screen.width;
             float heightUnitsPerPixel = _sceneHeight / Screen.height;
