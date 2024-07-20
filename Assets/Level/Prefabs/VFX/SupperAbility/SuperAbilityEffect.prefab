@@ -85,7 +85,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.25546646
+        value: 0.044620514
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -182,6 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4d5700a88c526a4592d207f427a25ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lineSpeed: 10
+  _explosionPrefab: {fileID: 8771290867492630907, guid: c200d821c4a1bfe4aacb87719516199b, type: 3}
   _linePrefab: {fileID: 368252265928462493}
   _audioSource: {fileID: 2294940227059202231}
 --- !u!82 &2294940227059202231

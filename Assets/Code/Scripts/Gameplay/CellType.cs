@@ -8,6 +8,7 @@
         Orange,
         Static,
         Bomb,
-        Zipper
+        LightningBolt,
+        Supper
     }
 }

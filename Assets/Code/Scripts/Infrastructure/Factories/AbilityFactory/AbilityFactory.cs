@@ -14,6 +14,7 @@ namespace Core.Infrastructure.Factories
         {
             public AssetReference LightingBoltEffectPrefabReference;
             public AssetReference BombEffectPrefabReference;
+            public AssetReference SupperCellEffectPrefabReference;
         }
 
         public AbilityFactory(AbilityFactoryConfig config) 
@@ -21,7 +22,8 @@ namespace Core.Infrastructure.Factories
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
                 { CellType.Bomb, new BombAbility(config.BombEffectPrefabReference) },
-                { CellType.Zipper, new LightingBoltAbility(config.LightingBoltEffectPrefabReference) }
+                { CellType.LightningBolt, new LightingBoltAbility(config.LightingBoltEffectPrefabReference) },
+                { CellType.Supper, new SupperAbility(config.SupperCellEffectPrefabReference) }
             };
         }
 

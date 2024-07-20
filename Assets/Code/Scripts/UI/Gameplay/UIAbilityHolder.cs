@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using Core.Gameplay;
@@ -10,8 +9,8 @@ namespace Core.UI.Gameplay
     public class UIAbilityHolder : MonoBehaviour
     {
         [SerializeField] private Button _bombAbilityButton;
-        [SerializeField] private Button _ziperAbilityButton;
-        [SerializeField] private Button _superAbilityButton;
+        [SerializeField] private Button _lightningBoltAbilityButton;
+        [SerializeField] private Button _supperAbilityButton;
 
         private IAbilityFactory _abilityFactory;
         private AbilityThrowMode _abilityThrowMode;
@@ -26,14 +25,14 @@ namespace Core.UI.Gameplay
         private void Start()
         {
             _bombAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Bomb)));
-            _ziperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Zipper)));
-            _superAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(new SuperAbility()));
+            _lightningBoltAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.LightningBolt)));
+            _supperAbilityButton.onClick.AddListener(() => ActiveAbilityThrowMode(_abilityFactory.GetAbility(CellType.Supper)));
         }
         private void OnDestroy()
         {
             _bombAbilityButton.onClick.RemoveAllListeners();
-            _ziperAbilityButton.onClick.RemoveAllListeners();
-            _superAbilityButton.onClick.RemoveAllListeners();
+            _lightningBoltAbilityButton.onClick.RemoveAllListeners();
+            _supperAbilityButton.onClick.RemoveAllListeners();
         }
         private void ActiveAbilityThrowMode(IAbility ability)
         {

@@ -13,6 +13,7 @@ namespace Core.VFX.Abilities
     {
         [Header("Settings")]
         [SerializeField] private float _lineSpeed;
+        [SerializeField] private float _lineCreatingDelayInSeconds = 0.1f;
         [SerializeField] private ParticleSystem _explosionPrefab;
         [SerializeField] private LineRenderer _linePrefab;
         [Header("Components")]
@@ -24,10 +25,10 @@ namespace Core.VFX.Abilities
         [ProPlayButton]
         private void Test(Vector3 point1, Vector3 point2)
         {
-            Play(new Vector3[] { point1, point2 }, () => Debug.Log("end"));
+            Play(new Vector3[] { point1, point2 }, () => Debug.Log("end")).Forget();
         }
 #endif
-        public async void Play(Vector3[] endPositions, Action OnReady = null)
+        public async UniTask Play(Vector3[] endPositions, Action OnReady = null)
         {
             _audioSource.Play();
             UniTask[] moveTasks = new UniTask[endPositions.Length];
@@ -36,9 +37,10 @@ namespace Core.VFX.Abilities
                 LineRenderer line = Instantiate(_linePrefab, this.transform);
                 line.SetPosition(0, transform.position);
                 moveTasks[i] = line.MoveToAsync(1, endPositions[i], _lineSpeed);
+                await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds);
             }
 
-            await moveTasks;
+            await UniTask.WhenAll(moveTasks);
             OnReady?.Invoke();
 
             _particles = new List<ParticleSystem>(endPositions.Length);
