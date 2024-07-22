@@ -37,6 +37,13 @@ namespace Core.UI.Gameplay
             _supperAbilityButton.onClick.RemoveAllListeners();
         }
 
+        public void SetInteractable(bool value)
+        {
+            _bombAbilityButton.interactable = value;
+            _lightningBoltAbilityButton.interactable = value;
+            _supperAbilityButton.interactable = value;
+        }
+
         private void HandleButtonClick(Button button, CellType type)
         {
             if(button == _clickedButton && _abilityThrowMode.IsActive)

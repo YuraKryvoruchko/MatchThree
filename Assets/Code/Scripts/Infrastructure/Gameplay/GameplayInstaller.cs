@@ -4,6 +4,7 @@ using Core.Input;
 using Core.Gameplay.Input;
 using Core.Infrastructure.Factories;
 using Core.Gameplay;
+using Core.UI.Gameplay;
 
 namespace Core.Infrastructure.Gameplay
 {
@@ -11,6 +12,7 @@ namespace Core.Infrastructure.Gameplay
     {
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private GameField _gameField;
+        [SerializeField] private GameplayUIStartup _uiStartup;
         [SerializeField] private SwipeDetection _swipeDetection;
         [SerializeField] private FieldCellFabric.FieldCellFabricConfig _cellFabricConfig;
         [SerializeField] private AbilityFactory.AbilityFactoryConfig _abilityFactoryConfig;
@@ -25,6 +27,7 @@ namespace Core.Infrastructure.Gameplay
             BindGameField();
             BindAbilityThrowMode();
             BindGameScoreTracking();
+            BindGameplayUIStartup();
         }
         
         private void BindCellFabric()
@@ -81,6 +84,13 @@ namespace Core.Infrastructure.Gameplay
         {
             Container
                 .BindInterfacesAndSelfTo<GameScoreTracking>()
+                .AsSingle();
+        }
+        private void BindGameplayUIStartup()
+        {
+            Container
+                .BindInterfacesTo<GameplayUIStartup>()
+                .FromInstance(_uiStartup)
                 .AsSingle();
         }
     }
