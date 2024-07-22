@@ -32,8 +32,8 @@ namespace Core.Infrastructure.Service
         public async UniTask<T> OpenWindow<T>(string name) where T : WindowBase
         {
             T newWindow = await _windowFactory.GetWindow<T>(name, null);
-            newWindow.OnClose += HandleWindowClosing;
-            newWindow.OnBack += Back;
+            newWindow.OnStateStackEmpty += HandleWindowClosing;
+            newWindow.OnMenuBack += Back;
 
             if(_currentWindow != null)
             {
@@ -67,8 +67,8 @@ namespace Core.Infrastructure.Service
         public async UniTask<T> OpenPopup<T>(string name) where T : WindowBase
         {
             T popup = await _windowFactory.GetWindow<T>(name, null);
-            popup.OnClose += HandleWindowClosing;
-            popup.OnBack += Back;
+            popup.OnStateStackEmpty += HandleWindowClosing;
+            popup.OnMenuBack += Back;
 
             WindowBase currentWindow = _windowStack.Peek();
             currentWindow.Push();
@@ -104,8 +104,8 @@ namespace Core.Infrastructure.Service
 
         private void HandleWindowClosing(WindowBase window)
         {
-            window.OnClose -= HandleWindowClosing;
-            window.OnBack -= Back;
+            window.OnStateStackEmpty -= HandleWindowClosing;
+            window.OnMenuBack -= Back;
             _windowFactory.ReleaseWindow(window);
         }
         private void OpenPreviousWindows()

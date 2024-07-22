@@ -6,8 +6,6 @@ namespace Core.Infrastructure.UI
 {
     public abstract class WindowBase : MonoBehaviour, IWindow
     {
-        #region Fields
-
         [Header("Window Settings")]
         [SerializeField] private string _windowPrefabPath;
         [SerializeField] private bool _isPopup;
@@ -15,36 +13,19 @@ namespace Core.Infrastructure.UI
 
         private Stack<State> _stateStack = new Stack<State>();
 
-        #endregion
-
-        #region Properties
-
         public string Path { get => _windowPrefabPath; }
         public bool IsPopup { get => _isPopup; }
-
         public bool IsActive { get; private set; }
         public bool IsFocus { get; private set; }
 
-        #endregion
-
-        #region Actions
-
-        public abstract event Action OnBack;
-        public abstract event Action<WindowBase> OnClose;
-
-        #endregion
-
-        #region State
+        public event Action<WindowBase> OnStateStackEmpty;
+        public abstract event Action OnMenuBack;
 
         private struct State
         {
             public bool IsActive;
             public bool IsFocus;
         }
-
-        #endregion
-
-        #region Public Methods
 
         public void Show()
         {
@@ -66,6 +47,7 @@ namespace Core.Infrastructure.UI
             IsFocus = false;
             OnUnfocus();
         }
+
         public void Push()
         {
             _stateStack.Push(new State() { IsActive = IsActive, IsFocus = IsFocus });
@@ -74,7 +56,8 @@ namespace Core.Infrastructure.UI
         {
             if (_stateStack.Count == 0)
             {
-                Close();
+                OnClose();
+                OnStateStackEmpty?.Invoke(this);
                 return;
             }
 
@@ -100,12 +83,10 @@ namespace Core.Infrastructure.UI
             _menuCanvas.sortingOrder = order;
         }
 
-        public abstract void Close();
         protected abstract void OnShow();
         protected abstract void OnHide();
         protected abstract void OnFocus();
         protected abstract void OnUnfocus();
-
-        #endregion
+        protected abstract void OnClose();
     }
 }

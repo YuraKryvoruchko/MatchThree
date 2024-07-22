@@ -9,7 +9,6 @@
         void Hide();
         void Focus();
         void Unfocus();
-        void Close();
 
         void Push();
         void Back();
