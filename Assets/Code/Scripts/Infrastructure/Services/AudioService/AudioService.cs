@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using com.cyborgAssets.inspectorButtonPro;
+using UnityEngine.Audio;
 
 namespace Core.Infrastructure.Service
 {
@@ -13,6 +15,10 @@ namespace Core.Infrastructure.Service
     {
         [SerializeField] private AudioSource _backgroundSoundSource;
         [SerializeField] private AudioListByType[] _audioClips;
+        [Header("Audio Groups")]
+        [SerializeField] private AudioMixerGroup _musicGroup;
+        [SerializeField] private AudioMixerGroup _soundGroup;
+        [SerializeField] private AudioMixerGroup _uiGroup;
 
         private BackgroundMusicType _currentMusicType;
         private int _currentClipIndex;
@@ -51,7 +57,7 @@ namespace Core.Infrastructure.Service
                     else
                         await list.Clips[_currentClipIndex].LoadAssetAsync().Task;
                 }
-                Debug.Log(list.Type);
+
                 _backgroundSoundSource.clip = list.Clips[_currentClipIndex].Asset as AudioClip;
                 _backgroundSoundSource.Play();
                 _currentMusicType++;
@@ -68,6 +74,11 @@ namespace Core.Infrastructure.Service
         {
             _backgroundSoundSource.UnPause();
         }
+        public void SetBackgroundMusicMuteMode(bool isMute)
+        {
+            _backgroundSoundSource.mute = isMute;
+        }
+
 
         private void UnloadMusicByType(BackgroundMusicType backgroundMusicType)
         {

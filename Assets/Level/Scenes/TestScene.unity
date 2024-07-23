@@ -470,6 +470,9 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  _musicGroup: {fileID: 175272508991637250, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+  _soundGroup: {fileID: 7750619700486574308, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+  _uiGroup: {fileID: 3203320875703995174, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
 --- !u!4 &1948267010
 Transform:
   m_ObjectHideFlags: 0
