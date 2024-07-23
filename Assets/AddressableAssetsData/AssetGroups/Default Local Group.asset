@@ -62,6 +62,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb7f10105313640a18ce7926041a4d76
+    m_Address: Audio/Darkness.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 458dd8822518c4f37bc3edba9b6c57d9
+    m_Address: Audio/Mystery.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
