@@ -1,20 +1,35 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using com.cyborgAssets.inspectorButtonPro;
 using UnityEngine.Audio;
+using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.Infrastructure.Service
 {
+    public enum AudioType
+    {
+        Music,
+        Sound,
+        UI
+    }
     public enum BackgroundMusicType
     {
         MainMenu,
         LoadingScreen,
         Gameplay
     }
+    public enum UISound
+    {
+        Click,
+        Switch
+    }
     public class AudioService : MonoBehaviour
     {
+        [Header("Music Settings")]
         [SerializeField] private AudioSource _backgroundSoundSource;
         [SerializeField] private AudioListByType[] _audioClips;
+        [Header("UI Sound Settings")]
+        [SerializeField] private AudioSource _uiSoundSource;
+        [SerializeField] private AssetReferenceAudioClip _clickClip;
+        [SerializeField] private AssetReferenceAudioClip _switchClip;
         [Header("Audio Groups")]
         [SerializeField] private AudioMixerGroup _musicGroup;
         [SerializeField] private AudioMixerGroup _soundGroup;
@@ -78,7 +93,6 @@ namespace Core.Infrastructure.Service
         {
             _backgroundSoundSource.mute = isMute;
         }
-
 
         private void UnloadMusicByType(BackgroundMusicType backgroundMusicType)
         {
