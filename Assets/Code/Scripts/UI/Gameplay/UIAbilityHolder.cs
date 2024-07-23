@@ -17,7 +17,7 @@ namespace Core.UI.Gameplay
 
         private Button _clickedButton;
 
-        [Inject]
+        [Inject] 
         private void Construct(IAbilityFactory abilityFactory, AbilityThrowMode abilityThrowMode)
         {
             _abilityFactory = abilityFactory;
