@@ -9,6 +9,8 @@ namespace Core.UI.Gameplay
     {
         [Header("Buttons")]
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _replayButton;
+        [SerializeField] private Button _quitButton;
 
         public override event Action OnMenuBack;
 
