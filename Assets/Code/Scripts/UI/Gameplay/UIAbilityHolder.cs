@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using Zenject;
 using Core.Gameplay;
+using Core.Infrastructure.Service;
 using Core.Infrastructure.Factories;
 
 namespace Core.UI.Gameplay
@@ -13,14 +14,16 @@ namespace Core.UI.Gameplay
         [SerializeField] private Button _supperAbilityButton;
 
         private IAbilityFactory _abilityFactory;
+        private UIAudioService _uiAudioService;
         private AbilityThrowMode _abilityThrowMode;
 
         private Button _clickedButton;
 
         [Inject] 
-        private void Construct(IAbilityFactory abilityFactory, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAbilityFactory abilityFactory, UIAudioService uiAudioService, AbilityThrowMode abilityThrowMode)
         {
             _abilityFactory = abilityFactory;
+            _uiAudioService = uiAudioService;
             _abilityThrowMode = abilityThrowMode;
         }
 
@@ -46,7 +49,8 @@ namespace Core.UI.Gameplay
 
         private void HandleButtonClick(Button button, CellType type)
         {
-            if(button == _clickedButton && _abilityThrowMode.IsActive)
+            _uiAudioService.PlaySound(UISoundType.Click);
+            if (button == _clickedButton && _abilityThrowMode.IsActive)
             {
                 _clickedButton = null;
                 _abilityThrowMode.DisableAbilityThrowMode();
