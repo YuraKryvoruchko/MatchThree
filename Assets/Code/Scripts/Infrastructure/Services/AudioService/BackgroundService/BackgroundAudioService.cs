@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Audio;
-using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.Infrastructure.Service
 {
@@ -10,20 +10,19 @@ namespace Core.Infrastructure.Service
         LoadingScreen,
         Gameplay
     }
-    public class BackgroundAudioService : MonoBehaviour
+    public class BackgroundAudioService : IDisposable
     {
-        [Header("Music Settings")]
-        [SerializeField] private AudioSource _backgroundSoundSource;
-        [SerializeField] private AudioListByType[] _audioClips;
-        [Header("Audio Group")]
-        [SerializeField] private string _volumeParameterName;
-        [SerializeField] private AudioMixerGroup _musicGroup;
+        private AudioSource _backgroundSoundSource;
+        private AudioListByType[] _audioClips;
+
+        private string _volumeParameterName;
+        private AudioMixerGroup _musicGroup;
 
         private BackgroundMusicType _currentMusicType;
         private int _currentClipIndex;
 
-        [System.Serializable]
-        private struct AudioListByType
+        [Serializable]
+        public struct AudioListByType
         {
 #if UNITY_EDITOR
             public string InspectorName;
@@ -32,7 +31,21 @@ namespace Core.Infrastructure.Service
             public AssetReferenceAudioClip[] Clips;
         }
 
-        [ProPlayButton]
+        public BackgroundAudioService(BackgroundAudioServiceConfig config)
+        {
+            _backgroundSoundSource = GameObject.Instantiate(config.BackgroundSoundSourcePrefab);
+            _audioClips = config.AudioClips;
+            _volumeParameterName = config.VolumeParameterName;
+            _musicGroup = config.MusicGroup;
+            _backgroundSoundSource.outputAudioMixerGroup = _musicGroup;
+        }
+        void IDisposable.Dispose()
+        {
+            foreach (AudioListByType list in _audioClips)
+                UnloadMusicByType(list.Type);
+            GameObject.Destroy(_backgroundSoundSource);
+        }
+
         public async void PlayBackgroundMusicByType(BackgroundMusicType backgroundMusicType)
         {
             if(_currentMusicType != backgroundMusicType)
@@ -49,7 +62,7 @@ namespace Core.Infrastructure.Service
                 if (_currentClipIndex >= list.Clips.Length)
                     _currentClipIndex = 0;
 
-                if(list.Clips[_currentClipIndex].Asset == null)
+                if (list.Clips[_currentClipIndex].Asset == null)
                 {
                     if (!list.Clips[_currentClipIndex].IsDone && list.Clips[_currentClipIndex].OperationHandle.PercentComplete < 1f)
                         await list.Clips[_currentClipIndex].OperationHandle.Task;
@@ -63,12 +76,10 @@ namespace Core.Infrastructure.Service
                 break;
             }
         }
-        [ProPlayButton]
         public void PauseBackgroundMusic()
         {
             _backgroundSoundSource.Pause();
         }
-        [ProPlayButton]
         public void UnPauseBackgroundMusic()
         {
             _backgroundSoundSource.UnPause();
