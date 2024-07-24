@@ -89,6 +89,12 @@ namespace Core.Infrastructure.Service
         {
             _musicGroup.audioMixer.SetFloat(_volumeParameterName, volume);
         }
+        public float GetVolume()
+        {
+            float value = 0f;
+            _musicGroup.audioMixer.GetFloat(_volumeParameterName, out value);
+            return value;
+        }
 
         private void UnloadMusicByType(BackgroundMusicType backgroundMusicType)
         {

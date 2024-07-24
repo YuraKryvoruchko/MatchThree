@@ -58,5 +58,11 @@ namespace Core.Infrastructure.Service
         {
             _audioMixerGroup.audioMixer.SetFloat(_volumeParameterName, value);
         }
+        public float GetVolume()
+        {
+            float value = 0f;
+            _audioMixerGroup.audioMixer.GetFloat(_volumeParameterName, out value);
+            return value;
+        }
     }
 }

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc76f9b8e8ddbba4b91bf3d412f59ce5, type: 3}
   m_Name: BackgroundAudioServiceConfig
   m_EditorClassIdentifier: 
-  BackgroundSoundSourcePrefab: {fileID: -7296281246481904764, guid: 646372533f2e3b64795dd2b30ddafb88, type: 3}
   AudioClips:
   - InspectorName: Main Menu
     Type: 0
@@ -28,5 +27,5 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 1
-  VolumeParameterName: BackgorundVolume
+  VolumeParameterName: BackgroundVolume
   MusicGroup: {fileID: 175272508991637250, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
