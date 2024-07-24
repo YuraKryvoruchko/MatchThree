@@ -72,6 +72,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32d4b1811dda14a6cb9e059ee8ad17d2
+    m_Address: Audio/DM-CGS-01.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81652031b64c342cc8dbc59c138d77c5
+    m_Address: Audio/DM-CGS-19.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:

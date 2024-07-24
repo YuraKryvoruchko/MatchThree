@@ -4,36 +4,20 @@ using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.Infrastructure.Service
 {
-    public enum AudioType
-    {
-        Music,
-        Sound,
-        UI
-    }
     public enum BackgroundMusicType
     {
         MainMenu,
         LoadingScreen,
         Gameplay
     }
-    public enum UISound
-    {
-        Click,
-        Switch
-    }
-    public class AudioService : MonoBehaviour
+    public class BackgroundAudioService : MonoBehaviour
     {
         [Header("Music Settings")]
         [SerializeField] private AudioSource _backgroundSoundSource;
         [SerializeField] private AudioListByType[] _audioClips;
-        [Header("UI Sound Settings")]
-        [SerializeField] private AudioSource _uiSoundSource;
-        [SerializeField] private AssetReferenceAudioClip _clickClip;
-        [SerializeField] private AssetReferenceAudioClip _switchClip;
-        [Header("Audio Groups")]
+        [Header("Audio Group")]
+        [SerializeField] private string _volumeParameterName;
         [SerializeField] private AudioMixerGroup _musicGroup;
-        [SerializeField] private AudioMixerGroup _soundGroup;
-        [SerializeField] private AudioMixerGroup _uiGroup;
 
         private BackgroundMusicType _currentMusicType;
         private int _currentClipIndex;
@@ -89,9 +73,9 @@ namespace Core.Infrastructure.Service
         {
             _backgroundSoundSource.UnPause();
         }
-        public void SetBackgroundMusicMuteMode(bool isMute)
+        public void SetVolume(float volume)
         {
-            _backgroundSoundSource.mute = isMute;
+            _musicGroup.audioMixer.SetFloat(_volumeParameterName, volume);
         }
 
         private void UnloadMusicByType(BackgroundMusicType backgroundMusicType)
