@@ -22,6 +22,7 @@ namespace Core.UI
         private ILoadingScreenProvider _loadingScreenProvider;
 
         private SceneService _sceneService;
+        private UIAudioService _uiAudioService;
 
         private class GameplaySceneLoadingOperation : ILoadingOperation
         {
@@ -51,15 +52,17 @@ namespace Core.UI
         }
 
         [Inject]
-        private void Construct(SceneService sceneService, ILoadingScreenProvider loadingScreenProvider)
+        private void Construct(SceneService sceneService, UIAudioService uiAudioService, ILoadingScreenProvider loadingScreenProvider)
         {
             _sceneService = sceneService;
+            _uiAudioService = uiAudioService;
             _loadingScreenProvider = loadingScreenProvider;
         }
 
         private void Awake()
         {
             _startLongModeButton.onClick.AddListener(LoadLongMode);
+            _startLongModeButton.onClick.AddListener(() => _uiAudioService.PlaySound(UISoundType.Click));
         }
         private void OnDestroy()
         {

@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 
 namespace Core.Infrastructure.Service
 {
-    public enum SoundType
+    public enum UISoundType
     {
         Click,
         Switch
@@ -21,15 +21,15 @@ namespace Core.Infrastructure.Service
         [SerializeField] private string _volumeParameterName;
         [SerializeField] private AudioMixerGroup _audioMixerGroup;
 
-        private Dictionary<SoundType, AssetReferenceAudioClip> _typeClipDictionary;
+        private Dictionary<UISoundType, AssetReferenceAudioClip> _typeClipDictionary;
 
         public UIAudioService(UIAudioServiceConfig config)
         {
-            _uiSource = GameObject.Instantiate(config.UISourcePrefab);
-            _typeClipDictionary = new Dictionary<SoundType, AssetReferenceAudioClip>()
+            _uiSource = new GameObject("UIAudioServiceSource").AddComponent<AudioSource>();
+            _typeClipDictionary = new Dictionary<UISoundType, AssetReferenceAudioClip>()
             {
-                { SoundType.Click, config.ClickClip },
-                { SoundType.Switch, config.SwitchClip }
+                { UISoundType.Click, config.ClickClip },
+                { UISoundType.Switch, config.SwitchClip }
             };
             _volumeParameterName = config.VolumeParameterName;
             _audioMixerGroup = config.Group;
@@ -42,7 +42,7 @@ namespace Core.Infrastructure.Service
             _typeClipDictionary.Clear();
         }
 
-        public async void PlaySound(SoundType type)
+        public async void PlaySound(UISoundType type)
         {
             AssetReferenceAudioClip clip = _typeClipDictionary[type];
             if (clip.Asset == null)

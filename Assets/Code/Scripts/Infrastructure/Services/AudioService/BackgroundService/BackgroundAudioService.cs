@@ -33,7 +33,8 @@ namespace Core.Infrastructure.Service
 
         public BackgroundAudioService(BackgroundAudioServiceConfig config)
         {
-            _backgroundSoundSource = GameObject.Instantiate(config.BackgroundSoundSourcePrefab);
+
+            _backgroundSoundSource = new GameObject("BackgroundAudioServiceSource").AddComponent<AudioSource>();
             _audioClips = config.AudioClips;
             _volumeParameterName = config.VolumeParameterName;
             _musicGroup = config.MusicGroup;

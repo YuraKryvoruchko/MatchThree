@@ -7,7 +7,6 @@ namespace Core.Infrastructure.Service
     public class BackgroundAudioServiceConfig : ScriptableObject
     {
         [Header("Music Settings")]
-        public AudioSource BackgroundSoundSourcePrefab;
         public BackgroundAudioService.AudioListByType[] AudioClips;
         [Header("Audio Group")]
         public string VolumeParameterName;
