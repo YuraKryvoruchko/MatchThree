@@ -5,17 +5,24 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Factories;
 using Core.Gameplay;
 using Core.UI.Gameplay;
+using Core.Infrastructure.Service;
 
 namespace Core.Infrastructure.Gameplay
 {
     public class GameplayInstaller : MonoInstaller
     {
+        [Header("Game Objects")]
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private GameField _gameField;
+        [Header("Startups")]
         [SerializeField] private GameplayUIStartup _uiStartup;
+        [Header("Input")]
         [SerializeField] private SwipeDetection _swipeDetection;
+        [Header("Configs\nFabrics")]
         [SerializeField] private FieldCellFabric.FieldCellFabricConfig _cellFabricConfig;
         [SerializeField] private AbilityFactory.AbilityFactoryConfig _abilityFactoryConfig;
+        [Header("Services")]
+        [SerializeField] private GameplayAudioServiceConfig _gameplayAudioServiceConfig;
 
         public override void InstallBindings()
         {
@@ -24,6 +31,7 @@ namespace Core.Infrastructure.Gameplay
             BindSwipeDetection();
             BindCellClickDetection();
             BindCellSwipeDetection();
+            BindGameplayAudioService();
             BindGameField();
             BindAbilityThrowMode();
             BindGameScoreTracking();
@@ -66,6 +74,13 @@ namespace Core.Infrastructure.Gameplay
                 .BindInterfacesAndSelfTo<CellSwipeDetection>()
                 .AsSingle()
                 .WithArguments(_mainCamera);
+        }
+        private void BindGameplayAudioService()
+        {
+            Container
+                .BindInterfacesAndSelfTo<GameplayAudioService>()
+                .AsSingle()
+                .WithArguments(_gameplayAudioServiceConfig);
         }
         private void BindGameField()
         {

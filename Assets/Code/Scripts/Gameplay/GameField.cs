@@ -4,6 +4,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Zenject;
 using Core.Gameplay.Input;
+using Core.Infrastructure.Service;
 using Core.Infrastructure.Factories;
 
 namespace Core.Gameplay
@@ -23,6 +24,7 @@ namespace Core.Gameplay
 
         private ICellFabric _cellFabric;
         private IAbilityFactory _abilityFactory;
+        private GameplayAudioService _audioService;
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
@@ -43,12 +45,13 @@ namespace Core.Gameplay
         }
 
         [Inject]
-        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, CellSwipeDetection cellSwipeDetection)
+        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, GameplayAudioService gameplayAudioService, CellSwipeDetection cellSwipeDetection)
         {
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
             _cellSwipeDetection = cellSwipeDetection;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
+            _audioService = gameplayAudioService;
         }
 
         private void OnDestroy()
@@ -195,6 +198,7 @@ namespace Core.Gameplay
             UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
             _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
             _map[secondYPosition, secondXPosition] = tmpCell;
+            _audioService.PlaySound(VFXSoundType.ElementSwitch);
 
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }

@@ -871,6 +871,7 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  _gameplayAudioServiceConfig: {fileID: 11400000, guid: 2a5dad3cfcc6b924aadcdb529060035c, type: 2}
 --- !u!114 &1408872459
 MonoBehaviour:
   m_ObjectHideFlags: 0
