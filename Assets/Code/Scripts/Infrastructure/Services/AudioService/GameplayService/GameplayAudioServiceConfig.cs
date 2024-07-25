@@ -8,6 +8,7 @@ namespace Core.Infrastructure.Service
     {
         [Header("Sounds")]
         public AssetReferenceAudioClip SwitchClip;
+        public AssetReferenceAudioClip DestroyClip;
         [Header("Audio Group")]
         public string VolumeParameterName;
         public AudioMixerGroup Group;

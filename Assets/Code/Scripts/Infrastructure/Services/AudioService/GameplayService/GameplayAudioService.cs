@@ -7,7 +7,8 @@ namespace Core.Infrastructure.Service
 {
     public enum VFXSoundType
     {
-        ElementSwitch
+        ElementSwitch,
+        DestroyElement
     }
     public class GameplayAudioService : IDisposable
     {
@@ -26,7 +27,8 @@ namespace Core.Infrastructure.Service
             _uiSource = new GameObject("GameplayAudioServiceSource").AddComponent<AudioSource>();
             _typeClipDictionary = new Dictionary<VFXSoundType, AssetReferenceAudioClip>()
             {
-                { VFXSoundType.ElementSwitch, config.SwitchClip }
+                { VFXSoundType.ElementSwitch, config.SwitchClip },
+                { VFXSoundType.DestroyElement, config.DestroyClip }
             };
             _volumeParameterName = config.VolumeParameterName;
             _audioMixerGroup = config.Group;

@@ -163,6 +163,7 @@ namespace Core.Gameplay
             {
                 return;
             }
+            _audioService.PlaySound(VFXSoundType.DestroyElement);
             Cell cell = _map[yPosition, xPosition];
             await cell.Explode();
             if (cell.IsMove)

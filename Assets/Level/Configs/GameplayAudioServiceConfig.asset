@@ -17,5 +17,10 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  DestroyClip:
+    m_AssetGUID: 29bde6326b4c34ad8a12da475f79b50a
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   VolumeParameterName: SFXVolume
   Group: {fileID: 7750619700486574308, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}

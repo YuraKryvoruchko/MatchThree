@@ -144,6 +144,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lightningBolt: {fileID: 468997418178540217}
   _audioSource: {fileID: -6516810477135994539}
+  _assetReferenceAudioClip:
+    m_AssetGUID: a15c0f3fe74004cf89b51cfd5604f582
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
 --- !u!1 &7594147613434331839
 GameObject:
   m_ObjectHideFlags: 0

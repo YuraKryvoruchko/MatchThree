@@ -34,6 +34,7 @@
 - [FREE Casual Game SFX Pack](https://assetstore.unity.com/packages/audio/sound-fx/free-casual-game-sfx-pack-54116)
 - [Casual Game Fx One Shot](https://assetstore.unity.com/packages/audio/sound-fx/casual-game-fx-one-shot-264212)
 - [Free - Casual & Relaxing Game Music Pack](https://assetstore.unity.com/packages/audio/music/free-casual-relaxing-game-music-pack-262740)
+- [Demo Ancient Magic Pack FREE](https://assetstore.unity.com/packages/audio/sound-fx/weapons/demo-ancient-magic-pack-free-175093#description)
 
 ## Tools:
 
