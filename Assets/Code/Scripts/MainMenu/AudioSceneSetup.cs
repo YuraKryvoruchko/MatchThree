@@ -1,12 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 using Core.Infrastructure.Service;
 
-namespace Core.Gameplay
+namespace Core.MainMenu
 {
-    public class GameplayLevelSetup : MonoBehaviour
+    public class AudioSceneSetup : MonoBehaviour
     {
-        [SerializeField] private AudioPath _backgroundAudioPath;
+        [SerializeField] private AudioPath _path;
 
         private AudioService _audioService;
 
@@ -14,7 +14,7 @@ namespace Core.Gameplay
         private void Construct(AudioService audioService)
         {
             _audioService = audioService;
-            _audioService.Play(_backgroundAudioPath);
+            _audioService.Play(_path);
         }
     }
 }

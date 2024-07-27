@@ -99,6 +99,12 @@ MonoBehaviour:
   _quitButton: {fileID: 8519507132603593053}
   _musicButton: {fileID: 1538703925918447550}
   _soundButton: {fileID: 6272893339537115986}
+  _uiClickKey:
+    Type: 1
+    Key: Click
+  _uiSwitchKey:
+    Type: 1
+    Key: Switch
 --- !u!1 &4801903508079073455
 GameObject:
   m_ObjectHideFlags: 0

@@ -62,7 +62,7 @@ namespace Core.Gameplay
                     transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, _progress);
                 else
                     transform.position = Vector3.Lerp(_startPosition, _endPosition, _progress);
-                await UniTask.Yield(PlayerLoopTiming.Update);
+                await UniTask.Yield(PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
             }
 
             if (inLocal)

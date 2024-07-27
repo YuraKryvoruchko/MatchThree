@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
+using Cysharp.Threading.Tasks;
+using ModestTree;
 
 namespace Core.Infrastructure.Service
 {
+    [Serializable]
+    public struct AudioPath
+    {
+        public AudioFileType Type;
+        public string Key;
+    }
     public class AudioService : IInitializable, IDisposable
     {
         private AudioMixerGroup _masterGroup;
@@ -43,7 +51,7 @@ namespace Core.Infrastructure.Service
         void IDisposable.Dispose() 
         {
             foreach (var pair in _audioSourceDictionary)
-                GameObject.Destroy(pair.Value);
+                GameObject.Destroy(pair.Value.gameObject);
             foreach (var pair in _audioFileDictionary)
                 UnLoadAudioFile(pair.Key);
 
@@ -51,14 +59,18 @@ namespace Core.Infrastructure.Service
             _audioFileDictionary.Clear();
         }
 
-        public void LoadAudioFile(AudioFile file)
+        public async UniTask LoadAudioFile(AudioFile file)
         {
             _audioFileDictionary.Add(file.Type, file);
+
+            List<UniTask> tasks = new List<UniTask>();
             foreach (AudioFile.ClipKey clip in file.AudioClips)
             {
                 if (clip.LoadImmediately)
-                    clip.AudioClip.LoadAssetAsync();
+                    tasks.Add(clip.AudioClip.LoadAssetAsync().ToUniTask());
             }
+            await UniTask.WhenAll(tasks);
+
             AudioSource source = new GameObject($"{file.Type}AudioSource").AddComponent<AudioSource>();
             source.transform.SetParent(_sourceContainer);
             source.outputAudioMixerGroup = GetGroup(file.GroupType);
@@ -73,14 +85,15 @@ namespace Core.Infrastructure.Service
                 clip.AudioClip.ReleaseAsset();
             }
             _audioFileDictionary.Remove(file.Type);
+            GameObject.Destroy(_audioSourceDictionary.GetValueAndRemove(file.Type));
         }
 
-        public async void Play(AudioFileType fileType, string fileKey, float volume = 1f)
+        public async void Play(AudioPath audioPath, float volume = 1f)
         {
-            AudioFile file = _audioFileDictionary[fileType];
+            AudioFile file = _audioFileDictionary[audioPath.Type];
             for(int i = 0; i < file.AudioClips.Length; i++)
             {
-                if (file.AudioClips[i].Key != fileKey)
+                if (file.AudioClips[i].Key != audioPath.Key)
                     continue;
 
                 AudioSource source = _audioSourceDictionary[file.Type];
@@ -89,12 +102,12 @@ namespace Core.Infrastructure.Service
                 source.Play();
             }
         }
-        public async void PlayOneShot(AudioFileType fileType, string fileKey, float volume = MAX_VOLUME)
+        public async void PlayOneShot(AudioPath audioPath, float volume = 1f)
         {
-            AudioFile file = _audioFileDictionary[fileType];
+            AudioFile file = _audioFileDictionary[audioPath.Type];
             for (int i = 0; i < file.AudioClips.Length; i++)
             {
-                if (file.AudioClips[i].Key != fileKey)
+                if (file.AudioClips[i].Key != audioPath.Key)
                     continue;
 
                 AudioSource source = _audioSourceDictionary[file.Type];
@@ -121,6 +134,13 @@ namespace Core.Infrastructure.Service
         {
             AudioMixerGroup mixerGroup = GetGroup(type);
             mixerGroup.audioMixer.SetFloat(GetVolumeParameter(type), volume);
+        }
+        public float GetVolume(AudioGroupType type)
+        {
+            AudioMixerGroup mixerGroup = GetGroup(type);
+            float volume = 0;
+            mixerGroup.audioMixer.GetFloat(GetVolumeParameter(type), out volume);
+            return volume;
         }
 
         private AudioMixerGroup GetGroup(AudioGroupType audioGroupType)

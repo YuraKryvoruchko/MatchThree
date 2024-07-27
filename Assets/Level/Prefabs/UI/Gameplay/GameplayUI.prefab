@@ -4789,6 +4789,9 @@ MonoBehaviour:
   _bombAbilityButton: {fileID: 4380141065057351328}
   _lightningBoltAbilityButton: {fileID: 4659192713236642494}
   _supperAbilityButton: {fileID: 3181104170068080982}
+  _uiClickKey:
+    Type: 0
+    Key: 
 --- !u!1 &6625352945011155443
 GameObject:
   m_ObjectHideFlags: 0
@@ -5425,6 +5428,9 @@ MonoBehaviour:
   _pauseMenu: {fileID: 1669075347783396232}
   _uiAbilityHolder: {fileID: 161799672124883268}
   _popupPrefab: {fileID: -2494657810328607965, guid: 23fc5a063bf1f5944a635c0281e062ab, type: 3}
+  _uiClickKey:
+    Type: 1
+    Key: Click
 --- !u!1 &6765317354783069148
 GameObject:
   m_ObjectHideFlags: 0

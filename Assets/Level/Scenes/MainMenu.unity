@@ -627,6 +627,12 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _clickAudioPath:
+    Type: 1
+    Key: Click
+  _gameplayLoadingAudioFiles:
+  - {fileID: 11400000, guid: 3c438a46fecf9704085963d0cce227a4, type: 2}
+  - {fileID: 11400000, guid: 60c9c9c33c7ad0449be51a086fef85c0, type: 2}
 --- !u!1 &285666505
 GameObject:
   m_ObjectHideFlags: 0
@@ -1649,6 +1655,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44465e5dd23561040a3520fb1f522c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _path:
+    Type: 0
+    Key: MainMenu
 --- !u!1 &1688626779
 GameObject:
   m_ObjectHideFlags: 0

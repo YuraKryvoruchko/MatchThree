@@ -20,11 +20,13 @@ namespace Core.Gameplay
         [SerializeField] private CellConfig[] _cellConfigs;
         [Header("Cell Settings")]
         [SerializeField] private float _interval;
-        [Header("Other Services")]
+        [Header("Audio Keys")]
+        [SerializeField] private AudioPath _swipeAudio;
+        [SerializeField] private AudioPath _destroyAudio;
 
         private ICellFabric _cellFabric;
         private IAbilityFactory _abilityFactory;
-        private GameplayAudioService _audioService;
+        private AudioService _audioService;
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
@@ -45,13 +47,13 @@ namespace Core.Gameplay
         }
 
         [Inject]
-        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, GameplayAudioService gameplayAudioService, CellSwipeDetection cellSwipeDetection)
+        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, AudioService audioService, CellSwipeDetection cellSwipeDetection)
         {
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
             _cellSwipeDetection = cellSwipeDetection;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
-            _audioService = gameplayAudioService;
+            _audioService = audioService;
         }
 
         private void OnDestroy()
@@ -163,7 +165,7 @@ namespace Core.Gameplay
             {
                 return;
             }
-            _audioService.PlaySound(VFXSoundType.DestroyElement);
+            _audioService.PlayOneShot(_destroyAudio);
             Cell cell = _map[yPosition, xPosition];
             await cell.Explode();
             if (cell.IsMove)
@@ -199,7 +201,7 @@ namespace Core.Gameplay
             UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
             _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
             _map[secondYPosition, secondXPosition] = tmpCell;
-            _audioService.PlaySound(VFXSoundType.ElementSwitch);
+            _audioService.PlayOneShot(_swipeAudio);
 
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }

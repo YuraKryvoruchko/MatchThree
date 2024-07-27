@@ -16,17 +16,18 @@ namespace Core.UI.Gameplay
         [Header("Switched Button")]
         [SerializeField] private SwitchButton _musicButton;
         [SerializeField] private SwitchButton _soundButton;
+        [Header("Audio Keys")]
+        [SerializeField] private AudioPath _uiClickKey;
+        [SerializeField] private AudioPath _uiSwitchKey;
 
-        private UIAudioService _uiAudioService;
-        private BackgroundAudioService _backgroundAudioService;
+        private AudioService _audioService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(BackgroundAudioService backgroundAudioService, UIAudioService uiAudioService)
+        private void Construct(AudioService audioService)
         {
-            _uiAudioService = uiAudioService;
-            _backgroundAudioService = backgroundAudioService;
+            _audioService = audioService;
         }
 
         protected override void OnShow()
@@ -40,8 +41,8 @@ namespace Core.UI.Gameplay
             _soundButton.Button.onClick.AddListener(SwitchSoundsVolume);
             _soundButton.Button.onClick.AddListener(SwitchSound);
 
-            _musicButton.SetActive(!(_backgroundAudioService.GetVolume() < 0f));
-            _soundButton.SetActive(!(_uiAudioService.GetVolume() < 0f));
+            _musicButton.SetActive(!(_audioService.GetVolume(AudioGroupType.Music) < 0f));
+            _soundButton.SetActive(!(_audioService.GetVolume(AudioGroupType.Sound) < 0f));
         }
         protected override void OnHide()
         {
@@ -80,28 +81,30 @@ namespace Core.UI.Gameplay
 
         private void SwitchBackgroundMusicVolume()
         {
-            if (_backgroundAudioService.GetVolume() < 0f)
-                _backgroundAudioService.SetVolume(0f);
+            if (_audioService.GetVolume(AudioGroupType.Music) < 0f)
+                _audioService.MuteGroup(AudioGroupType.Music, false);
             else
-                _backgroundAudioService.SetVolume(-80f);
+                _audioService.MuteGroup(AudioGroupType.Music, true);
+
             _musicButton.Switch();
         }
         private void SwitchSoundsVolume()
         {
-            if(_uiAudioService.GetVolume() < 0)
-                _uiAudioService.SetVolume(0f);
+            if (_audioService.GetVolume(AudioGroupType.Sound) < 0f)
+                _audioService.MuteGroup(AudioGroupType.Sound, false);
             else
-                _uiAudioService.SetVolume(-80f);
+                _audioService.MuteGroup(AudioGroupType.Sound, true);
+
             _soundButton.Switch();
         }
 
         private void ClickSound()
         {
-            _uiAudioService.PlaySound(UISoundType.Click);
+            _audioService.PlayOneShot(_uiClickKey);
         }
         private void SwitchSound()
         {
-            _uiAudioService.PlaySound(UISoundType.Switch);
+            _audioService.PlayOneShot(_uiSwitchKey);
         }
     }
 }

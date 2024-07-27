@@ -9,32 +9,23 @@ namespace Core.Infrastructure.Boot
     public class BootstrapInstaller : MonoInstaller
     {
         [Header("Audio Settings")]
-        [SerializeField] private BackgroundAudioServiceConfig _backgroundAudioServiceConfig;
-        [SerializeField] private UIAudioServiceConfig _UIAudioServiceConfig;
+        [SerializeField] private AudioServiceConfig _audioServiceConfig;
         [Header("Loading Screen")]
         [SerializeField] private AssetReference _loadingScreenPrefabReference;
 
         public override void InstallBindings()
         {
-            BindBackgroundAudioService();
-            BindUIAudioService();
+            BindAudioService();
             BindSceneService();
             BindLoadingScreenProvider();
         }
         
-        private void BindBackgroundAudioService()
+        private void BindAudioService()
         {
             Container
-                .BindInterfacesAndSelfTo<BackgroundAudioService>()
+                .BindInterfacesAndSelfTo<AudioService>()
                 .AsSingle()
-                .WithArguments(_backgroundAudioServiceConfig);
-        }
-        private void BindUIAudioService()
-        {
-            Container
-                .BindInterfacesAndSelfTo<UIAudioService>()
-                .AsSingle()
-                .WithArguments(_UIAudioServiceConfig);
+                .WithArguments(_audioServiceConfig);
         }
         private void BindSceneService()
         {

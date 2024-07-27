@@ -6,6 +6,9 @@ using Cysharp.Threading.Tasks;
 using Core.Infrastructure.Service;
 using Code.Infrastructure.Loading;
 using System;
+using UnityEditor.Search;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Core.UI
 {
@@ -18,12 +21,38 @@ namespace Core.UI
         [Header("Scene Keys")]
         [SerializeField] private AssetReference _mainMenuScene;
         [SerializeField] private AssetReference _gamePlayScene;
+        [Header("Audio Keys")]
+        [SerializeField] private AudioPath _clickAudioPath;
+        [SerializeField] private AudioFile[] _gameplayLoadingAudioFiles;
 
         private ILoadingScreenProvider _loadingScreenProvider;
 
         private SceneService _sceneService;
-        private UIAudioService _uiAudioService;
+        private AudioService _audioService;
 
+        private class MainMenuMusicUnloadingOperation : ILoadingOperation
+        {
+            private AudioService _audioService;
+            private AudioFileType[] _audioTypes;
+
+            string ILoadingOperation.Description => "Unloading main menu audio...";
+
+            public MainMenuMusicUnloadingOperation(AudioService audioService, AudioFileType[] types)
+            {
+                _audioService = audioService;
+                _audioTypes = types;
+            }
+
+            async UniTask ILoadingOperation.Load(Action<float> onProgress)
+            {
+                float progressStep = 1f / _audioTypes.Length;
+                for (int i = 0; i < _audioTypes.Length; i++)
+                {
+                    _audioService.UnLoadAudioFile(_audioTypes[i]);
+                    onProgress?.Invoke(progressStep * (i + 1));
+                }
+            }
+        }
         private class GameplaySceneLoadingOperation : ILoadingOperation
         {
             private AssetReference _gamePlayScene;
@@ -50,19 +79,42 @@ namespace Core.UI
                 onProgress?.Invoke(1f);
             }
         }
+        private class GameplayAudioLoadingOperation : ILoadingOperation
+        {
+            private AudioService _audioService;
+            private AudioFile[] _audioFiles;
+
+            string ILoadingOperation.Description => "Loading audio...";
+
+            public GameplayAudioLoadingOperation(AudioService audioService, AudioFile[] files)
+            {
+                _audioService = audioService;
+                _audioFiles = files;
+            }
+
+            async UniTask ILoadingOperation.Load(Action<float> onProgress)
+            {
+                float progressStep = 1f / _audioFiles.Length;
+                for (int i = 0; i < _audioFiles.Length; i++)
+                {
+                    await _audioService.LoadAudioFile(_audioFiles[i]);
+                    onProgress?.Invoke(progressStep * (i + 1));
+                }
+            }
+        }
 
         [Inject]
-        private void Construct(SceneService sceneService, UIAudioService uiAudioService, ILoadingScreenProvider loadingScreenProvider)
+        private void Construct(SceneService sceneService, AudioService audioService, ILoadingScreenProvider loadingScreenProvider)
         {
             _sceneService = sceneService;
-            _uiAudioService = uiAudioService;
+            _audioService = audioService;
             _loadingScreenProvider = loadingScreenProvider;
         }
 
         private void Awake()
         {
             _startLongModeButton.onClick.AddListener(LoadLongMode);
-            _startLongModeButton.onClick.AddListener(() => _uiAudioService.PlaySound(UISoundType.Click));
+            _startLongModeButton.onClick.AddListener(() => _audioService.PlayOneShot(_clickAudioPath));
         }
         private void OnDestroy()
         {
@@ -71,8 +123,11 @@ namespace Core.UI
 
         private async void LoadLongMode()
         {
-            await _loadingScreenProvider.LoadAndDestroy(
-                new GameplaySceneLoadingOperation(_sceneService, _gamePlayScene, _mainMenuScene));
+            Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(3);
+            queue.Enqueue(new MainMenuMusicUnloadingOperation(_audioService, new AudioFileType[] { AudioFileType.Background }));
+            queue.Enqueue(new GameplayAudioLoadingOperation(_audioService, _gameplayLoadingAudioFiles));
+            queue.Enqueue(new GameplaySceneLoadingOperation(_sceneService, _gamePlayScene, _mainMenuScene));
+            await _loadingScreenProvider.LoadAndDestroy(queue);
         }
     }
 }

@@ -12,18 +12,20 @@ namespace Core.UI.Gameplay
         [SerializeField] private Button _bombAbilityButton;
         [SerializeField] private Button _lightningBoltAbilityButton;
         [SerializeField] private Button _supperAbilityButton;
+        [Header("Audio Keys")]
+        [SerializeField] private AudioPath _uiClickKey;
 
         private IAbilityFactory _abilityFactory;
-        private UIAudioService _uiAudioService;
+        private AudioService _audioService;
         private AbilityThrowMode _abilityThrowMode;
 
         private Button _clickedButton;
 
         [Inject] 
-        private void Construct(IAbilityFactory abilityFactory, UIAudioService uiAudioService, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAbilityFactory abilityFactory, AudioService audioService, AbilityThrowMode abilityThrowMode)
         {
             _abilityFactory = abilityFactory;
-            _uiAudioService = uiAudioService;
+            _audioService = audioService;
             _abilityThrowMode = abilityThrowMode;
         }
 
@@ -49,7 +51,7 @@ namespace Core.UI.Gameplay
 
         private void HandleButtonClick(Button button, CellType type)
         {
-            _uiAudioService.PlaySound(UISoundType.Click);
+            _audioService.PlayOneShot(_uiClickKey);
             if (button == _clickedButton && _abilityThrowMode.IsActive)
             {
                 _clickedButton = null;

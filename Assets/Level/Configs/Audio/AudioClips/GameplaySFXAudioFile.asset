@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abaf505745144e243b92e9cd453b8b1d, type: 3}
-  m_Name: GameplayAudioFile
+  m_Name: GameplaySFXAudioFile
   m_EditorClassIdentifier: 
   GroupType: 2
   Type: 2

@@ -10,22 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abaf505745144e243b92e9cd453b8b1d, type: 3}
-  m_Name: UIAudioFile
+  m_Name: MainMenuBackgroundMusicAudioFile
   m_EditorClassIdentifier: 
-  GroupType: 2
-  Type: 1
+  GroupType: 1
+  Type: 0
   AudioClips:
-  - Key: Click
+  - Key: MainMenu
     AudioClip:
-      m_AssetGUID: 32d4b1811dda14a6cb9e059ee8ad17d2
+      m_AssetGUID: eb7f10105313640a18ce7926041a4d76
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-    LoadImmediately: 0
-  - Key: Switch
-    AudioClip:
-      m_AssetGUID: 81652031b64c342cc8dbc59c138d77c5
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    LoadImmediately: 0
+    LoadImmediately: 1

@@ -15,17 +15,19 @@ namespace Core.UI.Gameplay
         [SerializeField] private UIAbilityHolder _uiAbilityHolder;
         [Header("Popups")]
         [SerializeField] private WindowBase _popupPrefab;
+        [Header("Audio Keys")]
+        [SerializeField] private AudioPath _uiClickKey;
 
         private IWindowService _windowService;
-        private UIAudioService _uiAudioService;
+        private AudioService _audioService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(IWindowService windowService, UIAudioService uiAudioService)
+        private void Construct(IWindowService windowService, AudioService audioService)
         {
             _windowService = windowService;
-            _uiAudioService = uiAudioService;
+            _audioService = audioService;
         }
 
         protected override void OnShow()
@@ -54,7 +56,7 @@ namespace Core.UI.Gameplay
 
         private void CreateMenuPopup()
         {
-            _uiAudioService.PlaySound(UISoundType.Click);
+            _audioService.PlayOneShot(_uiClickKey);
             _windowService.OpenPopup<WindowBase>(_popupPrefab.Path);
         }
     }

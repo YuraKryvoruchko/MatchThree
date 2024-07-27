@@ -195,7 +195,6 @@ GameObject:
   m_Component:
   - component: {fileID: 792083033}
   - component: {fileID: 792083032}
-  - component: {fileID: 792083031}
   - component: {fileID: 792083030}
   m_Layer: 0
   m_Name: SceneContext
@@ -216,21 +215,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e648468989a908f4d8651e94871243d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioFile: {fileID: 11400000, guid: 36dba29ef36233a49852bd2ec0a76444, type: 2}
-  _key: MainMenu
---- !u!114 &792083031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 792083029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a96539ab1aeb55e41ba25510986be8ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Config: {fileID: 11400000, guid: fd392ff78b916d247a5b600b3b8702a9, type: 2}
+  MusicFile: {fileID: 11400000, guid: 36dba29ef36233a49852bd2ec0a76444, type: 2}
+  SoundFile: {fileID: 11400000, guid: 60c9c9c33c7ad0449be51a086fef85c0, type: 2}
+  UIFile: {fileID: 11400000, guid: 0897647d1e98fb446ae03bed2bd1b8bb, type: 2}
 --- !u!114 &792083032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,8 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 792083031}
+  _monoInstallers: []
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -554,7 +540,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1873561414}
-  - component: {fileID: 1873561416}
   - component: {fileID: 1873561415}
   m_Layer: 0
   m_Name: Abilities
@@ -677,52 +662,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1873561416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873561413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7830c5e0d36b2b4c9859726e01f551c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AudioSource: {fileID: 1873561415}
-  Clip1: {fileID: 8300000, guid: a27ae245f760b4bf191c0234d3b43918, type: 3}
-  Clip2: {fileID: 8300000, guid: 2667a0a008b044e218b63df62e2be749, type: 3}
---- !u!1 &1948267007
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1948267010}
-  m_Layer: 0
-  m_Name: BackgroundAudioService
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1948267010
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1948267007}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 770.83344, y: 1106.3281, z: 0.6075}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2053581601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -792,5 +731,4 @@ SceneRoots:
   - {fileID: 1178783991}
   - {fileID: 792083033}
   - {fileID: 1408364021}
-  - {fileID: 1948267010}
   - {fileID: 1873561414}
