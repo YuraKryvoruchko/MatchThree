@@ -12,11 +12,12 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         Music,
         Sound
     }
-    public class AudioService
+    public class AudioService : IDisposable
     {
         private Dictionary<AudioGroupType, AudioBus> _audioBuses;
-
         private List<SourceInstance> _sourceInstances;
+
+        private Transform _sourceContainer;
 
         private class AudioBus
         {
@@ -29,11 +30,18 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         {
             _sourceInstances = new List<SourceInstance>();
             _audioBuses = new Dictionary<AudioGroupType, AudioBus>(config.TypeGroups.Length);
-            foreach(var key in config.TypeGroups)
+            _sourceContainer = new GameObject("AudioSourceContainer").transform;
+            foreach (var key in config.TypeGroups)
             {
                 AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), key.Type)}AudioSource", key.Group);
                 _audioBuses.Add(key.Type, new AudioBus() { Group = key.Group, Source = source, VolumeParamter = key.VolumeProperty });
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            foreach (SourceInstance instance in _sourceInstances)
+                ReleaseSource(instance);
         }
 
         public async void PlayOneShot(ClipEvent clipEvent)
@@ -114,6 +122,7 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         private AudioSource CreateAudioSource(string name, AudioMixerGroup group)
         {
             AudioSource source = new GameObject(name).AddComponent<AudioSource>();
+            source.transform.parent = _sourceContainer.transform;
             source.playOnAwake = false;
             source.outputAudioMixerGroup = group;
             return source;
