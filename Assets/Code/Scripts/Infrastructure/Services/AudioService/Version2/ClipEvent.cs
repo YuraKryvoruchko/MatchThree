@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure.Service;
+using System;
 using UnityEngine;
 
 namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
@@ -8,8 +9,44 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
     {
         [Header("Audio Settings")]
         public AudioGroupType AudioGroup;
-        public AssetReferenceAudioClip[] Clips;
+        public AudioClipSettings[] Clips;
         [Header("Properties")]
         public bool IsLoop;
+
+        [Serializable]
+        public class AudioClipSettings
+        {
+#if UNITY_EDITOR
+            [HideInInspector]
+            public string EditorAssetName;
+#endif
+            public AssetReferenceAudioClip AudioClip;
+            public LoadMode LoadMode;
+            public UnloadMode UnloadMode;
+        }
+
+        public enum LoadMode
+        {
+            None,
+            BeforeUse
+        }
+        public enum UnloadMode
+        {
+            None,
+            AfterUse
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            for(int i = 0; i < Clips.Length; i++)
+            {
+                if (Clips[i].AudioClip == null)
+                    continue;
+
+                Clips[i].EditorAssetName = Clips[i].AudioClip.editorAsset.name;
+            }
+        }
+#endif
     }
 }

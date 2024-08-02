@@ -1,6 +1,5 @@
 ﻿using Core.Infrastructure.Service;
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
@@ -14,6 +13,8 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
 
         public bool IsPause { get; private set; }
 
+        public event Action<SourceInstance> OnEndPlaying;
+
         public SourceInstance(AudioSource source, ClipEvent clipReference)
         {
             _source = source;
@@ -23,9 +24,9 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         public async void Play()
         {
             _currentClipIndex = 0;
-            AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex];
+            AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex].AudioClip;
             _source.clip = await clipReference.GetOrLoad();
-            AudioSourceEventModule module = _source.AddComponent<AudioSourceEventModule>();
+            AudioSourceEventModule module = _source.gameObject.AddComponent<AudioSourceEventModule>();
             module.OnEndPlay += SetNextClip;
             _source.Play();
         }
@@ -64,11 +65,12 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
                 else
                 {
                     _source.GetComponent<AudioSourceEventModule>().OnEndPlay -= SetNextClip;
+                    OnEndPlaying?.Invoke(this);
                     return;
                 }
             }
 
-            AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex];
+            AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex].AudioClip;
             _source.clip = await clipReference.GetOrLoad();
             _source.Play();
         }

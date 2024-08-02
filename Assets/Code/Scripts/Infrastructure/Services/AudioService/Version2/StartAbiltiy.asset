@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioGroup: 2
   Clips:
-  - m_AssetGUID: a0010a1a0c474473b81729eb770c485f
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
+  - EditorAssetName: DM-CGS-11
+    AudioClip:
+      m_AssetGUID: a0010a1a0c474473b81729eb770c485f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    LoadMode: 0
+    UnloadMode: 0
   IsLoop: 1

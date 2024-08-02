@@ -14,12 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioGroup: 1
   Clips:
-  - m_AssetGUID: eb7f10105313640a18ce7926041a4d76
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 458dd8822518c4f37bc3edba9b6c57d9
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 1
+  - EditorAssetName: Darkness
+    AudioClip:
+      m_AssetGUID: eb7f10105313640a18ce7926041a4d76
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    LoadMode: 0
+    UnloadMode: 0
+  - EditorAssetName: Mystery
+    AudioClip:
+      m_AssetGUID: 458dd8822518c4f37bc3edba9b6c57d9
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 1
+    LoadMode: 0
+    UnloadMode: 0
   IsLoop: 1

@@ -1,4 +1,5 @@
 ﻿using Core.Infrastructure.Service;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,14 +13,14 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         Music,
         Sound
     }
-    public class AudioService : IDisposable
+    public class AudioService : IAudioService, IDisposable
     {
-        private Dictionary<AudioGroupType, AudioBus> _audioBuses;
+        private Dictionary<AudioGroupType, GroupAudioComponent> _audioBuses;
         private List<SourceInstance> _sourceInstances;
 
         private Transform _sourceContainer;
 
-        private class AudioBus
+        private class GroupAudioComponent
         {
             public AudioMixerGroup Group;
             public string VolumeParamter;
@@ -29,12 +30,12 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         public AudioService(AudioServiceConfig config) 
         {
             _sourceInstances = new List<SourceInstance>();
-            _audioBuses = new Dictionary<AudioGroupType, AudioBus>(config.TypeGroups.Length);
+            _audioBuses = new Dictionary<AudioGroupType, GroupAudioComponent>(config.TypeGroups.Length);
             _sourceContainer = new GameObject("AudioSourceContainer").transform;
             foreach (var key in config.TypeGroups)
             {
                 AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), key.Type)}AudioSource", key.Group);
-                _audioBuses.Add(key.Type, new AudioBus() { Group = key.Group, Source = source, VolumeParamter = key.VolumeProperty });
+                _audioBuses.Add(key.Type, new GroupAudioComponent() { Group = key.Group, Source = source, VolumeParamter = key.VolumeProperty });
             }
         }
 
@@ -44,11 +45,15 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
                 ReleaseSource(instance);
         }
 
-        public async void PlayOneShot(ClipEvent clipEvent)
+        public void PlayOneShot(ClipEvent clipEvent)
         {
             if (clipEvent.Clips.Length == 1)
             {
-                _audioBuses[clipEvent.AudioGroup].Source.PlayOneShot(await clipEvent.Clips[0].GetOrLoad());
+                clipEvent.Clips[0].AudioClip.GetOrLoad().ContinueWith((clip) =>
+                {
+                    _audioBuses[clipEvent.AudioGroup].Source.PlayOneShot(clip);
+                    clipEvent.Clips[0].AudioClip.ReleaseAsset();
+                }).Forget();
             }
         }
         public void PlayOneShotOnPoint(ClipEvent clipEvent, Vector3 position) 
@@ -57,6 +62,7 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
             audioSource.spatialBlend = 1;
             audioSource.transform.position = position;
             SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
+            sourceInstance.OnEndPlaying += HandleEndSourceInstancePlaying;
             sourceInstance.Play();
             _sourceInstances.Add(sourceInstance);
         }
@@ -126,6 +132,12 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
             source.playOnAwake = false;
             source.outputAudioMixerGroup = group;
             return source;
+        }
+        private void HandleEndSourceInstancePlaying(SourceInstance sourceInstance)
+        {
+            sourceInstance.OnEndPlaying -= HandleEndSourceInstancePlaying;
+            sourceInstance.Dispose();
+            _sourceInstances.Remove(sourceInstance);
         }
     }
 }
