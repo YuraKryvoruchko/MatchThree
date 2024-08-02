@@ -15,11 +15,9 @@ namespace Assets.Code.Scripts.Infrastructure.Services.AudioService.Version
         }
         private void Update()
         {
-            Debug.Log($"Stats: {_source.time} > {_source.clip.length}");
             if (_source.time >= _source.clip.length)
             {
                 OnEndPlay?.Invoke();
-                Debug.Log("OnSoundEnd");
             }
         }
     }

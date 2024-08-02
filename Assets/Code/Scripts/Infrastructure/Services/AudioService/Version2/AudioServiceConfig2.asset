@@ -15,10 +15,10 @@ MonoBehaviour:
   TypeGroups:
   - Type: 0
     Group: {fileID: 24300002, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
-    VolumeProperty: 12312
+    VolumeProperty: MasterVolume
   - Type: 1
     Group: {fileID: 175272508991637250, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
-    VolumeProperty: 3232
+    VolumeProperty: BackgroundVolume
   - Type: 2
     Group: {fileID: 7750619700486574308, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
-    VolumeProperty: 221
+    VolumeProperty: SFXVolume
