@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.UI;
 
 namespace Core.UI.Gameplay
@@ -17,15 +17,15 @@ namespace Core.UI.Gameplay
         [SerializeField] private SwitchButton _musicButton;
         [SerializeField] private SwitchButton _soundButton;
         [Header("Audio Keys")]
-        [SerializeField] private AudioPath _uiClickKey;
-        [SerializeField] private AudioPath _uiSwitchKey;
+        [SerializeField] private ClipEvent _uiClickKey;
+        [SerializeField] private ClipEvent _uiSwitchKey;
 
-        private AudioService _audioService;
+        private IAudioService _audioService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(AudioService audioService)
+        private void Construct(IAudioService audioService)
         {
             _audioService = audioService;
         }
@@ -82,18 +82,18 @@ namespace Core.UI.Gameplay
         private void SwitchBackgroundMusicVolume()
         {
             if (_audioService.GetVolume(AudioGroupType.Music) < 0f)
-                _audioService.MuteGroup(AudioGroupType.Music, false);
+                _audioService.SetVolume(AudioGroupType.Music, 0f);
             else
-                _audioService.MuteGroup(AudioGroupType.Music, true);
+                _audioService.SetVolume(AudioGroupType.Music, -80f);
 
             _musicButton.Switch();
         }
         private void SwitchSoundsVolume()
         {
             if (_audioService.GetVolume(AudioGroupType.Sound) < 0f)
-                _audioService.MuteGroup(AudioGroupType.Sound, false);
+                _audioService.SetVolume(AudioGroupType.Sound, 0f);
             else
-                _audioService.MuteGroup(AudioGroupType.Sound, true);
+                _audioService.SetVolume(AudioGroupType.Sound, -80f);
 
             _soundButton.Switch();
         }

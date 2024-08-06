@@ -11,7 +11,6 @@ namespace Core.VFX.Abilities
         [SerializeField] private LightningBoltScript _lightningBolt;
         [Header("Audio")]
         [SerializeField] private AudioSource _audioSource;
-        [SerializeField] private AssetReferenceAudioClip _assetReferenceAudioClip;
 
         [ProPlayButton]
         public async void Play(Vector3 startPosition, Vector3 endPosition)
@@ -20,20 +19,12 @@ namespace Core.VFX.Abilities
             _lightningBolt.StartPosition = startPosition;
             _lightningBolt.EndPosition = endPosition;
             _lightningBolt.Trigger();
-
-            _audioSource.clip = await _assetReferenceAudioClip.GetOrLoad();
-            _audioSource.Play();
-            _assetReferenceAudioClip.ReleaseAsset();
         }
 
         [ProPlayButton]
         public void Pause(bool pause)
         {
             _lightningBolt.SetPause(pause);
-            if (pause)
-                _audioSource.Pause();
-            else
-                _audioSource.UnPause();
         }
     }
 }

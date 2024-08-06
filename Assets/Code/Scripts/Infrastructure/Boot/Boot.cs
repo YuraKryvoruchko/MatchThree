@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Zenject;
 using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 using Code.Infrastructure.Loading;
 
 namespace Core.Infrastructure.Boot
@@ -12,10 +13,10 @@ namespace Core.Infrastructure.Boot
     public class Boot : MonoBehaviour, IInitializable
     {
         [SerializeField] private AssetReference _mainMenuSceneReference;
-        [SerializeField] private AudioFile[] _mainMenuAudio;
+        [SerializeField] private ClipEvent[] _mainMenuAudio;
 
         private SceneService _sceneService;
-        private AudioService _audioService;
+        private IAudioService _audioService;
 
         private ILoadingScreenProvider _loadingScreenProvider;
 
@@ -44,11 +45,11 @@ namespace Core.Infrastructure.Boot
         private class MainMenuAudioLoadingOperation : ILoadingOperation
         {
             private AudioService _audioService;
-            private AudioFile[] _audioFiles;
+            private ClipEvent[] _audioFiles;
 
             string ILoadingOperation.Description => "Loading audio...";
 
-            public MainMenuAudioLoadingOperation(AudioService audioService, AudioFile[] files)
+            public MainMenuAudioLoadingOperation(AudioService audioService, ClipEvent[] files)
             {
                 _audioService = audioService;
                 _audioFiles = files;
@@ -56,17 +57,17 @@ namespace Core.Infrastructure.Boot
 
             async UniTask ILoadingOperation.Load(Action<float> onProgress)
             {
-                float progressStep = 1f / _audioFiles.Length;
-                for (int i = 0; i < _audioFiles.Length; i++)
-                {
-                    await _audioService.LoadAudioFile(_audioFiles[i]);
-                    onProgress?.Invoke(progressStep * (i + 1));
-                }
+                //float progressStep = 1f / _audioFiles.Length;
+                //for (int i = 0; i < _audioFiles.Length; i++)
+                //{
+                //    await _audioService.LoadAudioFile(_audioFiles[i]);
+                //    onProgress?.Invoke(progressStep * (i + 1));
+                //}
             }
         }
 
         [Inject]
-        private void Construct(SceneService sceneService, AudioService audioService, ILoadingScreenProvider loadingScreenProvider)
+        private void Construct(SceneService sceneService, IAudioService audioService, ILoadingScreenProvider loadingScreenProvider)
         {
             _sceneService = sceneService;
             _audioService = audioService;
@@ -77,7 +78,7 @@ namespace Core.Infrastructure.Boot
         {
             await Addressables.InitializeAsync();
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(2);
-            queue.Enqueue(new MainMenuAudioLoadingOperation(_audioService, _mainMenuAudio));
+            //queue.Enqueue(new MainMenuAudioLoadingOperation(_audioService, _mainMenuAudio));
             queue.Enqueue(new MainMenuSceneLoadingOperation(_sceneService, _mainMenuSceneReference));
             await _loadingScreenProvider.LoadAndDestroy(queue);
         }

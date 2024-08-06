@@ -1,6 +1,7 @@
 using UnityEngine;
 using Zenject;
 using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 using Code.Infrastructure.Loading;
 using UnityEngine.AddressableAssets;
 
@@ -23,7 +24,8 @@ namespace Core.Infrastructure.Boot
         private void BindAudioService()
         {
             Container
-                .BindInterfacesAndSelfTo<AudioService>()
+                .Bind<IAudioService>()
+                .To<AudioService>()
                 .AsSingle()
                 .WithArguments(_audioServiceConfig);
         }

@@ -2,8 +2,8 @@
 using UnityEngine.UI;
 using Zenject;
 using Core.Gameplay;
-using Core.Infrastructure.Service;
 using Core.Infrastructure.Factories;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.UI.Gameplay
 {
@@ -13,16 +13,16 @@ namespace Core.UI.Gameplay
         [SerializeField] private Button _lightningBoltAbilityButton;
         [SerializeField] private Button _supperAbilityButton;
         [Header("Audio Keys")]
-        [SerializeField] private AudioPath _uiClickKey;
+        [SerializeField] private ClipEvent _uiClickKey;
 
         private IAbilityFactory _abilityFactory;
-        private AudioService _audioService;
+        private IAudioService _audioService;
         private AbilityThrowMode _abilityThrowMode;
 
         private Button _clickedButton;
 
         [Inject] 
-        private void Construct(IAbilityFactory abilityFactory, AudioService audioService, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAbilityFactory abilityFactory, IAudioService audioService, AbilityThrowMode abilityThrowMode)
         {
             _abilityFactory = abilityFactory;
             _audioService = audioService;

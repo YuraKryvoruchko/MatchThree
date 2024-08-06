@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using Zenject;
-using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.MainMenu
 {
     public class AudioSceneSetup : MonoBehaviour
     {
-        [SerializeField] private AudioPath _path;
+        [SerializeField] private ClipEvent _path;
 
-        private AudioService _audioService;
+        private IAudioService _audioService;
 
         [Inject]
-        private void Construct(AudioService audioService)
+        private void Construct(IAudioService audioService)
         {
             _audioService = audioService;
-            _audioService.Play(_path);
+            _audioService.PlayOneShot(_path);
         }
     }
 }

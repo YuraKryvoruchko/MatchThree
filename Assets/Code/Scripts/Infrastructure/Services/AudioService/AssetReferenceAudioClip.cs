@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Core.Infrastructure.Service
+namespace Core.Infrastructure.Service.Audio
 {
     [System.Serializable]
     public class AssetReferenceAudioClip : AssetReferenceT<AudioClip>

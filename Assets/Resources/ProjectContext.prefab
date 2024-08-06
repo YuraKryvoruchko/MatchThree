@@ -74,9 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206cfd4ec8f24f148bb61025faad4780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioServiceConfig: {fileID: 11400000, guid: fd392ff78b916d247a5b600b3b8702a9, type: 2}
-  _backgroundAudioServiceConfig: {fileID: 11400000, guid: 4ce6bc1aba69f284da20161afebb24e4, type: 2}
-  _UIAudioServiceConfig: {fileID: 11400000, guid: 21ef5be665232e2488a8e1e65d2f71e2, type: 2}
+  _audioServiceConfig: {fileID: 11400000, guid: 4aa42b554496a1c46bda04ebc60671e8, type: 2}
   _loadingScreenPrefabReference:
     m_AssetGUID: 537c8ec43cf45aa4bb5cbee170786596
     m_SubObjectName: 

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 using Zenject;
 
 namespace Core.UI.Gameplay
@@ -16,15 +17,15 @@ namespace Core.UI.Gameplay
         [Header("Popups")]
         [SerializeField] private WindowBase _popupPrefab;
         [Header("Audio Keys")]
-        [SerializeField] private AudioPath _uiClickKey;
+        [SerializeField] private ClipEvent _uiClickKey;
 
         private IWindowService _windowService;
-        private AudioService _audioService;
+        private IAudioService _audioService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(IWindowService windowService, AudioService audioService)
+        private void Construct(IWindowService windowService, IAudioService audioService)
         {
             _windowService = windowService;
             _audioService = audioService;

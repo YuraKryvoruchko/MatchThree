@@ -928,9 +928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44465e5dd23561040a3520fb1f522c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _path:
-    Type: 0
-    Key: Gameplay
+  _path: {fileID: 0}
 --- !u!1 &1456452651
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,12 +1113,8 @@ MonoBehaviour:
     Y: 7
     Type: 4
   _interval: 1
-  _swipeAudio:
-    Type: 2
-    Key: Swap
-  _destroyAudio:
-    Type: 2
-    Key: Destroy
+  _swipeAudio: {fileID: 11400000, guid: e887f1d9226d29e47b1667005b077881, type: 2}
+  _destroyAudio: {fileID: 11400000, guid: a08e283986db7284c8b83d8ff1ec32e8, type: 2}
 --- !u!1 &1784152974
 GameObject:
   m_ObjectHideFlags: 0

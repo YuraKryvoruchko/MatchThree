@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdd438dddb4622459947fa778a0d708, type: 3}
+  m_Name: AudioServiceConfig
+  m_EditorClassIdentifier: 
+  TypeGroups:
+  - EditorName: Master
+    Type: 0
+    Group: {fileID: 24300002, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+    VolumeProperty: MasterVolume
+  - EditorName: Music
+    Type: 1
+    Group: {fileID: 175272508991637250, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+    VolumeProperty: BackgroundVolume
+  - EditorName: Sound
+    Type: 2
+    Group: {fileID: 7750619700486574308, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+    VolumeProperty: SFXVolume

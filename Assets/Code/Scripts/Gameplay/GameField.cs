@@ -4,7 +4,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Zenject;
 using Core.Gameplay.Input;
-using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 
 namespace Core.Gameplay
@@ -21,12 +21,12 @@ namespace Core.Gameplay
         [Header("Cell Settings")]
         [SerializeField] private float _interval;
         [Header("Audio Keys")]
-        [SerializeField] private AudioPath _swipeAudio;
-        [SerializeField] private AudioPath _destroyAudio;
+        [SerializeField] private ClipEvent _swipeAudio;
+        [SerializeField] private ClipEvent _destroyAudio;
 
         private ICellFabric _cellFabric;
         private IAbilityFactory _abilityFactory;
-        private AudioService _audioService;
+        private IAudioService _audioService;
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
@@ -47,7 +47,7 @@ namespace Core.Gameplay
         }
 
         [Inject]
-        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, AudioService audioService, CellSwipeDetection cellSwipeDetection)
+        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, IAudioService audioService, CellSwipeDetection cellSwipeDetection)
         {
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;

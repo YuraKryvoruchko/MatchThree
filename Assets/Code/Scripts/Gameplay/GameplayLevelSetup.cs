@@ -1,20 +1,20 @@
 using UnityEngine;
 using Zenject;
-using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.Gameplay
 {
     public class GameplayLevelSetup : MonoBehaviour
     {
-        [SerializeField] private AudioPath _backgroundAudioPath;
+        [SerializeField] private ClipEvent _backgroundAudioPath;
 
-        private AudioService _audioService;
+        private IAudioService _audioService;
 
         [Inject]
-        private void Construct(AudioService audioService)
+        private void Construct(IAudioService audioService)
         {
             _audioService = audioService;
-            _audioService.Play(_backgroundAudioPath);
+            _audioService.PlayWithSource(_backgroundAudioPath);
         }
     }
 }

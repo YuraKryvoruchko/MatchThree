@@ -1501,9 +1501,7 @@ MonoBehaviour:
   _bombAbilityButton: {fileID: 5137339698743844640}
   _lightningBoltAbilityButton: {fileID: 1362458756532421748}
   _supperAbilityButton: {fileID: 7827360718832506018}
-  _uiClickKey:
-    Type: 1
-    Key: Click
+  _uiClickKey: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
 --- !u!1 &6262060571005457694
 GameObject:
   m_ObjectHideFlags: 0
