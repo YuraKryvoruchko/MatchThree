@@ -2,7 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 
-namespace Code.Infrastructure.Loading
+namespace Core.Infrastructure.Loading
 {
     public class LoadingScreenProvider : LocalAssetLoader, ILoadingScreenProvider
     {

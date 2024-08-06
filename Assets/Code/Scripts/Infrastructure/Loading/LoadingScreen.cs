@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
-namespace Code.Infrastructure.Loading
+namespace Core.Infrastructure.Loading
 {
     public class LoadingScreen : MonoBehaviour
     {

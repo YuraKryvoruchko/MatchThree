@@ -2,7 +2,7 @@ using UnityEngine;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
-using Code.Infrastructure.Loading;
+using Core.Infrastructure.Loading;
 using UnityEngine.AddressableAssets;
 
 namespace Core.Infrastructure.Boot

@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
-using Code.Infrastructure.Loading;
+using Core.Infrastructure.Loading;
 
 namespace Core.Infrastructure.Boot
 {
@@ -20,28 +20,6 @@ namespace Core.Infrastructure.Boot
 
         private ILoadingScreenProvider _loadingScreenProvider;
 
-        private class MainMenuSceneLoadingOperation : ILoadingOperation
-        {
-            private AssetReference _mainMenuScene;
-
-            private SceneService _sceneService;
-
-            string ILoadingOperation.Description => "Loading the main menu...";
-
-            public MainMenuSceneLoadingOperation(SceneService sceneService, AssetReference mainMenuScene)
-            {
-                _sceneService = sceneService;
-                _mainMenuScene = mainMenuScene;
-            }
-
-            async UniTask ILoadingOperation.Load(Action<float> onProgress)
-            {
-                onProgress?.Invoke(0.3f);
-                var gamePlayScene = await _sceneService.LoadSceneAsync(_mainMenuScene.AssetGUID,
-                    UnityEngine.SceneManagement.LoadSceneMode.Additive);
-                onProgress?.Invoke(1f);
-            }
-        }
         private class MainMenuAudioLoadingOperation : ILoadingOperation
         {
             private AudioService _audioService;
@@ -79,7 +57,7 @@ namespace Core.Infrastructure.Boot
             await Addressables.InitializeAsync();
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(2);
             //queue.Enqueue(new MainMenuAudioLoadingOperation(_audioService, _mainMenuAudio));
-            queue.Enqueue(new MainMenuSceneLoadingOperation(_sceneService, _mainMenuSceneReference));
+            queue.Enqueue(new SceneLoadingOperation(_sceneService, _mainMenuSceneReference));
             await _loadingScreenProvider.LoadAndDestroy(queue);
         }
     }

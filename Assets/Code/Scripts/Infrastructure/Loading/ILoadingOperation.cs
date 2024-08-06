@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 
-namespace Code.Infrastructure.Loading
+namespace Core.Infrastructure.Loading
 {
     public interface ILoadingOperation
     {
