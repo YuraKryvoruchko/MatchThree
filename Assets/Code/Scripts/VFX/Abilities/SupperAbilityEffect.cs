@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
 #endif
-using Core.Extensions;
 
 namespace Core.VFX.Abilities
 {
@@ -16,11 +16,12 @@ namespace Core.VFX.Abilities
         [SerializeField] private float _lineCreatingDelayInSeconds = 0.1f;
         [SerializeField] private ParticleSystem _explosionPrefab;
         [SerializeField] private ParticleSystem _lightGlowPrefab;
-        [SerializeField] private LineRenderer _linePrefab;
+        [SerializeField] private LineRendererLerp _linePrefab;
         [Header("Components")]
         [SerializeField] private AudioSource _audioSource;
 
         private List<ParticleSystem> _particlies;
+        private List<Tweener> _moveTweeners;
 
 #if UNITY_EDITOR
         [ProPlayButton]
@@ -32,19 +33,27 @@ namespace Core.VFX.Abilities
         public async UniTask Play(Vector3[] endPositions, Action OnReady = null)
         {
             _audioSource.Play();
-            UniTask[] moveTasks = new UniTask[endPositions.Length];
+            _moveTweeners = new List<Tweener>(endPositions.Length);
             _particlies = new List<ParticleSystem>(endPositions.Length * 2);
-            for(int i = 0; i < endPositions.Length; i++)
+            for (int i = 0; i < endPositions.Length; i++)
             {
-                LineRenderer line = Instantiate(_linePrefab, this.transform);
-                line.SetPosition(0, transform.position);
-                moveTasks[i] = line.MoveToAsync(1, endPositions[i], _lineSpeed,
-                    (line) => _particlies.Add(Instantiate(_lightGlowPrefab, line.GetPosition(1), Quaternion.identity, transform)));
+                LineRendererLerp line = Instantiate(_linePrefab, this.transform);
+                line.Init(transform.position, endPositions[i]);
+
+                float moveDuration = Vector3.Distance(transform.position, endPositions[i]) / _lineSpeed;
+                _moveTweeners.Add(DOTween.To(line.Lerp, 0f, 1f, moveDuration)
+                    .OnComplete(() => _particlies.Add(Instantiate(_lightGlowPrefab, endPositions[i], Quaternion.identity, transform))));
+
                 await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds);
             }
 
-            await UniTask.WhenAll(moveTasks);
+            UniTask[] tasks = new UniTask[endPositions.Length];
+            for(int i = 0; i < tasks.Length; i++)
+                tasks[i] = _moveTweeners[i].AsyncWaitForCompletion().AsUniTask();
+
+            await UniTask.WhenAll(tasks);
             OnReady?.Invoke();
+            _moveTweeners.Clear();
 
             for (int i = 0; i < endPositions.Length; i++)
             {
@@ -58,7 +67,14 @@ namespace Core.VFX.Abilities
 
         public void Pause(bool pause)
         {
-            for(int i = 0; i < _particlies.Count; i++)
+            for (int i = 0; i < _moveTweeners.Count; i++)
+            {
+                if (pause)
+                    _moveTweeners[i].Pause();
+                else
+                    _moveTweeners[i].Play();
+            }
+            for (int i = 0; i < _particlies.Count; i++)
             {
                 if (pause)
                     _particlies[i].Pause();

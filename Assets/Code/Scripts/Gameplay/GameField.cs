@@ -6,6 +6,7 @@ using Zenject;
 using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
+using Core.Infrastructure.Service.Pause;
 
 namespace Core.Gameplay
 {
@@ -26,11 +27,14 @@ namespace Core.Gameplay
 
         private ICellFabric _cellFabric;
         private IAbilityFactory _abilityFactory;
+        private IPauseProvider _pauseProvider;
         private IAudioService _audioService;
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
-    
+
+        private List<IAbility> _usedAbilities;
+
         private bool _gameBlock = true;
 
         public int VerticalSize { get => _verticalMapSize; }
@@ -47,10 +51,13 @@ namespace Core.Gameplay
         }
 
         [Inject]
-        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, IAudioService audioService, CellSwipeDetection cellSwipeDetection)
+        private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, IPauseProvider pauseProvider,
+            IAudioService audioService, CellSwipeDetection cellSwipeDetection)
         {
+            _usedAbilities = new List<IAbility>();
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
+            _pauseProvider = pauseProvider;
             _cellSwipeDetection = cellSwipeDetection;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
             _audioService = audioService;
@@ -62,6 +69,7 @@ namespace Core.Gameplay
         }
         private async void Start()
         {
+            _pauseProvider.OnPause += HandlePause;
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
             for(int i = 0; i < _cellConfigs.Length; i++)
@@ -147,7 +155,10 @@ namespace Core.Gameplay
             ability.Init(this);
             _gameBlock = true;
 
+            _usedAbilities.Add(ability);
+
             await ability.Execute(xPosition, yPosition);
+            _usedAbilities.Remove(ability);
             await MoveDownElements();
 
             _gameBlock = false;
@@ -232,6 +243,16 @@ namespace Core.Gameplay
                 return false;
 
             return true;
+        }
+        private void HandlePause(bool isPause)
+        {
+            for(int i = 0; i < _horizontalMapSize; i++)
+            {
+                for(int j = _verticalMapSize - 1; j >= 0; j--)
+                    _map[j, i].SetPause(isPause);
+            }
+            foreach (IAbility ability in _usedAbilities)
+                ability.SetPause(isPause);
         }
 
         private int GetRightElementsNumber(int xPosition, int yPosition)

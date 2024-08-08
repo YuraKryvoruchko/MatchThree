@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
+using Core.Infrastructure.Service.Pause;
 using Zenject;
 
 namespace Core.UI.Gameplay
@@ -20,14 +21,18 @@ namespace Core.UI.Gameplay
         [SerializeField] private ClipEvent _uiClickKey;
 
         private IWindowService _windowService;
+        private IPauseService _pauseService;
         private IAudioService _audioService;
+
+        private WindowBase _pausePopup;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(IWindowService windowService, IAudioService audioService)
+        private void Construct(IWindowService windowService, IPauseService pauseService, IAudioService audioService)
         {
             _windowService = windowService;
+            _pauseService = pauseService;
             _audioService = audioService;
         }
 
@@ -55,10 +60,17 @@ namespace Core.UI.Gameplay
             OnUnfocus();
         }
 
-        private void CreateMenuPopup()
+        private async void CreateMenuPopup()
         {
+            _pauseService.SetPause(true);
             _audioService.PlayOneShot(_uiClickKey);
-            _windowService.OpenPopup<WindowBase>(_popupPrefab.Path);
+            _pausePopup = await _windowService.OpenPopup<WindowBase>(_popupPrefab.Path);
+            _pausePopup.OnMenuBack += HandlePausePopupClosing;
+        }
+        private void HandlePausePopupClosing()
+        {
+            _pausePopup.OnMenuBack -= HandlePausePopupClosing;
+            _pauseService.SetPause(false);
         }
     }
 }

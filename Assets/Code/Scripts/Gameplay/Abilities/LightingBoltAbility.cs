@@ -10,9 +10,11 @@ namespace Core.Gameplay
     {
         private GameField _gameField;
         private AssetReference _lightingBoltEffectPrefab;
+        private LightingBoltEffect _lightingBoltEffect;
 
         private IAudioService _audioService;
         private ClipEvent _clipEvent;
+        private SourceInstance _audioSourceInstance;
 
         public LightingBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab)
         {
@@ -25,20 +27,26 @@ namespace Core.Gameplay
         {
             _gameField = gameField;
         }
+        void IAbility.SetPause(bool isPause)
+        {
+            _lightingBoltEffect.Pause(isPause);
+            _audioSourceInstance.Pause(isPause);
+        }
         async UniTask IAbility.Execute(int xPosition, int yPosition)
         {
-            LightingBoltEffect lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
+            _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
                 .GetComponent<LightingBoltEffect>();
 
             Cell cell = _gameField.GetCell(xPosition, yPosition);
             Vector3 startPosition = cell.transform.position;
             startPosition.y = 5;
 
-            lightingBoltEffect.Play(startPosition, cell.transform.position);
-            _audioService.PlayOneShot(_clipEvent);
+            _lightingBoltEffect.Play(startPosition, cell.transform.position);
+            _audioSourceInstance = _audioService.PlayWithSource(_clipEvent);
             await _gameField.ExplodeCell(xPosition, yPosition);
 
-            Addressables.ReleaseInstance(lightingBoltEffect.gameObject);
+            _audioService.ReleaseSource(_audioSourceInstance);
+            Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Core.Gameplay
 
         private bool _isStatic = false;
         private bool _isSpecial = false;
+        private bool _isPaused = false;
 
         private Vector3 _startPosition;
         private Vector3 _endPosition;
@@ -24,6 +25,8 @@ namespace Core.Gameplay
         private float _maxTime;
         private float _currentTime;
         private float _progress;
+
+        private Tween _explosionTween;
 
         public CellType Type { get => _type; }
         public int Score { get => _config.Score; }
@@ -56,6 +59,12 @@ namespace Core.Gameplay
             IsMove = true;
             while (_progress < 1)
             {
+                if (_isPaused)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
+                    continue;
+                }
+
                 _currentTime += Time.deltaTime;
                 _progress += _currentTime / _maxTime;
                 if(inLocal)
@@ -76,8 +85,18 @@ namespace Core.Gameplay
         public async UniTask Explode()
         {
             IsExplode = true;
-            await transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).AsyncWaitForCompletion().AsUniTask();
+            _explosionTween = transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
+            await _explosionTween.AsyncWaitForCompletion().AsUniTask();
             IsExplode = false;
+        }
+
+        public void SetPause(bool isPause)
+        {
+            _isPaused = isPause;
+            if(isPause)
+                _explosionTween.Pause();
+            else
+                _explosionTween.Play();
         }
 
         private void SetupMoveParameters(Vector3 endPosition, bool inLocal = true)
