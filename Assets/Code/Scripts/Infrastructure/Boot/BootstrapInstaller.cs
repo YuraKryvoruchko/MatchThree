@@ -19,7 +19,6 @@ namespace Core.Infrastructure.Boot
         {
             BindAudioService();
             BindSceneService();
-            BindPauseServiceAndPauseProvider();
             BindLoadingScreenProvider();
         }
         
@@ -34,13 +33,6 @@ namespace Core.Infrastructure.Boot
         {
             Container
                 .Bind<SceneService>()
-                .AsSingle();
-        }
-        private void BindPauseServiceAndPauseProvider()
-        {
-            Container
-                .Bind(typeof(IPauseService), typeof(IPauseProvider))
-                .To<PauseService>()
                 .AsSingle();
         }
         private void BindLoadingScreenProvider()

@@ -6,6 +6,7 @@ using Core.Infrastructure.Factories;
 using Core.Gameplay;
 using Core.UI.Gameplay;
 using Core.Infrastructure.Service;
+using Core.Infrastructure.Service.Pause;
 
 namespace Core.Infrastructure.Gameplay
 {
@@ -24,6 +25,7 @@ namespace Core.Infrastructure.Gameplay
 
         public override void InstallBindings()
         {
+            BindPauseServiceAndPauseProvider();
             BindCellFabric();
             BindAbilityFabric();
             BindSwipeDetection();
@@ -34,7 +36,14 @@ namespace Core.Infrastructure.Gameplay
             BindGameScoreTracking();
             BindGameplayUIStartup();
         }
-        
+
+        private void BindPauseServiceAndPauseProvider()
+        {
+            Container
+                .Bind(typeof(IPauseService), typeof(IPauseProvider))
+                .To<PauseService>()
+                .AsSingle();
+        }
         private void BindCellFabric()
         {
             Container
