@@ -3,6 +3,7 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using Core.VFX.Abilities;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.Gameplay
 {
@@ -12,8 +13,13 @@ namespace Core.Gameplay
 
         private GameField _gameField;
 
-        public SupperAbility(AssetReference supperAbilityEffectReference)
+        private IAudioService _audioService;
+        private ClipEvent _elementCapturingEvent;
+
+        public SupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReference supperAbilityEffectReference)
         {
+            _audioService = audioService;
+            _elementCapturingEvent = elementCapturingEvent;
             _supperAbilityEffectReference = supperAbilityEffectReference;
         }
 
@@ -32,9 +38,12 @@ namespace Core.Gameplay
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
+            SourceInstance sourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
             UniTask[] tasks = new UniTask[cellList.Count];
             await effect.Play(cellPositions, () => 
             {
+                sourceInstance.Stop();
+                _audioService.ReleaseSource(sourceInstance);
                 for (int i = 0; i < cellList.Count; i++)
                 {
                     if (!cellList[i].IsExplode)

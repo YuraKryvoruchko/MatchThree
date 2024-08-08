@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using Zenject;
-using Cysharp.Threading.Tasks;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
@@ -22,59 +21,14 @@ namespace Core.UI
         [SerializeField] private AssetReference _gamePlayScene;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _clickAudioPath;
-        [SerializeField] private ClipEvent[] _gameplayLoadingAudioFiles;
+        [Header("Loadable Audio")]
+        [SerializeField] private ClipEvent[] _unloadingAudioList;
+        [SerializeField] private ClipEvent[] _loadingAudioList;
 
         private ILoadingScreenProvider _loadingScreenProvider;
 
         private SceneService _sceneService;
         private IAudioService _audioService;
-
-        private class MainMenuMusicUnloadingOperation : ILoadingOperation
-        {
-            private IAudioService _audioService;
-            private ClipEvent[] _audioTypes;
-
-            string ILoadingOperation.Description => "Unloading main menu audio...";
-
-            public MainMenuMusicUnloadingOperation(IAudioService audioService, ClipEvent[] types)
-            {
-                _audioService = audioService;
-                _audioTypes = types;
-            }
-
-            async UniTask ILoadingOperation.Load(Action<float> onProgress)
-            {
-                //float progressStep = 1f / _audioTypes.Length;
-                //for (int i = 0; i < _audioTypes.Length; i++)
-                //{
-                //    _audioService.UnLoadAudioFile(_audioTypes[i]);
-                //    onProgress?.Invoke(progressStep * (i + 1));
-                //}
-            }
-        }
-        private class GameplayAudioLoadingOperation : ILoadingOperation
-        {
-            private IAudioService _audioService;
-            private ClipEvent[] _audioFiles;
-
-            string ILoadingOperation.Description => "Loading audio...";
-
-            public GameplayAudioLoadingOperation(IAudioService audioService, ClipEvent[] files)
-            {
-                _audioService = audioService;
-                _audioFiles = files;
-            }
-
-            async UniTask ILoadingOperation.Load(Action<float> onProgress)
-            {
-                //float progressStep = 1f / _audioFiles.Length;
-                //for (int i = 0; i < _audioFiles.Length; i++)
-                //{
-                //    await _audioService.LoadAudioFile(_audioFiles[i]);
-                //    onProgress?.Invoke(progressStep * (i + 1));
-                //}
-            }
-        }
 
         [Inject]
         private void Construct(SceneService sceneService, IAudioService audioService, ILoadingScreenProvider loadingScreenProvider)
@@ -96,10 +50,10 @@ namespace Core.UI
 
         private async void LoadLongMode()
         {
-            Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(3);
-            //queue.Enqueue(new MainMenuMusicUnloadingOperation(_audioService, new AudioFileType[] { AudioFileType.Background }));
-            //queue.Enqueue(new GameplayAudioLoadingOperation(_audioService, _gameplayLoadingAudioFiles));
+            Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(4);
+            queue.Enqueue(new AudioListUnloadingOperation(_unloadingAudioList));
             queue.Enqueue(new SceneUnloadingOperation(_sceneService, _mainMenuScene));
+            queue.Enqueue(new AudioListLoadingOperation(_loadingAudioList));
             queue.Enqueue(new SceneLoadingOperation(_sceneService, _gamePlayScene));
             await _loadingScreenProvider.LoadAndDestroy(queue);
         }

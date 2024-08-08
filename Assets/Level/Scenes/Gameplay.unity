@@ -861,16 +861,19 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+    LightingBoltHitEvent: {fileID: 11400000, guid: ae2497d9689ad0f4a8453d238b7c625b, type: 2}
     BombEffectPrefabReference:
       m_AssetGUID: 2dee2a952f046be458b928bf213e2c20
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+    ExplosiveEvent: {fileID: 11400000, guid: de6b5804f9abb8241849fbd7162cc259, type: 2}
     SupperCellEffectPrefabReference:
       m_AssetGUID: 94544fa4b297d4f42835ec22b9f5c781
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+    ElementCapturingEvent: {fileID: 11400000, guid: 0e0dd54acfd443f44bd97cb44a9e6de5, type: 2}
 --- !u!114 &1408872459
 MonoBehaviour:
   m_ObjectHideFlags: 0

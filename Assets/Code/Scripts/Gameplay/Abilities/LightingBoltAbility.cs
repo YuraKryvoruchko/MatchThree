@@ -2,6 +2,7 @@
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.Gameplay
 {
@@ -10,8 +11,13 @@ namespace Core.Gameplay
         private GameField _gameField;
         private AssetReference _lightingBoltEffectPrefab;
 
-        public LightingBoltAbility(AssetReference lightingBoltEffectPrefab)
+        private IAudioService _audioService;
+        private ClipEvent _clipEvent;
+
+        public LightingBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab)
         {
+            _audioService = audioService;
+            _clipEvent = hitClipEvent;
             _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
         }
 
@@ -29,6 +35,7 @@ namespace Core.Gameplay
             startPosition.y = 5;
 
             lightingBoltEffect.Play(startPosition, cell.transform.position);
+            _audioService.PlayOneShot(_clipEvent);
             await _gameField.ExplodeCell(xPosition, yPosition);
 
             Addressables.ReleaseInstance(lightingBoltEffect.gameObject);

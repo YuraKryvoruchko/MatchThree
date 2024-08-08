@@ -4115,7 +4115,7 @@ MonoBehaviour:
   _isPopup: 0
   _menuCanvas: {fileID: 3722608786572638198}
   _pauseMenu: {fileID: 1669075347783396232}
-  _uiAbilityHolder: {fileID: 0}
+  _uiAbilityHolder: {fileID: 7367255405831650853}
   _popupPrefab: {fileID: -2494657810328607965, guid: 23fc5a063bf1f5944a635c0281e062ab, type: 3}
   _uiClickKey: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
 --- !u!1 &6765317354783069148
@@ -5868,3 +5868,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3439595333010660488, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
   m_PrefabInstance: {fileID: 2152088342632524795}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7367255405831650853 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8926274306018973150, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+  m_PrefabInstance: {fileID: 2152088342632524795}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61171e6bd132540488f7c718e5147c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

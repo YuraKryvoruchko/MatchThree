@@ -15,9 +15,12 @@ namespace Core.MainMenu
         private void Construct(IAudioService audioService)
         {
             _audioService = audioService;
-            _sourceInstance = _audioService.PlayWithSource(_event);
         }
 
+        private void Start()
+        {
+            _sourceInstance = _audioService.PlayWithSource(_event);      
+        }
         private void OnDestroy()
         {
             _audioService.ReleaseSource(_sourceInstance);

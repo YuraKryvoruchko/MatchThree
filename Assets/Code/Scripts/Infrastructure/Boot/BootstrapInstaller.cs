@@ -4,6 +4,7 @@ using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
 using UnityEngine.AddressableAssets;
+using System;
 
 namespace Core.Infrastructure.Boot
 {
@@ -24,8 +25,7 @@ namespace Core.Infrastructure.Boot
         private void BindAudioService()
         {
             Container
-                .Bind<IAudioService>()
-                .To<AudioService>()
+                .BindInterfacesAndSelfTo<AudioService>()
                 .AsSingle()
                 .WithArguments(_audioServiceConfig);
         }

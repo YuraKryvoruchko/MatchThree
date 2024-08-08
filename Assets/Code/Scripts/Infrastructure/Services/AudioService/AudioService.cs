@@ -1,9 +1,9 @@
-﻿using Core.Infrastructure.Service;
-using Cysharp.Threading.Tasks;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Cysharp.Threading.Tasks;
+using Zenject;
 
 namespace Core.Infrastructure.Service.Audio
 {
@@ -13,12 +13,14 @@ namespace Core.Infrastructure.Service.Audio
         Music,
         Sound
     }
-    public class AudioService : IAudioService, IDisposable
+    public class AudioService : IAudioService, IInitializable, IDisposable
     {
         private Dictionary<AudioGroupType, GroupAudioComponent> _audioBuses;
         private List<SourceInstance> _sourceInstances;
 
         private Transform _sourceContainer;
+
+        private AudioServiceConfig _config;
 
         private class GroupAudioComponent
         {
@@ -31,14 +33,18 @@ namespace Core.Infrastructure.Service.Audio
         {
             _sourceInstances = new List<SourceInstance>();
             _audioBuses = new Dictionary<AudioGroupType, GroupAudioComponent>(config.TypeGroups.Length);
+            _config = config;
+        }
+
+        void IInitializable.Initialize() 
+        {
             _sourceContainer = new GameObject("AudioSourceContainer").transform;
-            foreach (var key in config.TypeGroups)
+            foreach (var key in _config.TypeGroups)
             {
                 AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), key.Type)}AudioSource", key.Group);
                 _audioBuses.Add(key.Type, new GroupAudioComponent() { Group = key.Group, Source = source, VolumeParamter = key.VolumeProperty });
             }
         }
-
         void IDisposable.Dispose()
         {
             foreach (SourceInstance instance in _sourceInstances)

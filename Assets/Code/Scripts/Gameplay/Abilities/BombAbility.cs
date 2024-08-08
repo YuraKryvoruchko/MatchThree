@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Core.Infrastructure.Service.Audio;
 
 namespace Core.Gameplay
 {
@@ -10,8 +11,14 @@ namespace Core.Gameplay
 
         private GameField _gameField;
 
-        public BombAbility(AssetReference bombEffectReference)
+        private IAudioService _audioService;
+
+        private ClipEvent _explosiveEvent;
+
+        public BombAbility(IAudioService audioService, ClipEvent explosiveEvent, AssetReference bombEffectReference)
         {
+            _audioService = audioService;
+            _explosiveEvent = explosiveEvent;
             _bombEffectReference = bombEffectReference;
         }
 
@@ -25,6 +32,7 @@ namespace Core.Gameplay
             ParticleSystem bombEffectInstance = (await Addressables.InstantiateAsync(_bombEffectReference, 
                 bombCell.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
             bombEffectInstance.Play();
+            _audioService.PlayOneShot(_explosiveEvent);
             await UniTask.WhenAll(
                 _gameField.ExplodeCell(xPosition, yPosition),
                 _gameField.ExplodeCell(xPosition + 1, yPosition),
