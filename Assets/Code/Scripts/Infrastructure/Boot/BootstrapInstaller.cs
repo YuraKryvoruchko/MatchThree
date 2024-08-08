@@ -1,10 +1,10 @@
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
+using Core.Infrastructure.Service.Pause;
 using Core.Infrastructure.Loading;
-using UnityEngine.AddressableAssets;
-using System;
 
 namespace Core.Infrastructure.Boot
 {
@@ -19,6 +19,7 @@ namespace Core.Infrastructure.Boot
         {
             BindAudioService();
             BindSceneService();
+            BindPauseServiceAndPauseProvider();
             BindLoadingScreenProvider();
         }
         
@@ -33,6 +34,13 @@ namespace Core.Infrastructure.Boot
         {
             Container
                 .Bind<SceneService>()
+                .AsSingle();
+        }
+        private void BindPauseServiceAndPauseProvider()
+        {
+            Container
+                .Bind(typeof(IPauseService), typeof(IPauseProvider))
+                .To<PauseService>()
                 .AsSingle();
         }
         private void BindLoadingScreenProvider()
