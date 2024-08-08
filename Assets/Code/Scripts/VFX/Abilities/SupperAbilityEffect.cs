@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Unity.VisualScripting;
+
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
 #endif
@@ -16,12 +18,14 @@ namespace Core.VFX.Abilities
         [SerializeField] private float _lineCreatingDelayInSeconds = 0.1f;
         [SerializeField] private ParticleSystem _explosionPrefab;
         [SerializeField] private ParticleSystem _lightGlowPrefab;
-        [SerializeField] private LineRendererLerp _linePrefab;
+        [SerializeField] private MagicLineEffect _magicLineEffect;
         [Header("Components")]
         [SerializeField] private AudioSource _audioSource;
 
+        private bool _isPausing;
+
         private List<ParticleSystem> _particlies;
-        private List<Tweener> _moveTweeners;
+        private List<MagicLineEffect> _magicLines;
 
 #if UNITY_EDITOR
         [ProPlayButton]
@@ -33,46 +37,52 @@ namespace Core.VFX.Abilities
         public async UniTask Play(Vector3[] endPositions, Action OnReady = null)
         {
             _audioSource.Play();
-            _moveTweeners = new List<Tweener>(endPositions.Length);
-            _particlies = new List<ParticleSystem>(endPositions.Length * 2);
+            _magicLines = new List<MagicLineEffect>(endPositions.Length);
+            _particlies = new List<ParticleSystem>(endPositions.Length);
+            int numberOfPositions = endPositions.Length;
             for (int i = 0; i < endPositions.Length; i++)
             {
-                LineRendererLerp line = Instantiate(_linePrefab, this.transform);
-                line.Init(transform.position, endPositions[i]);
+                if (_isPausing)
+                    await UniTask.WaitWhile(() => _isPausing);
 
-                float moveDuration = Vector3.Distance(transform.position, endPositions[i]) / _lineSpeed;
-                _moveTweeners.Add(DOTween.To(line.Lerp, 0f, 1f, moveDuration)
-                    .OnComplete(() => _particlies.Add(Instantiate(_lightGlowPrefab, endPositions[i], Quaternion.identity, transform))));
+                MagicLineEffect magicLine = Instantiate(_magicLineEffect, this.transform);
+                _magicLines.Add(magicLine);
+                
+                float duration = Vector3.Distance(transform.position, endPositions[i]) / _lineSpeed;
+                magicLine.MoveFromAndTo(transform.position, endPositions[i], duration, 
+                    (line) => 
+                    { 
+                        _particlies.Add(Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity));
+                        numberOfPositions--;
+                    });
 
                 await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds);
             }
 
-            UniTask[] tasks = new UniTask[endPositions.Length];
-            for(int i = 0; i < tasks.Length; i++)
-                tasks[i] = _moveTweeners[i].AsyncWaitForCompletion().AsUniTask();
-
-            await UniTask.WhenAll(tasks);
+            await UniTask.WaitWhile(() => numberOfPositions > 0);
             OnReady?.Invoke();
-            _moveTweeners.Clear();
+            _magicLines.Clear();
 
             for (int i = 0; i < endPositions.Length; i++)
             {
                 ParticleSystem particle = Instantiate(_explosionPrefab, this.transform);
                 particle.transform.position = endPositions[i];
+                _particlies[i].Stop();
+                _particlies[i] = particle;
                 particle.Play();
-                _particlies.Add(particle);
             }
             _particlies.Clear();
         }
 
         public void Pause(bool pause)
         {
-            for (int i = 0; i < _moveTweeners.Count; i++)
+            if (_isPausing == pause)
+                return;
+
+            _isPausing = pause;
+            for (int i = 0; i < _magicLines.Count; i++)
             {
-                if (pause)
-                    _moveTweeners[i].Pause();
-                else
-                    _moveTweeners[i].Play();
+                _magicLines[i].SetPause(pause);
             }
             for (int i = 0; i < _particlies.Count; i++)
             {
