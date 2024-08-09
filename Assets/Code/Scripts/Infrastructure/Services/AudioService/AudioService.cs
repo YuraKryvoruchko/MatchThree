@@ -13,9 +13,16 @@ namespace Core.Infrastructure.Service.Audio
         Music,
         Sound
     }
+    public enum AudioSnapshotType
+    {
+        Default,
+        Paused
+    }
     public class AudioService : IAudioService, IInitializable, IDisposable
     {
         private Dictionary<AudioGroupType, GroupAudioComponent> _audioBuses;
+        private Dictionary<AudioSnapshotType, AudioMixerSnapshot> _snapshots;
+
         private List<SourceInstance> _sourceInstances;
 
         private Transform _sourceContainer;
@@ -33,16 +40,21 @@ namespace Core.Infrastructure.Service.Audio
         {
             _sourceInstances = new List<SourceInstance>();
             _audioBuses = new Dictionary<AudioGroupType, GroupAudioComponent>(config.TypeGroups.Length);
+            _snapshots = new Dictionary<AudioSnapshotType, AudioMixerSnapshot>();
             _config = config;
         }
 
         void IInitializable.Initialize() 
         {
             _sourceContainer = new GameObject("AudioSourceContainer").transform;
-            foreach (var key in _config.TypeGroups)
+            foreach (var groupKey in _config.TypeGroups)
             {
-                AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), key.Type)}AudioSource", key.Group);
-                _audioBuses.Add(key.Type, new GroupAudioComponent() { Group = key.Group, Source = source, VolumeParamter = key.VolumeProperty });
+                AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), groupKey.Type)}AudioSource", groupKey.Group);
+                _audioBuses.Add(groupKey.Type, new GroupAudioComponent() { Group = groupKey.Group, Source = source, VolumeParamter = groupKey.VolumeProperty });
+            }
+            foreach (var snapshotKey in _config.TypeSnapshots)
+            {
+                _snapshots.Add(snapshotKey.Type, snapshotKey.Snapshot);
             }
         }
         void IDisposable.Dispose()
@@ -129,6 +141,11 @@ namespace Core.Infrastructure.Service.Audio
         public void SetVolume(AudioGroupType groupType, float value)
         {
             _audioBuses[groupType].Group.audioMixer.SetFloat(_audioBuses[groupType].VolumeParamter, value);
+        }
+
+        public void ChangeSnapshot(AudioSnapshotType type, float timeToReach = 0f)
+        {
+            _snapshots[type].TransitionTo(timeToReach);
         }
 
         private AudioSource CreateAudioSource(string name, AudioMixerGroup group)

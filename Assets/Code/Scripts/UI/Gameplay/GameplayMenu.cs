@@ -26,6 +26,8 @@ namespace Core.UI.Gameplay
 
         private WindowBase _pausePopup;
 
+        private const float SNAPSHOT_CHANGING_DELAY = 0.1F;
+
         public override event Action OnMenuBack;
 
         [Inject]
@@ -64,12 +66,14 @@ namespace Core.UI.Gameplay
         {
             _pauseService.SetPause(true);
             _audioService.PlayOneShot(_uiClickKey);
+            _audioService.ChangeSnapshot(AudioSnapshotType.Paused, SNAPSHOT_CHANGING_DELAY);
             _pausePopup = await _windowService.OpenPopup<WindowBase>(_popupPrefab.Path);
             _pausePopup.OnMenuBack += HandlePausePopupClosing;
         }
         private void HandlePausePopupClosing()
         {
             _pausePopup.OnMenuBack -= HandlePausePopupClosing;
+            _audioService.ChangeSnapshot(AudioSnapshotType.Default, SNAPSHOT_CHANGING_DELAY);
             _pauseService.SetPause(false);
         }
     }

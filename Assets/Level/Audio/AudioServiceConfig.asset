@@ -25,3 +25,10 @@ MonoBehaviour:
     Type: 2
     Group: {fileID: 7750619700486574308, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
     VolumeProperty: SFXVolume
+  TypeSnapshots:
+  - EditorName: Default
+    Type: 0
+    Snapshot: {fileID: 24500006, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}
+  - EditorName: Paused
+    Type: 1
+    Snapshot: {fileID: 6301011347564400485, guid: 72b929ab6c7fc9f4fac6ae1bb500314a, type: 2}

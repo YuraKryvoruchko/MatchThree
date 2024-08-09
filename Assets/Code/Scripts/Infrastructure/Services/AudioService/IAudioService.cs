@@ -14,6 +14,8 @@ namespace Core.Infrastructure.Service.Audio
         void PauseAll(bool isPause);
         void PauseByGroup(AudioGroupType groupType, bool isPause);
 
+        void ChangeSnapshot(AudioSnapshotType type, float timeToReach = 0f);
+
         public float GetVolume(AudioGroupType groupType);
         public void SetVolume(AudioGroupType groupType, float value);
     }
