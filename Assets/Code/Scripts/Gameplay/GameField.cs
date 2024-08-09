@@ -58,6 +58,7 @@ namespace Core.Gameplay
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
             _pauseProvider = pauseProvider;
+            _pauseProvider.OnPause += HandlePause;
             _cellSwipeDetection = cellSwipeDetection;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
             _audioService = audioService;
@@ -66,10 +67,10 @@ namespace Core.Gameplay
         private void OnDestroy()
         {
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
+            _pauseProvider.OnPause -= HandlePause;
         }
         private async void Start()
         {
-            _pauseProvider.OnPause += HandlePause;
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
             for(int i = 0; i < _cellConfigs.Length; i++)
