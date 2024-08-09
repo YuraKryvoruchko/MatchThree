@@ -336,11 +336,12 @@ namespace Core.Gameplay
                 areElementsMoved = true;
                 for (int i = 0; i < _horizontalMapSize; i++)
                 {
-                    int lowerElementIndex = 0;
+                    int lowerElementIndex = 0, spawnQueue = 0;
                     for (int j = _verticalMapSize - 1; j >= 0; j--)
                     {
                         if (_map[j, i] == null)
                         {
+                            spawnQueue++;
                             areElementsMoved = false;
                             if (lowerElementIndex < j)
                                 lowerElementIndex = j;
@@ -355,12 +356,12 @@ namespace Core.Gameplay
                             if (_map[j, i].IsExplode)
                             {
                                 lowerElementIndex = 0;
+                                spawnQueue = 0;
                                 continue;
                             }
 
                             if (lowerElementIndex <= j)
                                 continue;
-
 
                             areElementsMoved = false;
                             _map[lowerElementIndex, i] = _map[j, i];
@@ -369,23 +370,23 @@ namespace Core.Gameplay
                             lowerElementIndex--;
                         }
                     }
-                    int upperElementIndex, spawnQueue = 0;
+                    int upperElementIndex;
                     for (upperElementIndex = 0; upperElementIndex < _verticalMapSize; upperElementIndex++)
                     {
                         if (_map[upperElementIndex, i] == null || !_map[upperElementIndex, i].IsStatic)
                             break;
                     }
-                    for (int j = _verticalMapSize - 1; j >= 0; j--)
+                    for (int j = upperElementIndex; j < _verticalMapSize && spawnQueue > 0; j++)
                     {
                         if (_map[j, i] != null)
                             continue;
 
-                        spawnQueue++;
                         Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue);
                         _map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
                             new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
                         _map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
                         areElementsMoved = false;
+                        spawnQueue--;
                     }
                 }
                 await UniTask.Yield();
