@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;

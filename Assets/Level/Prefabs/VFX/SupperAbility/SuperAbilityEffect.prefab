@@ -200,7 +200,7 @@ MonoBehaviour:
   _lineCreatingDelayInSeconds: 0.1
   _explosionPrefab: {fileID: 8771290867492630907, guid: c200d821c4a1bfe4aacb87719516199b, type: 3}
   _lightGlowPrefab: {fileID: 9186446616439801708, guid: f97e3f3ba5607604ebbb92526081acf2, type: 3}
-  _linePrefab: {fileID: 6407953222907785165}
+  _magicLineEffect: {fileID: 6407953222907785165}
   _audioSource: {fileID: 2294940227059202231}
 --- !u!82 &2294940227059202231
 AudioSource:
