@@ -25,7 +25,10 @@ namespace Core.UI
         public void SetActive(bool active)
         {
             _isActive = active;
-            DoSwitchAnimation();
+            if (_isActive)
+                _toggle.localPosition = new Vector3(_onPosition.localPosition.x, _toggle.localPosition.y, _toggle.localPosition.z);
+            else
+                _toggle.localPosition = new Vector3(_offPosition.localPosition.x, _toggle.localPosition.y, _toggle.localPosition.z);
         }
 
         private void DoSwitchAnimation()
