@@ -110,7 +110,8 @@ namespace Core.Gameplay
             int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
             int secondXPosition = firstXPosition + Mathf.RoundToInt(swipeDirection.x);
             int secondYPosition = firstYPosition - Mathf.RoundToInt(swipeDirection.y);
-            if (_map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
+            if (!IsPositionInBoard(firstXPosition, firstYPosition) || !IsPositionInBoard(secondXPosition, secondYPosition) ||
+                _map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
             {
                 _gameBlock = false;
                 return;
@@ -414,6 +415,10 @@ namespace Core.Gameplay
         {
             return new Vector2(_startMapPoint.position.x + _interval * xIndex, 
                 _startMapPoint.position.y - _interval * yIndex);
+        }
+        private bool IsPositionInBoard(int x, int y)
+        {
+            return x < _horizontalMapSize && x >= 0 && y < _verticalMapSize && y >= 0;
         }
     }
 }
