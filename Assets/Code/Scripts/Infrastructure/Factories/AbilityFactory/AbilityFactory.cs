@@ -51,7 +51,7 @@ namespace Core.Infrastructure.Factories
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
                 { CellType.Bomb, new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { CellType.LightningBolt, new LightingBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference) },
+                { CellType.LightningBolt, new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3) },
                 { CellType.Supper, new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
             };
             _advencedAbilityDictionary = new Dictionary<DoubleCellType, IAbility>()

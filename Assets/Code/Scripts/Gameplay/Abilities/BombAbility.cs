@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Core.Infrastructure.Service.Audio;
+using System.Collections.Generic;
 
 namespace Core.Gameplay
 {
@@ -9,6 +10,10 @@ namespace Core.Gameplay
     {
         private AssetReference _bombEffectReference;
         private ParticleSystem _bombEffectInstance;
+
+        private int _horizontalLineCount;
+        private int _verticalLineCount;
+        private int _lineLenght;
 
         private GameField _gameField;
 
