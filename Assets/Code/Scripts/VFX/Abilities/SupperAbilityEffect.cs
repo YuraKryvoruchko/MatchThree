@@ -17,8 +17,6 @@ namespace Core.VFX.Abilities
         [SerializeField] private ParticleSystem _explosionPrefab;
         [SerializeField] private ParticleSystem _lightGlowPrefab;
         [SerializeField] private MagicLineEffect _magicLineEffect;
-        [Header("Components")]
-        [SerializeField] private AudioSource _audioSource;
 
         private bool _isPausing;
 
@@ -34,7 +32,6 @@ namespace Core.VFX.Abilities
 #endif
         public async UniTask Play(Vector3[] endPositions, Action OnReady = null)
         {
-            _audioSource.Play();
             _magicLines = new List<MagicLineEffect>(endPositions.Length);
             _particlies = new List<ParticleSystem>(endPositions.Length);
             int numberOfPositions = endPositions.Length;

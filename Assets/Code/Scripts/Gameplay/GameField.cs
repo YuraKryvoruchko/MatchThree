@@ -129,6 +129,12 @@ namespace Core.Gameplay
                 isSecondElementMoved = true;
                 UseAbility(_abilityFactory.GetAbility(specialCell.Type), specialCell.transform.position);
             }
+            else if(firstCell.IsSpecial && secondCell.IsSpecial)
+            {
+                isFirstElementMoved = true;
+                isSecondElementMoved = true;
+                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstCell.transform.position);
+            }
             else { 
                 await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
                     .ContinueWith((result) =>
@@ -229,7 +235,15 @@ namespace Core.Gameplay
             int upNumber = GetUpElementsNumber(xPosition, yPosition);
             int downNumber = GetDownElementsNumber(xPosition, yPosition);
 
-            if (upNumber + leftNumber >= 4)
+            if (upNumber + downNumber >= 4)
+                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, CellType.Supper);
+            else if (leftNumber + rightNumber >= 4)
+                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, CellType.Supper);
+            else if (upNumber + downNumber >= 3)
+                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
+            else if (leftNumber + rightNumber >= 3)
+                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
+            else if (upNumber + leftNumber >= 4)
                 await DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
             else if (upNumber + rightNumber >= 4)
                 await DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
