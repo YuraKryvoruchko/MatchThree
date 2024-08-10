@@ -122,18 +122,23 @@ namespace Core.Gameplay
             Cell firstCell = _map[firstYPosition, firstXPosition];
             Cell secondCell = _map[secondYPosition, secondXPosition];
             bool isFirstElementMoved = false, isSecondElementMoved = false;
-            if ((firstCell.IsSpecial && !secondCell.IsSpecial) || (!firstCell.IsSpecial && secondCell.IsSpecial))
+            if (firstCell.IsSpecial && !secondCell.IsSpecial)
             {
-                Cell specialCell = firstCell.IsSpecial ? firstCell : secondCell;
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(specialCell.Type), specialCell.transform.position);
+                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondCell.transform.position, firstCell.transform.position);
             }
-            else if(firstCell.IsSpecial && secondCell.IsSpecial)
+            else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstCell.transform.position);
+                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstCell.transform.position, secondCell.transform.position);
+            }
+            else if (firstCell.IsSpecial && secondCell.IsSpecial)
+            {
+                isFirstElementMoved = true;
+                isSecondElementMoved = true;
+                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstCell.transform.position, secondCell.transform.position);
             }
             else { 
                 await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
@@ -151,13 +156,16 @@ namespace Core.Gameplay
 
             _gameBlock = false;
         }
-        public void UseAbility(IAbility ability, Vector3 cellPosition)
+
+        public void UseAbility(IAbility ability, Vector3 cellPosition, Vector3 abilityPosition)
         {
             int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
             int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
-            UseAbility(ability, firstXPosition, firstYPosition);
+            int secondXPosition = Mathf.RoundToInt((abilityPosition.x - _startMapPoint.position.x) / _interval);
+            int secondYPosition = Mathf.RoundToInt((_startMapPoint.position.y - abilityPosition.y) / _interval);
+            UseAbility(ability, new Vector2Int(firstXPosition, firstYPosition), new Vector2Int(secondXPosition, secondYPosition));
         }
-        public async void UseAbility(IAbility ability, int xPosition, int yPosition)
+        public async void UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             OnMove?.Invoke();
             ability.Init(this);
@@ -165,12 +173,13 @@ namespace Core.Gameplay
 
             _usedAbilities.Add(ability);
 
-            await ability.Execute(xPosition, yPosition);
+            await ability.Execute(swipedCellPosition, abilityPosition);
             _usedAbilities.Remove(ability);
             await MoveDownElements();
 
             _gameBlock = false;
         }
+
         public async UniTask ExplodeCell(Cell cell)
         {
             int xPosition = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
@@ -194,6 +203,7 @@ namespace Core.Gameplay
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
         }
+
         public Cell GetCell(int xPosition, int yPosition)
         {
             return _map[yPosition, xPosition];

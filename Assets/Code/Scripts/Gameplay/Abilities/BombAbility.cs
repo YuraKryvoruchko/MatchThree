@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Core.Infrastructure.Service.Audio;
-using Unity.VisualScripting;
 
 namespace Core.Gameplay
 {
@@ -37,23 +36,23 @@ namespace Core.Gameplay
 
             _audioSourceInstance.Pause(isPause);
         }
-        async UniTask IAbility.Execute(int xPosition, int yPosition)
+        async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            Cell bombCell = _gameField.GetCell(xPosition, yPosition);
+            Cell bombCell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
             _bombEffectInstance = (await Addressables.InstantiateAsync(_bombEffectReference, 
                 bombCell.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
             _bombEffectInstance.Play();
             _audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
             await UniTask.WhenAll(
-                _gameField.ExplodeCell(xPosition, yPosition),
-                _gameField.ExplodeCell(xPosition + 1, yPosition),
-                _gameField.ExplodeCell(xPosition - 1, yPosition),
-                _gameField.ExplodeCell(xPosition, yPosition + 1),
-                _gameField.ExplodeCell(xPosition, yPosition - 1),
-                _gameField.ExplodeCell(xPosition + 1, yPosition + 1),
-                _gameField.ExplodeCell(xPosition + 1, yPosition - 1),
-                _gameField.ExplodeCell(xPosition - 1, yPosition + 1),
-                _gameField.ExplodeCell(xPosition - 1, yPosition - 1)
+                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y),
+                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y),
+                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y),
+                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y + 1),
+                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y - 1),
+                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y + 1),
+                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y - 1),
+                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y + 1),
+                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y - 1)
             );
             _audioService.ReleaseSource(_audioSourceInstance);
             Addressables.ReleaseInstance(_bombEffectInstance.gameObject);

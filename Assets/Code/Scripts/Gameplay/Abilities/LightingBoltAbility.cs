@@ -32,18 +32,18 @@ namespace Core.Gameplay
             _lightingBoltEffect.Pause(isPause);
             _audioSourceInstance.Pause(isPause);
         }
-        async UniTask IAbility.Execute(int xPosition, int yPosition)
+        async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
                 .GetComponent<LightingBoltEffect>();
 
-            Cell cell = _gameField.GetCell(xPosition, yPosition);
+            Cell cell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
             Vector3 startPosition = cell.transform.position;
             startPosition.y = 5;
 
             _lightingBoltEffect.Play(startPosition, cell.transform.position);
             _audioSourceInstance = _audioService.PlayWithSource(_clipEvent);
-            await _gameField.ExplodeCell(xPosition, yPosition);
+            await _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y);
 
             _audioService.ReleaseSource(_audioSourceInstance);
             Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);

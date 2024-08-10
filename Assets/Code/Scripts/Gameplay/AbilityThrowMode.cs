@@ -23,7 +23,7 @@ namespace Core.Gameplay
 
         public void Handle(Cell cell)
         {
-            _gameField.UseAbility(_ability, cell.transform.position);
+            _gameField.UseAbility(_ability, cell.transform.position, cell.transform.position);
             DisableAbilityThrowMode();
         }
         public void EnableAbilityhrowMode(IAbility ability)

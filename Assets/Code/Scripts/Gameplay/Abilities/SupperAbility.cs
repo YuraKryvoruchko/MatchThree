@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
-using System.Net.NetworkInformation;
 
 namespace Core.Gameplay
 {
@@ -35,19 +34,20 @@ namespace Core.Gameplay
             _abilityEffect.Pause(isPause);
             _audioSourceInstance.Pause(isPause);
         }
-        async UniTask IAbility.Execute(int xPosition, int yPosition)
+        async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            Cell cell = _gameField.GetCell(xPosition, yPosition);
-            List<Cell> cellList = _gameField.GetAllOfType(cell.Type);
+            Cell swipedCell = _gameField.GetCell(swipedCellPosition.x, swipedCellPosition.y);
+            Cell coreCell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
+            List<Cell> cellList = _gameField.GetAllOfType(swipedCell.Type);
             _abilityEffect = (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
-                cell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
+                coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
 
             Vector3[] cellPositions = new Vector3[cellList.Count];
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
             _audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
-            UniTask[] tasks = new UniTask[cellList.Count];
+            UniTask[] tasks = new UniTask[cellList.Count + 1];
             await _abilityEffect.Play(cellPositions, () => 
             {
                 _audioService.ReleaseSource(_audioSourceInstance);
@@ -56,6 +56,7 @@ namespace Core.Gameplay
                     if (!cellList[i].IsExplode)
                         tasks[i] = _gameField.ExplodeCell(cellList[i]);
                 }
+                tasks[tasks.Length - 1] = _gameField.ExplodeCell(coreCell);
             });
             await UniTask.WhenAll(tasks);
 

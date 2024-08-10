@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Core.Gameplay
 {
@@ -6,6 +7,6 @@ namespace Core.Gameplay
     {
         void Init(GameField gameField);
         void SetPause(bool isPause);
-        UniTask Execute(int xPosition, int yPosition);
+        UniTask Execute(Vector2Int cellPosition, Vector2Int abilityPosition);
     }
 }
