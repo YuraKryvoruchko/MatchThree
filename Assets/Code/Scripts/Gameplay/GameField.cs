@@ -203,6 +203,12 @@ namespace Core.Gameplay
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
         }
+        public void ReplaceCell(CellType newType, Vector2Int cellPosition)
+        {
+            _cellFabric.ReturnCell(_map[cellPosition.y, cellPosition.x]);
+            Vector2 worldPosition = GetElementPosition(cellPosition.x, cellPosition.y);
+            _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(newType, worldPosition, Quaternion.identity, _cellContainer);
+        }
 
         public Cell GetCell(int xPosition, int yPosition)
         {
