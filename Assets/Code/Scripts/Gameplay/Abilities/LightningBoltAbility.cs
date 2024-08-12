@@ -12,7 +12,8 @@ namespace Core.Gameplay
         private AssetReference _lightingBoltEffectPrefab;
         private LightingBoltEffect _lightingBoltEffect;
 
-        private int _lightningBoltCount;
+        private int _lightningBoltCount = 1;
+        private IAbility _severalAbility;
 
         private IAudioService _audioService;
         private ClipEvent _clipEvent;
@@ -25,6 +26,15 @@ namespace Core.Gameplay
             _clipEvent = hitClipEvent;
             _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
             _lightningBoltCount = lightningBoltCount;
+        }
+        public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab,
+            int lightningBoltCount, IAbility severalAbility)
+        {
+            _audioService = audioService;
+            _clipEvent = hitClipEvent;
+            _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
+            _lightningBoltCount = lightningBoltCount;
+            _severalAbility = severalAbility;
         }
 
         void IAbility.Init(GameField gameField)
@@ -51,7 +61,10 @@ namespace Core.Gameplay
                 startPosition.y = 5;
 
                 _lightingBoltEffect.Play(startPosition, cell.transform.position);
-                await _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y);
+                if (_severalAbility == null)
+                    await _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y);
+                else
+                    await _severalAbility.Execute(swipedCellPosition, abilityPosition);
 
                 Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);
             }
