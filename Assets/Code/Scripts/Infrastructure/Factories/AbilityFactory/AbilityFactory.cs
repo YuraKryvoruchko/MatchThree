@@ -10,7 +10,7 @@ namespace Core.Infrastructure.Factories
     public class AbilityFactory : IAbilityFactory
     {
         private Dictionary<CellType, IAbility> _cellAbilityDictionary;
-        private Dictionary<DoubleCellType, IAbility> _advencedAbilityDictionary;
+        private Dictionary<CellTypeCombination, IAbility> _advencedAbilityDictionary;
 
         private IAudioService _audioService;
 
@@ -28,15 +28,23 @@ namespace Core.Infrastructure.Factories
             public ClipEvent ElementCapturingEvent;
         }
 
-        public struct DoubleCellType
+        public struct CellTypeCombination
         {
             public CellType FirstType;
             public CellType SecondType;
 
-            public DoubleCellType(CellType firstType, CellType secondType)
+            public CellTypeCombination(CellType firstType, CellType secondType)
             {
-                FirstType = firstType;
-                SecondType = secondType;
+                if(firstType < secondType)
+                {
+                    FirstType = firstType;
+                    SecondType = secondType;
+                }
+                else
+                {
+                    FirstType = secondType;
+                    SecondType = firstType;
+                }
             }
 
             public override string ToString()
@@ -54,14 +62,14 @@ namespace Core.Infrastructure.Factories
                 { CellType.LightningBolt, new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3) },
                 { CellType.Supper, new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
             };
-            _advencedAbilityDictionary = new Dictionary<DoubleCellType, IAbility>()
+            _advencedAbilityDictionary = new Dictionary<CellTypeCombination, IAbility>()
             {
-                { new DoubleCellType(CellType.Bomb, CellType.Bomb), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new DoubleCellType(CellType.Bomb, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new DoubleCellType(CellType.Bomb, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new DoubleCellType(CellType.LightningBolt, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new DoubleCellType(CellType.LightningBolt, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new DoubleCellType(CellType.Supper, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) }
+                { new CellTypeCombination(CellType.Bomb, CellType.Bomb), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Bomb, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Bomb, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.LightningBolt, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.LightningBolt, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Supper, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) }
             };
         }
 
@@ -71,9 +79,7 @@ namespace Core.Infrastructure.Factories
         }
         IAbility IAbilityFactory.GetAdvancedAbility(CellType firstType, CellType secondType)
         {
-            DoubleCellType doubleCellType = firstType < secondType ?
-                new DoubleCellType(firstType, secondType) : new DoubleCellType(secondType, firstType);
-
+            CellTypeCombination doubleCellType = new CellTypeCombination(firstType, secondType);
             if (_advencedAbilityDictionary.TryGetValue(doubleCellType, out IAbility ability))
                 return ability;
             else
