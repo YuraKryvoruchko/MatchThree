@@ -749,8 +749,13 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     LightingBoltHitEvent: {fileID: 11400000, guid: ae2497d9689ad0f4a8453d238b7c625b, type: 2}
-    BombEffectPrefabReference:
+    SmallBombEffectPrefabReference:
       m_AssetGUID: 2dee2a952f046be458b928bf213e2c20
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    BigBombEffectPrefabReference:
+      m_AssetGUID: 3d71202c72a21964ca4a0a5755111f0c
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
