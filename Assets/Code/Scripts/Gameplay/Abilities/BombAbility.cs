@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Core.Infrastructure.Service.Audio;
-using System.Collections.Generic;
 
 namespace Core.Gameplay
 {
@@ -11,9 +10,7 @@ namespace Core.Gameplay
         private AssetReference _bombEffectReference;
         private ParticleSystem _bombEffectInstance;
 
-        private int _horizontalLineCount;
-        private int _verticalLineCount;
-        private int _lineLenght;
+        private int _lineLenght = 5;
 
         private GameField _gameField;
 
@@ -21,8 +18,9 @@ namespace Core.Gameplay
         private ClipEvent _explosiveEvent;
         private SourceInstance _audioSourceInstance;
 
-        public BombAbility(IAudioService audioService, ClipEvent explosiveEvent, AssetReference bombEffectReference)
+        public BombAbility(int lineLenght, IAudioService audioService, ClipEvent explosiveEvent, AssetReference bombEffectReference)
         {
+            _lineLenght = lineLenght;
             _audioService = audioService;
             _explosiveEvent = explosiveEvent;
             _bombEffectReference = bombEffectReference;
@@ -48,17 +46,18 @@ namespace Core.Gameplay
                 bombCell.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
             _bombEffectInstance.Play();
             _audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
-            await UniTask.WhenAll(
-                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y),
-                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y),
-                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y),
-                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y + 1),
-                _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y - 1),
-                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y + 1),
-                _gameField.ExplodeCell(abilityPosition.x + 1, abilityPosition.y - 1),
-                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y + 1),
-                _gameField.ExplodeCell(abilityPosition.x - 1, abilityPosition.y - 1)
-            );
+
+            int lenghtFromBombCell = (_lineLenght - 1) / 2, taskArrayIndex = 0;
+            UniTask[] explodeTasks = new UniTask[_lineLenght * _lineLenght];
+            for (int i = -lenghtFromBombCell; i <= lenghtFromBombCell; i++)
+            {
+                for (int j = -lenghtFromBombCell; j <= lenghtFromBombCell; j++, taskArrayIndex++)
+                {
+                    explodeTasks[taskArrayIndex] = _gameField.ExplodeCell(abilityPosition.x + i, abilityPosition.y + j);
+                }
+            }
+
+            await UniTask.WhenAll(explodeTasks);
             _audioService.ReleaseSource(_audioSourceInstance);
             Addressables.ReleaseInstance(_bombEffectInstance.gameObject);
         }

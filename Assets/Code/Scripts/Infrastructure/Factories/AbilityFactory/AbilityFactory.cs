@@ -58,18 +58,18 @@ namespace Core.Infrastructure.Factories
             _audioService = audioService;
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
-                { CellType.Bomb, new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { CellType.Bomb, new BombAbility(3, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
                 { CellType.LightningBolt, new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3) },
                 { CellType.Supper, new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
             };
             _advencedAbilityDictionary = new Dictionary<CellTypeCombination, IAbility>()
             {
-                { new CellTypeCombination(CellType.Bomb, CellType.Bomb), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new CellTypeCombination(CellType.Bomb, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new CellTypeCombination(CellType.Bomb, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new CellTypeCombination(CellType.LightningBolt, CellType.LightningBolt), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new CellTypeCombination(CellType.LightningBolt, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
-                { new CellTypeCombination(CellType.Supper, CellType.Supper), new BombAbility(_audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) }
+                { new CellTypeCombination(CellType.Bomb, CellType.Bomb), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Bomb, CellType.LightningBolt), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Bomb, CellType.Supper), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.LightningBolt, CellType.LightningBolt), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.LightningBolt, CellType.Supper), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) },
+                { new CellTypeCombination(CellType.Supper, CellType.Supper), new BombAbility(5, _audioService, config.ExplosiveEvent, config.BombEffectPrefabReference) }
             };
         }
 
