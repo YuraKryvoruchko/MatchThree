@@ -220,6 +220,19 @@ namespace Core.Gameplay
             }
             return list;
         }
+        public List<Cell> GetBy—ondition(Func<Cell, bool> condition)
+        {
+            List<Cell> list = new List<Cell>();
+            for (int i = 0; i < _horizontalMapSize; i++)
+            {
+                for (int j = 0; j < _verticalMapSize; j++)
+                {
+                    if (condition.Invoke(_map[j, i]))
+                        list.Add(_map[j, i]);
+                }
+            }
+            return list;
+        }
 
         public Vector2Int WorldPositionToCell(Vector3 position)
         {
