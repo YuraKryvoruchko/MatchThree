@@ -36,8 +36,8 @@ namespace Core.Gameplay
         }
         async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            Cell swipedCell = _gameField.GetCell(swipedCellPosition.x, swipedCellPosition.y);
-            Cell coreCell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
+            Cell swipedCell = _gameField.GetCell(swipedCellPosition);
+            Cell coreCell = _gameField.GetCell(abilityPosition);
             List<Cell> cellList = _gameField.GetAllOfType(swipedCell.Type);
             _abilityEffect = (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
                 coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
@@ -54,9 +54,9 @@ namespace Core.Gameplay
                 for (int i = 0; i < cellList.Count; i++)
                 {
                     if (!cellList[i].IsExplode)
-                        tasks[i] = _gameField.ExplodeCell(cellList[i]);
+                        tasks[i] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(cellList[i].transform.position));
                 }
-                tasks[tasks.Length - 1] = _gameField.ExplodeCell(coreCell);
+                tasks[tasks.Length - 1] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(coreCell.transform.position));
             });
             await UniTask.WhenAll(tasks);
 

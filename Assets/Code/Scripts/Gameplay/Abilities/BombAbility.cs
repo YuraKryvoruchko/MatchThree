@@ -41,7 +41,7 @@ namespace Core.Gameplay
         }
         async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            Cell bombCell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
+            Cell bombCell = _gameField.GetCell(abilityPosition);
             _bombEffectInstance = (await Addressables.InstantiateAsync(_bombEffectReference, 
                 bombCell.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
             _bombEffectInstance.Play();
@@ -53,7 +53,7 @@ namespace Core.Gameplay
             {
                 for (int j = -lenghtFromBombCell; j <= lenghtFromBombCell; j++, taskArrayIndex++)
                 {
-                    explodeTasks[taskArrayIndex] = _gameField.ExplodeCell(abilityPosition.x + i, abilityPosition.y + j);
+                    explodeTasks[taskArrayIndex] = _gameField.ExplodeCell(new Vector2Int(abilityPosition.x + i, abilityPosition.y + j));
                 }
             }
 

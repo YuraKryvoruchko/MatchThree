@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Gameplay.Input;
+using UnityEngine;
 
 namespace Core.Gameplay
 {
@@ -23,7 +24,8 @@ namespace Core.Gameplay
 
         public void Handle(Cell cell)
         {
-            _gameField.UseAbility(_ability, cell.transform.position, cell.transform.position);
+            Vector2Int cellPosition = _gameField.WorldPositionToCell(cell.transform.position);
+            _gameField.UseAbility(_ability, cellPosition, cellPosition);
             DisableAbilityThrowMode();
         }
         public void EnableAbilityhrowMode(IAbility ability)

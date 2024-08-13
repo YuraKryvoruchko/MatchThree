@@ -56,13 +56,13 @@ namespace Core.Gameplay
                 _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
                     .GetComponent<LightingBoltEffect>();
 
-                Cell cell = _gameField.GetCell(abilityPosition.x, abilityPosition.y);
+                Cell cell = _gameField.GetCell(abilityPosition);
                 Vector3 startPosition = cell.transform.position;
                 startPosition.y = 5;
 
                 _lightingBoltEffect.Play(startPosition, cell.transform.position);
                 if (_severalAbility == null)
-                    await _gameField.ExplodeCell(abilityPosition.x, abilityPosition.y);
+                    await _gameField.ExplodeCell(abilityPosition);
                 else
                     await _severalAbility.Execute(swipedCellPosition, abilityPosition);
 

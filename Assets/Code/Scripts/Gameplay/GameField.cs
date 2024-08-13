@@ -76,7 +76,7 @@ namespace Core.Gameplay
             for(int i = 0; i < _cellConfigs.Length; i++)
             {
                 _map[_cellConfigs[i].Y, _cellConfigs[i].X] = _cellFabric.GetCell(_cellConfigs[i].Type,
-                    GetElementPosition(_cellConfigs[i].X, _cellConfigs[i].Y), Quaternion.identity, _cellContainer);
+                    CellPositionToWorld(new Vector2Int(_cellConfigs[i].X, _cellConfigs[i].Y)), Quaternion.identity, _cellContainer);
             }
 
             await MoveDownElements();
@@ -106,42 +106,43 @@ namespace Core.Gameplay
 
             _gameBlock = true;
             swipeDirection = swipeDirection.normalized;
-            int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
-            int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
-            int secondXPosition = firstXPosition + Mathf.RoundToInt(swipeDirection.x);
-            int secondYPosition = firstYPosition - Mathf.RoundToInt(swipeDirection.y);
-            if (!IsPositionInBoard(firstXPosition, firstYPosition) || !IsPositionInBoard(secondXPosition, secondYPosition) ||
-                _map[firstYPosition, firstXPosition].IsStatic || _map[secondYPosition, secondXPosition].IsStatic)
+
+            Vector2Int firstPosition = WorldPositionToCell(cellPosition);
+            Vector2Int secondPosition = new Vector2Int(firstPosition.x + Mathf.RoundToInt(swipeDirection.x), firstPosition.y - Mathf.RoundToInt(swipeDirection.y));
+
+            if (!IsPositionInBoard(firstPosition) || !IsPositionInBoard(secondPosition) ||
+                _map[firstPosition.y, firstPosition.x].IsStatic || _map[secondPosition.y, secondPosition.x].IsStatic)
             {
                 _gameBlock = false;
                 return;
             }
 
             OnMove?.Invoke();
-            await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
-            Cell firstCell = _map[firstYPosition, firstXPosition];
-            Cell secondCell = _map[secondYPosition, secondXPosition];
+            await SwapCells(firstPosition, secondPosition);
+
+            Cell firstCell = _map[firstPosition.y, firstPosition.x];
+            Cell secondCell = _map[secondPosition.y, secondPosition.x];
             bool isFirstElementMoved = false, isSecondElementMoved = false;
             if (firstCell.IsSpecial && !secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondCell.transform.position, firstCell.transform.position);
+                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition);
             }
             else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstCell.transform.position, secondCell.transform.position);
+                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition);
             }
             else if (firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstCell.transform.position, secondCell.transform.position);
+                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition);
             }
             else { 
-                await UniTask.WhenAll(HandleMove(firstXPosition, firstYPosition), HandleMove(secondXPosition, secondYPosition))
+                await UniTask.WhenAll(HandleMove(firstPosition), HandleMove(secondPosition))
                     .ContinueWith((result) =>
                     {
                         isFirstElementMoved = result.Item1;
@@ -150,21 +151,13 @@ namespace Core.Gameplay
             }
                 
             if (!isFirstElementMoved && !isSecondElementMoved)
-                await SwapCells(firstXPosition, firstYPosition, secondXPosition, secondYPosition);
+                await SwapCells(firstPosition, secondPosition);
             else
                 await MoveDownElements();
 
             _gameBlock = false;
         }
 
-        public void UseAbility(IAbility ability, Vector3 cellPosition, Vector3 abilityPosition)
-        {
-            int firstXPosition = Mathf.RoundToInt((cellPosition.x - _startMapPoint.position.x) / _interval);
-            int firstYPosition = Mathf.RoundToInt((_startMapPoint.position.y - cellPosition.y) / _interval);
-            int secondXPosition = Mathf.RoundToInt((abilityPosition.x - _startMapPoint.position.x) / _interval);
-            int secondYPosition = Mathf.RoundToInt((_startMapPoint.position.y - abilityPosition.y) / _interval);
-            UseAbility(ability, new Vector2Int(firstXPosition, firstYPosition), new Vector2Int(secondXPosition, secondYPosition));
-        }
         public async void UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             OnMove?.Invoke();
@@ -180,25 +173,24 @@ namespace Core.Gameplay
             _gameBlock = false;
         }
 
-        public async UniTask ExplodeCell(Cell cell)
+        public async UniTask ExplodeCell(Vector2Int cellPosition)
         {
-            int xPosition = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
-            int yPosition = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
-            await ExplodeCell(xPosition, yPosition);
-        }
-        public async UniTask ExplodeCell(int xPosition, int yPosition)
-        {
-            if (xPosition > _verticalMapSize - 1 || xPosition < 0 || yPosition > _horizontalMapSize - 1 || yPosition < 0 
-                || _map[yPosition, xPosition].IsStatic || _map[yPosition, xPosition].IsMove || _map[yPosition, xPosition].IsExplode)
+            if (cellPosition.x > _verticalMapSize - 1 || cellPosition.x < 0 || cellPosition.y > _horizontalMapSize - 1 || cellPosition.y < 0 
+                || _map[cellPosition.y, cellPosition.x].IsStatic 
+                || _map[cellPosition.y, cellPosition.x].IsMove 
+                || _map[cellPosition.y, cellPosition.x].IsExplode)
             {
                 return;
             }
+
             _audioService.PlayOneShot(_destroyAudio);
-            Cell cell = _map[yPosition, xPosition];
+
+            Cell cell = _map[cellPosition.y, cellPosition.x];
             await cell.Explode();
             if (cell.IsMove)
                 Debug.LogError("Cell move when it's exploded!", cell);
-            _map[yPosition, xPosition] = null;
+
+            _map[cellPosition.y, cellPosition.x] = null;
             int score = cell.Score;
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
@@ -206,13 +198,13 @@ namespace Core.Gameplay
         public void ReplaceCell(CellType newType, Vector2Int cellPosition)
         {
             _cellFabric.ReturnCell(_map[cellPosition.y, cellPosition.x]);
-            Vector2 worldPosition = GetElementPosition(cellPosition.x, cellPosition.y);
+            Vector2 worldPosition = CellPositionToWorld(cellPosition);
             _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(newType, worldPosition, Quaternion.identity, _cellContainer);
         }
 
-        public Cell GetCell(int xPosition, int yPosition)
+        public Cell GetCell(Vector2Int cellPosition)
         {
-            return _map[yPosition, xPosition];
+            return _map[cellPosition.y, cellPosition.x];
         }
         public List<Cell> GetAllOfType(CellType type)
         {
@@ -228,49 +220,61 @@ namespace Core.Gameplay
             return list;
         }
 
-        private async UniTask SwapCells(int firstXPosition, int firstYPosition, int secondXPosition, int secondYPosition)
+        public Vector2Int WorldPositionToCell(Vector3 position)
         {
-            Cell tmpCell = _map[firstYPosition, firstXPosition];
-            Vector3 tmpPosition = tmpCell.transform.position;
-            UniTask firstMoveTask = _map[firstYPosition, firstXPosition].MoveToWithTask(_map[secondYPosition, secondXPosition].transform.position, false);
-            UniTask secondMoveTask = _map[secondYPosition, secondXPosition].MoveToWithTask(tmpPosition, false);
-            _map[firstYPosition, firstXPosition] = _map[secondYPosition, secondXPosition];
-            _map[secondYPosition, secondXPosition] = tmpCell;
+            int x = Mathf.RoundToInt((position.x - _startMapPoint.position.x) / _interval);
+            int y = Mathf.RoundToInt((_startMapPoint.position.y - position.y) / _interval);
+            return new Vector2Int(x, y);
+        }
+        public Vector2 CellPositionToWorld(Vector2Int cellPosition)
+        {
+            return new Vector2(_startMapPoint.position.x + _interval * cellPosition.x, 
+                _startMapPoint.position.y - _interval * cellPosition.y);
+        }
+
+        private async UniTask SwapCells(Vector2Int firstPosition, Vector2Int secondPosition)
+        {
+            Cell firstCell = _map[firstPosition.y, firstPosition.x], secondCell = _map[secondPosition.y, secondPosition.x];
+            Vector3 tmpPosition = firstCell.transform.position;
+            UniTask firstMoveTask = firstCell.MoveToWithTask(secondCell.transform.position, false);
+            UniTask secondMoveTask = secondCell.MoveToWithTask(tmpPosition, false);
+            _map[firstPosition.y, firstPosition.x] = secondCell;
+            _map[secondPosition.y, secondPosition.x] = firstCell;
             _audioService.PlayOneShot(_swipeAudio);
 
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
 
-        private async UniTask<bool> HandleMove(int xPosition, int yPosition)
+        private async UniTask<bool> HandleMove(Vector2Int cellPosition)
         {
-            if (_map[yPosition, xPosition] == null || _map[yPosition, xPosition].IsSpecial)
+            if (_map[cellPosition.y, cellPosition.x] == null || _map[cellPosition.y, cellPosition.x].IsSpecial)
                 return false;
 
-            int rightNumber = GetRightElementsNumber(xPosition, yPosition);
-            int leftNumber = GetLeftElementsNumber(xPosition, yPosition);
-            int upNumber = GetUpElementsNumber(xPosition, yPosition);
-            int downNumber = GetDownElementsNumber(xPosition, yPosition);
+            int rightNumber = GetRightElementsNumber(cellPosition);
+            int leftNumber = GetLeftElementsNumber(cellPosition);
+            int upNumber = GetUpElementsNumber(cellPosition);
+            int downNumber = GetDownElementsNumber(cellPosition);
 
             if (upNumber + downNumber >= 4)
-                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, CellType.Supper);
+                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.Supper);
             else if (leftNumber + rightNumber >= 4)
-                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, CellType.Supper);
+                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.Supper);
             else if (upNumber + downNumber >= 3)
-                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
+                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
             else if (leftNumber + rightNumber >= 3)
-                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
+                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
             else if (upNumber + leftNumber >= 4)
-                await DeleteElements(xPosition, yPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
+                await DeleteElements(cellPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
             else if (upNumber + rightNumber >= 4)
-                await DeleteElements(xPosition, yPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
+                await DeleteElements(cellPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
             else if (downNumber + leftNumber >= 4)
-                await DeleteElements(xPosition, yPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
+                await DeleteElements(cellPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
             else if (downNumber + rightNumber >= 4)
-                await DeleteElements(xPosition, yPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
+                await DeleteElements(cellPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
             else if (rightNumber + leftNumber >= 2)
-                await DeleteElements(xPosition, yPosition, rightNumber, leftNumber, 0, 0, 0);
+                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, 0);
             else if (upNumber + downNumber >= 2)
-                await DeleteElements(xPosition, yPosition, 0, 0, upNumber, downNumber, 0);
+                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, 0);
             else
                 return false;
 
@@ -287,81 +291,84 @@ namespace Core.Gameplay
                 ability.SetPause(isPause);
         }
 
-        private int GetRightElementsNumber(int xPosition, int yPosition)
+        private int GetRightElementsNumber(Vector2Int position)
         {
-            if (xPosition + 1 >= _horizontalMapSize || _map[yPosition, xPosition + 1] == null ||
-                _map[yPosition, xPosition + 1].IsMove ||
-                _map[yPosition, xPosition + 1].IsExplode || _map[yPosition, xPosition].Type != _map[yPosition, xPosition + 1].Type)
+            if (position.x + 1 >= _horizontalMapSize || _map[position.y, position.x + 1] == null ||
+                _map[position.y, position.x + 1].IsMove ||
+                _map[position.y, position.x + 1].IsExplode || _map[position.y, position.x].Type != _map[position.y, position.x + 1].Type)
                 return 0;
 
-            return 1 + GetRightElementsNumber(xPosition + 1, yPosition);
+            position.x++;
+            return 1 + GetRightElementsNumber(position);
         }
-        private int GetLeftElementsNumber(int xPosition, int yPosition)
+        private int GetLeftElementsNumber(Vector2Int position)
         {
-            if (xPosition - 1 < 0 || _map[yPosition, xPosition - 1] == null || _map[yPosition, xPosition - 1].IsMove ||
-                _map[yPosition, xPosition - 1].IsExplode ||
-                _map[yPosition, xPosition].Type != _map[yPosition, xPosition - 1].Type)
+            if (position.x - 1 < 0 || _map[position.y, position.x - 1] == null || _map[position.y, position.x - 1].IsMove ||
+                _map[position.y, position.x - 1].IsExplode ||
+                _map[position.y, position.x].Type != _map[position.y, position.x - 1].Type)
                 return 0;
 
-            return 1 + GetLeftElementsNumber(xPosition - 1, yPosition);
+            position.x--;
+            return 1 + GetLeftElementsNumber(position);
         }
-        private int GetUpElementsNumber(int xPosition, int yPosition)
+        private int GetUpElementsNumber(Vector2Int position)
         {
-            if (yPosition - 1 < 0 || _map[yPosition - 1, xPosition] == null || _map[yPosition - 1, xPosition].IsMove ||
-                _map[yPosition - 1, xPosition].IsExplode ||
-                _map[yPosition, xPosition].Type != _map[yPosition - 1, xPosition].Type)
+            if (position.y - 1 < 0 || _map[position.y - 1, position.x] == null || _map[position.y - 1, position.x].IsMove ||
+                _map[position.y - 1, position.x].IsExplode ||
+                _map[position.y, position.x].Type != _map[position.y - 1, position.x].Type)
                 return 0;
 
-            return 1 + GetUpElementsNumber(xPosition, yPosition - 1);
+            position.y--;
+            return 1 + GetUpElementsNumber(position);
         }
-        private int GetDownElementsNumber(int xPosition, int yPosition)
+        private int GetDownElementsNumber(Vector2Int position)
         {
-            if (yPosition + 1 >= _verticalMapSize || _map[yPosition + 1, xPosition] == null || _map[yPosition + 1, xPosition].IsMove ||
-                _map[yPosition + 1, xPosition].IsExplode ||
-                _map[yPosition, xPosition].Type != _map[yPosition + 1, xPosition].Type)
+            if (position.y + 1 >= _verticalMapSize || _map[position.y + 1, position.x] == null || _map[position.y + 1, position.x].IsMove ||
+                _map[position.y + 1, position.x].IsExplode ||
+                _map[position.y, position.x].Type != _map[position.y + 1, position.x].Type)
                 return 0;
 
-            return 1 + GetDownElementsNumber(xPosition, yPosition + 1);
+            position.y++;
+            return 1 + GetDownElementsNumber(position);
         }
 
-        private async UniTask DeleteElements(int xPosition, int yPosition, int rightNumber, int leftNumber, int upNumber,
+        private async UniTask DeleteElements(Vector2Int cellPosition, int rightNumber, int leftNumber, int upNumber,
             int downNumber, CellType createdElement)
         {
             UniTask[] tasks = new UniTask[rightNumber + leftNumber + upNumber + downNumber + 1];
             int generalIndex = 0;
             for (int i = 1; i <= rightNumber; i++)
             {
-                tasks[generalIndex] = ExplodeCell(xPosition + i, yPosition);
+                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x + i, cellPosition.y));
                 generalIndex++;
             }
             for (int i = 1; i <= leftNumber; i++)
             {
-                tasks[generalIndex] = ExplodeCell(xPosition - i, yPosition);
+                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x - i, cellPosition.y));
                 generalIndex++;
             }
             for (int i = 1; i <= upNumber; i++)
             {
-                tasks[generalIndex] = ExplodeCell(xPosition, yPosition - i);
+                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x, cellPosition.y - i));
                 generalIndex++;
             }
             for (int i = 1; i <= downNumber; i++) 
             {
-                tasks[generalIndex] = ExplodeCell(xPosition, yPosition + i);
+                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x, cellPosition.y + i));
                 generalIndex++;
             }
 
-            tasks[generalIndex] = ExplodeCell(xPosition, yPosition);
+            tasks[generalIndex] = ExplodeCell(cellPosition);
             await UniTask.WhenAll(tasks);
             if (createdElement != 0)
             {
-                _map[yPosition, xPosition] = 
-                    _cellFabric.GetCell(createdElement, GetElementPosition(xPosition, yPosition), Quaternion.identity, _cellContainer);
+                _map[cellPosition.y, cellPosition.x] = 
+                    _cellFabric.GetCell(createdElement, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
         }
 
         private async UniTask MoveDownElements()
         {
-            int x = 0, y = 0;
             bool areElementsMoved = false;
             do
             {
@@ -398,7 +405,7 @@ namespace Core.Gameplay
                             areElementsMoved = false;
                             _map[lowerElementIndex, i] = _map[j, i];
                             _map[j, i] = null;
-                            _map[lowerElementIndex, i].MoveTo(GetElementPosition(i, lowerElementIndex), true, DoCallback);
+                            _map[lowerElementIndex, i].MoveTo(CellPositionToWorld(new Vector2Int(i, lowerElementIndex)), true, DoCallback);
                             lowerElementIndex--;
                         }
                     }
@@ -413,10 +420,10 @@ namespace Core.Gameplay
                         if (_map[j, i] != null)
                             continue;
 
-                        Vector2 pos = GetElementPosition(i, upperElementIndex - spawnQueue);
+                        Vector2 pos = CellPositionToWorld(new Vector2Int(i, upperElementIndex - spawnQueue));
                         _map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
                             new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
-                        _map[j, i].MoveTo(GetElementPosition(i, j), true, DoCallback);
+                        _map[j, i].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, DoCallback);
                         areElementsMoved = false;
                         spawnQueue--;
                     }
@@ -426,9 +433,7 @@ namespace Core.Gameplay
 
             async void DoCallback(Cell cell)
             {
-                x = Mathf.RoundToInt((cell.transform.position.x - _startMapPoint.position.x) / _interval);
-                y = Mathf.RoundToInt((_startMapPoint.position.y - cell.transform.position.y) / _interval);
-                bool handled = await HandleMove(x, y);
+                bool handled = await HandleMove(WorldPositionToCell(cell.transform.position));
                 if (handled == true)
                     areElementsMoved = false;
             }
@@ -441,14 +446,9 @@ namespace Core.Gameplay
 
             return _availableRandomCellTypes[index];
         }
-        private Vector2 GetElementPosition(int xIndex, int yIndex)
+        private bool IsPositionInBoard(Vector2Int position)
         {
-            return new Vector2(_startMapPoint.position.x + _interval * xIndex, 
-                _startMapPoint.position.y - _interval * yIndex);
-        }
-        private bool IsPositionInBoard(int x, int y)
-        {
-            return x < _horizontalMapSize && x >= 0 && y < _verticalMapSize && y >= 0;
+            return position.x < _horizontalMapSize && position.x >= 0 && position.y < _verticalMapSize && position.y >= 0;
         }
     }
 }
