@@ -46,7 +46,7 @@ namespace Core.Gameplay
         [Serializable]
         private class CellConfig
         {
-            public int X, Y;
+            public Vector2Int Position;
             public CellType Type; 
         }
 
@@ -75,8 +75,9 @@ namespace Core.Gameplay
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
             for(int i = 0; i < _cellConfigs.Length; i++)
             {
-                _map[_cellConfigs[i].Y, _cellConfigs[i].X] = _cellFabric.GetCell(_cellConfigs[i].Type,
-                    CellPositionToWorld(new Vector2Int(_cellConfigs[i].X, _cellConfigs[i].Y)), Quaternion.identity, _cellContainer);
+                Vector2Int cellPosition = _cellConfigs[i].Position;
+                _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(_cellConfigs[i].Type,
+                    CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
 
             await MoveDownElements();

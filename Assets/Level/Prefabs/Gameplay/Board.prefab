@@ -171,8 +171,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5891042433053692526}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.11, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -199,17 +199,13 @@ MonoBehaviour:
   _cellContainer: {fileID: 1372878496197236861}
   _availableRandomCellTypes: 00000000010000000200000003000000
   _cellConfigs:
-  - X: 0
-    Y: 0
+  - Position: {x: 0, y: 0}
     Type: 4
-  - X: 7
-    Y: 0
+  - Position: {x: 0, y: 7}
     Type: 4
-  - X: 7
-    Y: 7
+  - Position: {x: 7, y: 0}
     Type: 4
-  - X: 0
-    Y: 7
+  - Position: {x: 7, y: 7}
     Type: 4
   _interval: 1
   _swipeAudio: {fileID: 11400000, guid: e887f1d9226d29e47b1667005b077881, type: 2}

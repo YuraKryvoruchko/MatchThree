@@ -3,6 +3,7 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
+using System.Collections.Generic;
 
 namespace Core.Gameplay
 {
@@ -12,23 +13,15 @@ namespace Core.Gameplay
         private AssetReference _lightingBoltEffectPrefab;
         private LightingBoltEffect _lightingBoltEffect;
 
-        private int _lightningBoltCount = 1;
+        private int _lightningBoltCount;
         private IAbility _severalAbility;
 
         private IAudioService _audioService;
         private ClipEvent _clipEvent;
         private SourceInstance _audioSourceInstance;
 
-        public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab, 
-            int lightningBoltCount)
-        {
-            _audioService = audioService;
-            _clipEvent = hitClipEvent;
-            _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
-            _lightningBoltCount = lightningBoltCount;
-        }
         public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab,
-            int lightningBoltCount, IAbility severalAbility)
+            int lightningBoltCount, IAbility severalAbility = null)
         {
             _audioService = audioService;
             _clipEvent = hitClipEvent;
@@ -49,26 +42,38 @@ namespace Core.Gameplay
         async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             if(_audioSourceInstance == null)
-                _audioSourceInstance = _audioService.PlayWithSource(_clipEvent);
+                _audioSourceInstance = _audioService.PlayWithSource(_clipEvent, false);
+            if (_severalAbility != null)
+                _severalAbility.Init(_gameField);
 
-            for (int i = 0; i < _lightningBoltCount; i++)
+            _gameField.ExplodeCell(abilityPosition).Forget();
+
+            Cell swipedCell = _gameField.GetCell(swipedCellPosition);
+            List<Cell> cells = _gameField.GetAllOfType(swipedCell.Type);
+
+            _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
+                .GetComponent<LightingBoltEffect>();
+
+            Cell randomCell = swipedCell;
+            for (int i = 0; i < _lightningBoltCount && cells.Count > 0; i++)
             {
-                _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
-                    .GetComponent<LightingBoltEffect>();
+                cells.Remove(randomCell);
 
-                Cell cell = _gameField.GetCell(abilityPosition);
-                Vector3 startPosition = cell.transform.position;
+                Vector3 startPosition = randomCell.transform.position;
                 startPosition.y = 5;
 
-                _lightingBoltEffect.Play(startPosition, cell.transform.position);
+                _lightingBoltEffect.Play(startPosition, randomCell.transform.position);
+                _audioSourceInstance.Play();
                 if (_severalAbility == null)
-                    await _gameField.ExplodeCell(abilityPosition);
+                    await _gameField.ExplodeCell(_gameField.WorldPositionToCell(randomCell.transform.position));
                 else
                     await _severalAbility.Execute(swipedCellPosition, abilityPosition);
 
-                Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);
+                if(cells.Count > 0)
+                    randomCell = cells[Random.Range(0, cells.Count - 1)];
             }
-            
+
+            Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);       
             _audioService.ReleaseSource(_audioSourceInstance);
             _audioSourceInstance = null;
         }
