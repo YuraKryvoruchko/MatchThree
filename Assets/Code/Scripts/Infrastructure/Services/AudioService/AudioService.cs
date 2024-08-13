@@ -85,21 +85,27 @@ namespace Core.Infrastructure.Service.Audio
             _sourceInstances.Add(sourceInstance);
         }
 
-        public SourceInstance PlayWithSource(ClipEvent clipEvent)
+        public SourceInstance PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true)
         {
             AudioSource audioSource = CreateAudioSource($"{clipEvent.name}AudioSource", _audioBuses[clipEvent.AudioGroup].Group);
             SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
-            sourceInstance.Play();
+
+            if(playOnAwake)
+                sourceInstance.Play();
+
             _sourceInstances.Add(sourceInstance);
             return sourceInstance;
         }
-        public SourceInstance PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position)
+        public SourceInstance PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true)
         {
             AudioSource audioSource = CreateAudioSource($"{clipEvent.name}AudioSource", _audioBuses[clipEvent.AudioGroup].Group);
             audioSource.spatialBlend = 1;
             audioSource.transform.position = position;
             SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
-            sourceInstance.Play();
+
+            if (playOnAwake)
+                sourceInstance.Play();
+
             _sourceInstances.Add(sourceInstance);
             return sourceInstance;
         }
