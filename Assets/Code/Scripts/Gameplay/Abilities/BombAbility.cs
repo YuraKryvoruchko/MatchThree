@@ -41,9 +41,9 @@ namespace Core.Gameplay
         }
         async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            Cell bombCell = _gameField.GetCell(abilityPosition);
-            _bombEffectInstance = (await Addressables.InstantiateAsync(_bombEffectReference, 
-                bombCell.transform.position, Quaternion.identity)).GetComponent<ParticleSystem>();
+            Vector3 cellPosition = _gameField.CellPositionToWorld(abilityPosition);
+            _bombEffectInstance = (await Addressables.InstantiateAsync(_bombEffectReference,
+                cellPosition, Quaternion.identity)).GetComponent<ParticleSystem>();
             _bombEffectInstance.Play();
             _audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
 

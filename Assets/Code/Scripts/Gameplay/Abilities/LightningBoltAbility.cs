@@ -43,12 +43,14 @@ namespace Core.Gameplay
         {
             if(_audioSourceInstance == null)
                 _audioSourceInstance = _audioService.PlayWithSource(_clipEvent, false);
+            if (_severalAbility != null)
+                _severalAbility.Init(_gameField);
 
             _gameField.ExplodeCell(abilityPosition).Forget();
 
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);
-            List<Cell> cells = swipedCell.Type == abilityCell.Type ? 
+            List<Cell> cells = swipedCell.Type == abilityCell.Type || swipedCell.IsSpecial ? 
                 _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
@@ -68,7 +70,7 @@ namespace Core.Gameplay
                 if (_severalAbility == null)
                     await _gameField.ExplodeCell(_gameField.WorldPositionToCell(randomCell.transform.position));
                 else
-                    await _severalAbility.Execute(swipedCellPosition, abilityPosition);
+                    await _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position));
 
                 if(cells.Count > 0)
                     randomCell = cells[Random.Range(0, cells.Count - 1)];
