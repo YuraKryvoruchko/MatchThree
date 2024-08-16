@@ -80,7 +80,8 @@ namespace Core.Infrastructure.Factories
                     , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 10) },
 
                 { new CellTypeCombination(CellType.LightningBolt, CellType.Supper)
-                    , new BombAbility(5, _audioService, config.ExplosiveEvent, config.SmallBombEffectPrefabReference) },
+                    , new QuicklySupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference
+                    , _cellAbilityDictionary[CellType.LightningBolt], 10) },
 
                 { new CellTypeCombination(CellType.Supper, CellType.Supper)
                     , new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
