@@ -38,7 +38,11 @@ namespace Core.Gameplay
         {
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell coreCell = _gameField.GetCell(abilityPosition);
-            List<Cell> cellList = _gameField.GetAllOfType(swipedCell.Type);
+
+            List<Cell> cellList = swipedCell.Type == coreCell.Type ?
+                _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsExplode) :
+                _gameField.GetAllOfType(swipedCell.Type);
+
             _abilityEffect = (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
                 coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
 

@@ -76,7 +76,7 @@ namespace Core.Infrastructure.Factories
                 { new CellTypeCombination(CellType.LightningBolt, CellType.Supper)
                     , new BombAbility(5, _audioService, config.ExplosiveEvent, config.SmallBombEffectPrefabReference) },
                 { new CellTypeCombination(CellType.Supper, CellType.Supper)
-                    , new BombAbility(5, _audioService, config.ExplosiveEvent, config.SmallBombEffectPrefabReference) }
+                    , new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
             };
         }
 
