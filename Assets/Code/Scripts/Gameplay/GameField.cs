@@ -189,7 +189,10 @@ namespace Core.Gameplay
             Cell cell = _map[cellPosition.y, cellPosition.x];
             await cell.Explode();
             if (cell.IsMove)
-                Debug.LogError("Cell move when it's exploded!", cell);
+            {
+                Debug.LogWarning("Cell move when it's exploded!", cell);
+                cell.StopMove();
+            }
 
             _map[cellPosition.y, cellPosition.x] = null;
             int score = cell.Score;

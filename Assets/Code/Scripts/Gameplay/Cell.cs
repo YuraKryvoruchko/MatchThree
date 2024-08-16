@@ -17,16 +17,9 @@ namespace Core.Gameplay
 
         private bool _isStatic = false;
         private bool _isSpecial = false;
-        private bool _isPaused = false;
 
-        private Vector3 _startPosition;
-        private Vector3 _endPosition;
-        private float _distance;
-        private float _maxTime;
-        private float _currentTime;
-        private float _progress;
-
-        private Tween _explosionTween;
+        private Tweener _moveTweener;
+        private Tweener _explosionTweener;
 
         public CellType Type { get => _type; }
         public int Score { get => _config.Score; }
@@ -45,72 +38,56 @@ namespace Core.Gameplay
             _config = config;
         }
 
-        public async void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
+        public void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {
-            if (IsMove)
-                SetupMoveParameters(endPosition, inLocal);
-            else
-                await MoveToWithTask(endPosition, inLocal, onComplete);
+            MoveToWithTask(endPosition, inLocal, onComplete).Forget();
         }
         public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {
-            SetupMoveParameters(endPosition, inLocal);
-
-            IsMove = true;
-            while (_progress < 1)
+            if (_moveTweener.IsActive())
             {
-                if (_isPaused)
-                {
-                    await UniTask.Yield(PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
-                    continue;
-                }
-
-                _currentTime += Time.deltaTime;
-                _progress += _currentTime / _maxTime;
-                if(inLocal)
-                    transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, _progress);
-                else
-                    transform.position = Vector3.Lerp(_startPosition, _endPosition, _progress);
-                await UniTask.Yield(PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
+                _moveTweener.ChangeEndValue(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond, true).SetEase(Ease.OutBack);
+                return;
             }
 
-            if (inLocal)
-                transform.localPosition = _endPosition;
-            else
-                transform.position = _endPosition;
-            IsMove = false;
-            onComplete?.Invoke(this);
-        }
+            IsMove = true;
 
+            if (inLocal)
+                _moveTweener = transform.DOLocalMove(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond).SetEase(Ease.OutBack);
+            else
+                _moveTweener = transform.DOMove(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond).SetEase(Ease.OutBack);
+
+            await _moveTweener.OnComplete(() => 
+            {
+                IsMove = false;
+                onComplete?.Invoke(this);
+            }).AsyncWaitForCompletion().AsUniTask();
+        }
+        public void StopMove()
+        {
+            IsMove = false;
+            _moveTweener.Kill();
+        }
         public async UniTask Explode()
         {
             IsExplode = true;
-            _explosionTween = transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
-            await _explosionTween.AsyncWaitForCompletion().AsUniTask();
+            _explosionTweener = transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
+            await _explosionTweener.AsyncWaitForCompletion().AsUniTask();
             IsExplode = false;
         }
 
         public void SetPause(bool isPause)
         {
-            _isPaused = isPause;
-            if(isPause)
-                _explosionTween.Pause();
+            if (isPause)
+            {
+                _moveTweener.Pause();
+                _explosionTweener.Pause();
+            }
             else
-                _explosionTween.Play();
-        }
-
-        private void SetupMoveParameters(Vector3 endPosition, bool inLocal = true)
-        {
-            _endPosition = endPosition;
-            if (inLocal)
-                _startPosition = transform.localPosition;
-            else
-                _startPosition = transform.position;
-
-            _distance = Vector3.Distance(_startPosition, endPosition);
-            _maxTime = _distance / _moveSpeedPerSecond;
-            _progress = 0f;
-            _currentTime = 0f;
+            {
+                _moveTweener.Pause();
+                _explosionTweener.Play();
+            }
         }
     }
 }

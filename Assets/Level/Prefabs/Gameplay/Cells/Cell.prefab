@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1393836646070208606}
-  _moveSpeedPerSecond: 0.25
+  _moveSpeedPerSecond: 3
 --- !u!61 &-4173301998675939107
 BoxCollider2D:
   m_ObjectHideFlags: 0
