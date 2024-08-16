@@ -70,7 +70,7 @@ namespace Core.Infrastructure.Factories
                 { new CellTypeCombination(CellType.Bomb, CellType.LightningBolt)
                     , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3, _cellAbilityDictionary[CellType.Bomb]) },
                 { new CellTypeCombination(CellType.Bomb, CellType.Supper)
-                    , new BombAbility(5, _audioService, config.ExplosiveEvent, config.SmallBombEffectPrefabReference) },
+                    , new ReplaycableSupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference, _cellAbilityDictionary[CellType.Bomb]) },
                 { new CellTypeCombination(CellType.LightningBolt, CellType.LightningBolt)
                     , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 10) },
                 { new CellTypeCombination(CellType.LightningBolt, CellType.Supper)

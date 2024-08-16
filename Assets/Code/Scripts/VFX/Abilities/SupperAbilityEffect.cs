@@ -27,10 +27,10 @@ namespace Core.VFX.Abilities
         [ProPlayButton]
         private void Test(Vector3 point1, Vector3 point2)
         {
-            Play(new Vector3[] { point1, point2 }, () => Debug.Log("OnReady")).Forget();
+            Play(new Vector3[] { point1, point2 }, (pos) => Debug.Log($"On Ready line and pos: {pos}"), () => Debug.Log("OnReady")).Forget();
         }
 #endif
-        public async UniTask Play(Vector3[] endPositions, Action OnReady = null)
+        public async UniTask Play(Vector3[] endPositions, Action<Vector3> OnLineReady = null, Action OnAllReady = null)
         {
             _magicLines = new List<MagicLineEffect>(endPositions.Length);
             _particlies = new List<ParticleSystem>(endPositions.Length);
@@ -49,13 +49,14 @@ namespace Core.VFX.Abilities
                     { 
                         _particlies.Add(Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity));
                         numberOfPositions--;
+                        OnLineReady?.Invoke(line.EndPosition);
                     });
 
                 await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds);
             }
 
             await UniTask.WaitWhile(() => numberOfPositions > 0);
-            OnReady?.Invoke();
+            OnAllReady?.Invoke();
             _magicLines.Clear();
 
             for (int i = 0; i < endPositions.Length; i++)

@@ -7,6 +7,9 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
+#if UNITY_EDITOR
+using com.cyborgAssets.inspectorButtonPro;
+#endif
 
 namespace Core.Gameplay
 {
@@ -63,6 +66,14 @@ namespace Core.Gameplay
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
             _audioService = audioService;
         }
+
+#if UNITY_EDITOR
+        [ProPlayButton]
+        private void ReplaceCellTest(Vector2Int cellPosition, CellType type)
+        {
+            ReplaceCell(type, cellPosition);
+        }
+#endif
 
         private void OnDestroy()
         {
