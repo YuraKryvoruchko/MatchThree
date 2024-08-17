@@ -292,31 +292,129 @@ namespace Core.Gameplay
             int leftDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up);
 
             if (upNumber + downNumber >= 4)
-                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.Supper);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Supper, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (leftNumber + rightNumber >= 4)
-                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.Supper);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Supper, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (upNumber + leftNumber >= 4)
-                await DeleteElements(cellPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (upNumber + rightNumber >= 4)
-                await DeleteElements(cellPosition, rightNumber, 0, upNumber, 0, CellType.Bomb);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (downNumber + leftNumber >= 4)
-                await DeleteElements(cellPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (downNumber + rightNumber >= 4)
-                await DeleteElements(cellPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
-            else if (rightNumber + upNumber >= 2 && rightUpNumber > 1)
-                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
-            else if (rightNumber + downNumber >= 2 && rightDownNumber > 1)
-                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
-            else if (leftNumber + upNumber >= 2 && leftUpNumber > 1)
-                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
-            else if (leftNumber + downNumber >= 2 && leftDownNumber > 1)
-                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber), 
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
+            else if (rightNumber + upNumber >= 2 && rightUpNumber >= 1)
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.down, 1),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
+            else if (rightNumber + downNumber >= 2 && rightDownNumber >= 1)
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.up, 1),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
+            else if (leftNumber + upNumber >= 2 && leftUpNumber >= 1)
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.down, 1),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
+            else if (leftNumber + downNumber >= 2 && leftDownNumber >= 1)
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.up, 1),
+                    ExplodeCell(cellPosition)
+                );
+                _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
+            }
             else if (rightNumber + leftNumber >= 2)
-                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, 0);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    ExplodeCell(cellPosition)
+                );
+            }
             else if (upNumber + downNumber >= 2)
-                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, 0);
+            {
+                await UniTask.WhenAll(
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
+                    ExplodeCell(cellPosition)
+                );
+            }
             else
+            {
                 return false;
+            }
 
             return true;
         }
@@ -344,39 +442,16 @@ namespace Core.Gameplay
             return 1 + GetElementsNumberOnDirection(newPosition, direction);
         }
 
-        private async UniTask DeleteElements(Vector2Int cellPosition, int rightNumber, int leftNumber, int upNumber,
-            int downNumber, CellType createdElement)
+        private async UniTask DeleteElementsOnDirection(Vector2Int cellPosition, Vector2Int direction, int lenght)
         {
-            UniTask[] tasks = new UniTask[rightNumber + leftNumber + upNumber + downNumber + 1];
-            int generalIndex = 0;
-            for (int i = 1; i <= rightNumber; i++)
+            UniTask[] tasks = new UniTask[lenght];
+
+            for (int i = 1; i <= lenght; i++)
             {
-                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x + i, cellPosition.y));
-                generalIndex++;
-            }
-            for (int i = 1; i <= leftNumber; i++)
-            {
-                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x - i, cellPosition.y));
-                generalIndex++;
-            }
-            for (int i = 1; i <= upNumber; i++)
-            {
-                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x, cellPosition.y - i));
-                generalIndex++;
-            }
-            for (int i = 1; i <= downNumber; i++) 
-            {
-                tasks[generalIndex] = ExplodeCell(new Vector2Int(cellPosition.x, cellPosition.y + i));
-                generalIndex++;
+                tasks[i - 1] = ExplodeCell(new Vector2Int(cellPosition.x + direction.x * i, cellPosition.y + direction.y * i));
             }
 
-            tasks[generalIndex] = ExplodeCell(cellPosition);
             await UniTask.WhenAll(tasks);
-            if (createdElement != 0)
-            {
-                _map[cellPosition.y, cellPosition.x] = 
-                    _cellFabric.GetCell(createdElement, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
-            }
         }
 
         private async UniTask MoveDownElements()
