@@ -7,6 +7,8 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
+using UnityEngine.UIElements;
+
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
 #endif
@@ -279,19 +281,20 @@ namespace Core.Gameplay
             if (_map[cellPosition.y, cellPosition.x] == null || _map[cellPosition.y, cellPosition.x].IsSpecial)
                 return false;
 
-            int rightNumber = GetRightElementsNumber(cellPosition);
-            int leftNumber = GetLeftElementsNumber(cellPosition);
-            int upNumber = GetUpElementsNumber(cellPosition);
-            int downNumber = GetDownElementsNumber(cellPosition);
+            int rightNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right);
+            int leftNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left);
+            int upNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.down);
+            int downNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.up);
+
+            int rightUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.down);
+            int rightDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.up);
+            int leftUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.down);
+            int leftDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up);
 
             if (upNumber + downNumber >= 4)
                 await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.Supper);
             else if (leftNumber + rightNumber >= 4)
                 await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.Supper);
-            else if (upNumber + downNumber >= 3)
-                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
-            else if (leftNumber + rightNumber >= 3)
-                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
             else if (upNumber + leftNumber >= 4)
                 await DeleteElements(cellPosition, 0, leftNumber, upNumber, 0, CellType.Bomb);
             else if (upNumber + rightNumber >= 4)
@@ -300,6 +303,14 @@ namespace Core.Gameplay
                 await DeleteElements(cellPosition, 0, leftNumber, 0, downNumber, CellType.Bomb);
             else if (downNumber + rightNumber >= 4)
                 await DeleteElements(cellPosition, rightNumber, 0, 0, downNumber, CellType.Bomb);
+            else if (rightNumber + upNumber >= 2 && rightUpNumber > 1)
+                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
+            else if (rightNumber + downNumber >= 2 && rightDownNumber > 1)
+                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
+            else if (leftNumber + upNumber >= 2 && leftUpNumber > 1)
+                await DeleteElements(cellPosition, 0, 0, upNumber, downNumber, CellType.LightningBolt);
+            else if (leftNumber + downNumber >= 2 && leftDownNumber > 1)
+                await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, CellType.LightningBolt);
             else if (rightNumber + leftNumber >= 2)
                 await DeleteElements(cellPosition, rightNumber, leftNumber, 0, 0, 0);
             else if (upNumber + downNumber >= 2)
@@ -320,45 +331,17 @@ namespace Core.Gameplay
                 ability.SetPause(isPause);
         }
 
-        private int GetRightElementsNumber(Vector2Int position)
+        private int GetElementsNumberOnDirection(Vector2Int position, Vector2Int direction)
         {
-            if (position.x + 1 >= _horizontalMapSize || _map[position.y, position.x + 1] == null ||
-                _map[position.y, position.x + 1].IsMove ||
-                _map[position.y, position.x + 1].IsExplode || _map[position.y, position.x].Type != _map[position.y, position.x + 1].Type)
+            Vector2Int newPosition = position + direction;
+            if (newPosition.x < 0 || newPosition.x >= _horizontalMapSize || newPosition.y < 0 || newPosition.y >= _verticalMapSize || 
+                _map[newPosition.y, newPosition.x] == null || _map[newPosition.y, newPosition.x].IsMove || _map[newPosition.y, newPosition.x].IsExplode ||
+                _map[position.y, position.x].Type != _map[newPosition.y, newPosition.x].Type)
+            {
                 return 0;
+            }
 
-            position.x++;
-            return 1 + GetRightElementsNumber(position);
-        }
-        private int GetLeftElementsNumber(Vector2Int position)
-        {
-            if (position.x - 1 < 0 || _map[position.y, position.x - 1] == null || _map[position.y, position.x - 1].IsMove ||
-                _map[position.y, position.x - 1].IsExplode ||
-                _map[position.y, position.x].Type != _map[position.y, position.x - 1].Type)
-                return 0;
-
-            position.x--;
-            return 1 + GetLeftElementsNumber(position);
-        }
-        private int GetUpElementsNumber(Vector2Int position)
-        {
-            if (position.y - 1 < 0 || _map[position.y - 1, position.x] == null || _map[position.y - 1, position.x].IsMove ||
-                _map[position.y - 1, position.x].IsExplode ||
-                _map[position.y, position.x].Type != _map[position.y - 1, position.x].Type)
-                return 0;
-
-            position.y--;
-            return 1 + GetUpElementsNumber(position);
-        }
-        private int GetDownElementsNumber(Vector2Int position)
-        {
-            if (position.y + 1 >= _verticalMapSize || _map[position.y + 1, position.x] == null || _map[position.y + 1, position.x].IsMove ||
-                _map[position.y + 1, position.x].IsExplode ||
-                _map[position.y, position.x].Type != _map[position.y + 1, position.x].Type)
-                return 0;
-
-            position.y++;
-            return 1 + GetDownElementsNumber(position);
+            return 1 + GetElementsNumberOnDirection(newPosition, direction);
         }
 
         private async UniTask DeleteElements(Vector2Int cellPosition, int rightNumber, int leftNumber, int upNumber,
