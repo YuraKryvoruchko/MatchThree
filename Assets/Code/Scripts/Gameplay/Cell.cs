@@ -85,7 +85,7 @@ namespace Core.Gameplay
             }
             else
             {
-                _moveTweener.Pause();
+                _moveTweener.Play();
                 _explosionTweener.Play();
             }
         }
