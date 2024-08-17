@@ -11,14 +11,14 @@ namespace Core.Gameplay
     {
         private GameField _gameField;
         private AssetReference _lightingBoltEffectPrefab;
-        private LightingBoltEffect _lightingBoltEffect;
+        private List<LightingBoltEffect> _lightingBoltEffects;
 
         private int _lightningBoltCount;
         private IAbility _severalAbility;
 
         private IAudioService _audioService;
         private ClipEvent _clipEvent;
-        private SourceInstance _audioSourceInstance;
+        private List<SourceInstance> _audioSourceInstancies;
 
         public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab,
             int lightningBoltCount, IAbility severalAbility = null)
@@ -28,6 +28,9 @@ namespace Core.Gameplay
             _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
             _lightningBoltCount = lightningBoltCount;
             _severalAbility = severalAbility;
+
+            _audioSourceInstancies = new List<SourceInstance>();
+            _lightingBoltEffects = new List<LightingBoltEffect>();
         }
 
         void IAbility.Init(GameField gameField)
@@ -36,26 +39,32 @@ namespace Core.Gameplay
         }
         void IAbility.SetPause(bool isPause)
         {
-            _lightingBoltEffect.Pause(isPause);
-            _audioSourceInstance.Pause(isPause);
+            foreach(LightingBoltEffect effect in _lightingBoltEffects)
+                effect.Pause(isPause);
+            foreach(SourceInstance source in _audioSourceInstancies)
+                source.Pause(isPause);
         }
         async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
-            if(_audioSourceInstance == null)
-                _audioSourceInstance = _audioService.PlayWithSource(_clipEvent, false);
             if (_severalAbility != null)
                 _severalAbility.Init(_gameField);
 
-            _gameField.ExplodeCell(abilityPosition).Forget();
+            SourceInstance audioInstance = _audioService.PlayWithSource(_clipEvent, false);
+            _audioSourceInstancies.Add(audioInstance);
+
 
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);
             List<Cell> cells = swipedCell.Type == abilityCell.Type || swipedCell.IsSpecial ? 
-                _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
+                _gameField.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
-            _lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
+            if(swipedCellPosition != abilityPosition)
+                _gameField.ExplodeCell(abilityPosition).Forget();
+
+            LightingBoltEffect lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
                 .GetComponent<LightingBoltEffect>();
+            _lightingBoltEffects.Add(lightingBoltEffect);
 
             Cell randomCell = swipedCell;
             for (int i = 0; i < _lightningBoltCount && cells.Count > 0; i++)
@@ -65,8 +74,8 @@ namespace Core.Gameplay
                 Vector3 startPosition = randomCell.transform.position;
                 startPosition.y = 5;
 
-                _lightingBoltEffect.Play(startPosition, randomCell.transform.position);
-                _audioSourceInstance.Play();
+                lightingBoltEffect.Play(startPosition, randomCell.transform.position);
+                audioInstance.Play();
                 if (_severalAbility == null)
                     await _gameField.ExplodeCell(_gameField.WorldPositionToCell(randomCell.transform.position));
                 else
@@ -76,9 +85,10 @@ namespace Core.Gameplay
                     randomCell = cells[Random.Range(0, cells.Count - 1)];
             }
 
-            Addressables.ReleaseInstance(_lightingBoltEffect.gameObject);       
-            _audioService.ReleaseSource(_audioSourceInstance);
-            _audioSourceInstance = null;
+            _lightingBoltEffects.Remove(lightingBoltEffect);
+            Addressables.ReleaseInstance(lightingBoltEffect.gameObject);
+            _audioSourceInstancies.Remove(audioInstance);
+            _audioService.ReleaseSource(audioInstance);
         }
     }
 }

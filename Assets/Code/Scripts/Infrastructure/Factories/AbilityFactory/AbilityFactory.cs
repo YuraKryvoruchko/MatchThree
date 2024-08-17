@@ -81,7 +81,7 @@ namespace Core.Infrastructure.Factories
 
                 { new CellTypeCombination(CellType.LightningBolt, CellType.Supper)
                     , new QuicklySupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference
-                    , _cellAbilityDictionary[CellType.LightningBolt], 10) },
+                    , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 1), 15) },
 
                 { new CellTypeCombination(CellType.Supper, CellType.Supper)
                     , new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }

@@ -188,6 +188,7 @@ namespace Core.Gameplay
         public async UniTask ExplodeCell(Vector2Int cellPosition)
         {
             if (cellPosition.x > _verticalMapSize - 1 || cellPosition.x < 0 || cellPosition.y > _horizontalMapSize - 1 || cellPosition.y < 0 
+                || _map[cellPosition.y, cellPosition.x] == null
                 || _map[cellPosition.y, cellPosition.x].IsStatic 
                 || _map[cellPosition.y, cellPosition.x].IsMove 
                 || _map[cellPosition.y, cellPosition.x].IsExplode)
