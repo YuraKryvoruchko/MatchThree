@@ -71,13 +71,12 @@ namespace Core.Gameplay
             UniTask[] tasks = new UniTask[cellList.Length + 1];
             _ability.Init(_gameField);
             int index = 0;
-            await _abilityEffectInstance.Play(worldCellPositions,
-                (worldPosition) =>
-                {
-                    tasks[index] = _ability.Execute(cellPositions[index], cellPositions[index]);
-                    index++;
-                }, null
-            );
+            _abilityEffectInstance.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(worldCellPositions, (worldPosition) =>
+            {
+                tasks[index] = _ability.Execute(cellPositions[index], cellPositions[index]);
+                index++;
+            }, null));
+            await _abilityEffectInstance.Play();
             await UniTask.WhenAll(tasks);
 
             _audioService.ReleaseSource(_audioSourceInstance);

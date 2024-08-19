@@ -52,7 +52,7 @@ namespace Core.Gameplay
 
             _audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
             UniTask[] tasks = new UniTask[cellList.Count + 1];
-            await _abilityEffect.Play(cellPositions, null, () => 
+            _abilityEffect.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(cellPositions, null, () =>
             {
                 _audioService.ReleaseSource(_audioSourceInstance);
                 for (int i = 0; i < cellList.Count; i++)
@@ -61,7 +61,8 @@ namespace Core.Gameplay
                         tasks[i] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(cellList[i].transform.position));
                 }
                 tasks[tasks.Length - 1] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(coreCell.transform.position));
-            });
+            }));
+            await _abilityEffect.Play();
             await UniTask.WhenAll(tasks);
 
             Addressables.ReleaseInstance(_abilityEffect.gameObject);
