@@ -1,7 +1,4 @@
-﻿#if UNITY_EDITOR
-#endif
-
-namespace Core.VFX.Abilities
+﻿namespace Core.VFX
 {
     public interface IVFXEffect<T> : IBasicVFXEffect
     {

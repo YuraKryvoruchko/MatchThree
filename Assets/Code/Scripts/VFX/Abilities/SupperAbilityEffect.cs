@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-#if UNITY_EDITOR
-using com.cyborgAssets.inspectorButtonPro;
-#endif
-
 namespace Core.VFX.Abilities
 {
     public class SupperAbilityEffect : MonoBehaviour, IVFXEffect<SupperAbilityEffect.SupperAbilityVFXParameters>
@@ -26,7 +22,10 @@ namespace Core.VFX.Abilities
         private List<ParticleSystem> _particlies;
         private List<MagicLineEffect> _magicLines;
 
-        public event Action OnEnd;
+        public event Action<IBasicVFXEffect> OnStart;
+        public event Action<IBasicVFXEffect, bool> OnPause;
+        public event Action<IBasicVFXEffect> OnStoped;
+        public event Action<IBasicVFXEffect> OnComplete;
 
         public class SupperAbilityVFXParameters
         {
@@ -42,13 +41,6 @@ namespace Core.VFX.Abilities
             }
         }
 
-#if UNITY_EDITOR
-        //[ProPlayButton]
-        //private void Test(Vector3 point1, Vector3 point2)
-        //{
-        //    Play(new Vector3[] { point1, point2 }, (pos) => Debug.Log($"On Ready line and pos: {pos}"), () => Debug.Log("OnReady")).Forget();
-        //}
-#endif
         public async UniTask Play()
         {
             Vector3[] endPositions = _parameters.EndPositions;
@@ -98,6 +90,7 @@ namespace Core.VFX.Abilities
                 particle.Play();
             }
             _particlies.Clear();
+            OnComplete?.Invoke(this);
         }
 
         public void Pause(bool isPause)
@@ -117,10 +110,13 @@ namespace Core.VFX.Abilities
                 else
                     _particlies[i].Play();
             }
+
+            OnPause?.Invoke(this, isPause);
         }
         public void Stop()
         {
             _isStoped = true;
+            OnStoped?.Invoke(this);
         }
         public void SetParameters(SupperAbilityVFXParameters parameters)
         {

@@ -1,10 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 
-#if UNITY_EDITOR
-#endif
-
-namespace Core.VFX.Abilities
+namespace Core.VFX
 {
     public interface IBasicVFXEffect
     {
@@ -12,6 +9,9 @@ namespace Core.VFX.Abilities
         void Pause(bool isPause);
         void Stop();
 
-        event Action OnEnd;
+        event Action<IBasicVFXEffect> OnStart;
+        event Action<IBasicVFXEffect, bool> OnPause;
+        event Action<IBasicVFXEffect> OnComplete;
+        event Action<IBasicVFXEffect> OnStoped;
     }
 }
