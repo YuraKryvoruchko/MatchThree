@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
+using Core.VFX;
 
 namespace Core.Gameplay
 {
@@ -43,8 +44,9 @@ namespace Core.Gameplay
                 _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
-            _abilityEffect = (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
-                coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
+            _abilityEffect = await GetEffect(coreCell.transform.position);
+            _abilityEffect.OnComplete += ReleaseEffect;
+            _abilityEffect.OnStoped += ReleaseEffect;
 
             Vector3[] cellPositions = new Vector3[cellList.Count];
             for (int i = 0; i < cellList.Count; i++)
@@ -64,8 +66,19 @@ namespace Core.Gameplay
             }));
             await _abilityEffect.Play();
             await UniTask.WhenAll(tasks);
+        }
 
-            Addressables.ReleaseInstance(_abilityEffect.gameObject);
+        private async UniTask<SupperAbilityEffect> GetEffect(Vector3 position)
+        {
+            return (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
+                position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
+        }
+        private void ReleaseEffect(IBasicVFXEffect basicEffect)
+        {
+            basicEffect.OnComplete -= ReleaseEffect;
+            basicEffect.OnStoped -= ReleaseEffect;
+            SupperAbilityEffect effect = basicEffect as SupperAbilityEffect;
+            Addressables.ReleaseInstance(effect.gameObject);
         }
     }
 }
