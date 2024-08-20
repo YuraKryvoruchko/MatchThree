@@ -41,6 +41,7 @@ namespace Core.Gameplay
         private List<IAbility> _usedAbilities;
 
         private bool _gameBlock = true;
+        private bool _cellsMovesDown = false;
 
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
@@ -212,6 +213,8 @@ namespace Core.Gameplay
             int score = cell.Score;
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
+
+            MoveDownElements().Forget();
         }
         public void ReplaceCell(CellType newType, Vector2Int cellPosition)
         {
@@ -459,6 +462,10 @@ namespace Core.Gameplay
 
         private async UniTask MoveDownElements()
         {
+            if (_cellsMovesDown)
+                return;
+
+            _cellsMovesDown = true;
             bool areElementsMoved = false;
             do
             {
@@ -520,6 +527,8 @@ namespace Core.Gameplay
                 }
                 await UniTask.Yield();
             } while (!areElementsMoved);
+
+            _cellsMovesDown = false;
 
             async void DoCallback(Cell cell)
             {
