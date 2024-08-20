@@ -70,7 +70,6 @@ namespace Core.Infrastructure.Service.Audio
                 clipEvent.Clips[0].AudioClip.GetOrLoad().ContinueWith((clip) =>
                 {
                     _audioBuses[clipEvent.AudioGroup].Source.PlayOneShot(clip);
-                    clipEvent.Clips[0].AudioClip.ReleaseAsset();
                 }).Forget();
             }
         }
