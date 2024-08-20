@@ -4909,6 +4909,7 @@ GameObject:
   - component: {fileID: 4646521391019627037}
   - component: {fileID: 4646521391019627026}
   - component: {fileID: 4646521391019627027}
+  - component: {fileID: -1641251494485946455}
   m_Layer: 0
   m_Name: SmallBombEffect
   m_TagString: Untagged
@@ -9628,6 +9629,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-1641251494485946455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4646521391019627024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b238cd8118ed9ca4f98c7fb3545e308b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _explosiveEffectInstance: {fileID: 4646521391019627026}
 --- !u!1 &4646521391283891036
 GameObject:
   m_ObjectHideFlags: 0
