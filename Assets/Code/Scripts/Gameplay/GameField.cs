@@ -231,6 +231,9 @@ namespace Core.Gameplay
             {
                 for(int j = 0; j < _verticalMapSize; j++)
                 {
+                    if(_map[j, i] == null)
+                        continue;
+
                     if (_map[j, i].Type == type)
                         list.Add(_map[j, i]);
                 }

@@ -52,10 +52,9 @@ namespace Core.Gameplay
             SourceInstance audioInstance = _audioService.PlayWithSource(_clipEvent, false);
             _audioSourceInstancies.Add(audioInstance);
 
-
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);
-            List<Cell> cells = swipedCell.Type == abilityCell.Type || swipedCell.IsSpecial ? 
+            List<Cell> cells = abilityCell.IsSpecial && swipedCell.IsSpecial ? 
                 _gameField.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
