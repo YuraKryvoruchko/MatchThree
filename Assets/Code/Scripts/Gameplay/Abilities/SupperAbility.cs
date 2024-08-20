@@ -44,17 +44,19 @@ namespace Core.Gameplay
                 _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
-            _abilityEffect = await GetEffect(coreCell.transform.position);
-            _abilityEffect.OnComplete += ReleaseEffect;
-            _abilityEffect.OnStoped += ReleaseEffect;
-
             Vector3[] cellPositions = new Vector3[cellList.Count];
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
             _audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
+
+            _abilityEffect = await GetEffect(coreCell.transform.position);
+            _abilityEffect.OnComplete += ReleaseEffect;
+            _abilityEffect.OnStoped += ReleaseEffect;
+
             UniTask[] tasks = new UniTask[cellList.Count + 1];
-            _abilityEffect.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(cellPositions, null, () =>
+            bool cellsExploded = false;
+            _abilityEffect.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(cellPositions, null, async () =>
             {
                 _audioService.ReleaseSource(_audioSourceInstance);
                 for (int i = 0; i < cellList.Count; i++)
@@ -63,9 +65,12 @@ namespace Core.Gameplay
                         tasks[i] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(cellList[i].transform.position));
                 }
                 tasks[tasks.Length - 1] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(coreCell.transform.position));
+                await UniTask.WhenAll(tasks);
+                cellsExploded = true;
             }));
-            await _abilityEffect.Play();
-            await UniTask.WhenAll(tasks);
+            _abilityEffect.Play().Forget();
+
+            await UniTask.WaitUntil(() => cellsExploded);
         }
 
         private async UniTask<SupperAbilityEffect> GetEffect(Vector3 position)
