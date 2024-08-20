@@ -49,7 +49,7 @@ namespace Core.Gameplay
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell coreCell = _gameField.GetCell(abilityPosition);
 
-            Cell[] cellList = _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
+            Cell[] cellList = _gameField.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
             Vector2Int[] cellPositions = new Vector2Int[_creatingAbilityObjectNumber];
             Vector3[] worldCellPositions = new Vector3[_creatingAbilityObjectNumber];
 
@@ -88,6 +88,7 @@ namespace Core.Gameplay
                     }
                     tasks[tasks.Length - 1] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(coreCell.transform.position));
                     await UniTask.WhenAll(tasks);
+                    cellsExploded = true;
                 }));
             _abilityEffectInstance.Play().Forget();
             await UniTask.WaitUntil(() => cellsExploded);

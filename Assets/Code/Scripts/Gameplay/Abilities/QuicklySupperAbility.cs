@@ -51,7 +51,7 @@ namespace Core.Gameplay
 
             _audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
 
-            Cell[] cellList = _gameField.GetByСondition((cell) => !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
+            Cell[] cellList = _gameField.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
             Vector2Int[] cellPositions = new Vector2Int[_creatingAbilityObjectNumber];
             Vector3[] worldCellPositions = new Vector3[_creatingAbilityObjectNumber];
 
