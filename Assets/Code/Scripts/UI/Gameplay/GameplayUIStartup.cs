@@ -2,6 +2,7 @@ using UnityEngine;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.UI;
+using Cysharp.Threading.Tasks;
 
 namespace Core.UI.Gameplay
 {
@@ -18,10 +19,13 @@ namespace Core.UI.Gameplay
             _windowService = windowService;
         }
 
-        async void IInitializable.Initialize()
+        void IInitializable.Initialize()
         {
-            GameplayMenu menu = await _windowService.OpenWindow<GameplayMenu>(_gameplayMenuPrefab.Path);
-            menu.transform.parent = _uiContainer;
+            UniTask.Void(async () => 
+            {
+                GameplayMenu menu = await _windowService.OpenWindow<GameplayMenu>(_gameplayMenuPrefab.Path);
+                menu.transform.SetParent(_uiContainer);
+            });
         }
     }
 }
