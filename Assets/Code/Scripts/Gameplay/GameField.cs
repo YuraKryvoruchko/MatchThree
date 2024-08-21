@@ -418,7 +418,10 @@ namespace Core.Gameplay
             for(int i = 0; i < _horizontalMapSize; i++)
             {
                 for(int j = _verticalMapSize - 1; j >= 0; j--)
-                    _map[j, i].SetPause(isPause);
+                {
+                    if (_map[j, i] != null)
+                        _map[j, i]?.SetPause(isPause);
+                }
             }
 
             OnPause?.Invoke(isPause);

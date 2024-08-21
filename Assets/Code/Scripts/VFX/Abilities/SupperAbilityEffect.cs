@@ -17,9 +17,9 @@ namespace Core.VFX.Abilities
         private SupperAbilityVFXParameters _parameters;
 
         private bool _isStoped;
-        private bool _isPausing;
+        private bool _isPaused;
 
-        private List<ParticleSystem> _particlies;
+        private ParticleSystem[] _particlies;
         private MagicLineEffect[] _magicLines;
 
         public event Action<IBasicVFXEffect> OnStart;
@@ -52,12 +52,12 @@ namespace Core.VFX.Abilities
             _isStoped = false;
             int numberOfPositions = endPositions.Length;
             _magicLines = new MagicLineEffect[endPositions.Length];
-            _particlies = new List<ParticleSystem>(endPositions.Length);
+            _particlies = new ParticleSystem[endPositions.Length * 2];
 
             for (int i = 0; i < endPositions.Length; i++)
             {
-                if (_isPausing)
-                    await UniTask.WaitWhile(() => _isPausing);
+                if (_isPaused)
+                    await UniTask.WaitWhile(() => _isPaused);
                 if (_isStoped)
                     return;
 
@@ -68,8 +68,8 @@ namespace Core.VFX.Abilities
                 magicLine.MoveFromAndTo(transform.position, endPositions[i], duration, 
                     (line) => 
                     { 
-                        _particlies.Add(Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity, transform));
                         numberOfPositions--;
+                        _particlies[numberOfPositions] = Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity, transform);
                         OnLineReady?.Invoke(line.EndPosition);
                     });
 
@@ -82,7 +82,7 @@ namespace Core.VFX.Abilities
 
             OnAllReady?.Invoke();
 
-            float particleDuretion = 0f;
+            float particleDuration = 0f;
             for (int i = 0; i < endPositions.Length; i++)
             {
                 Destroy(_magicLines[i].gameObject);
@@ -90,27 +90,37 @@ namespace Core.VFX.Abilities
                 ParticleSystem particle = Instantiate(_explosionPrefab, transform);
                 particle.transform.position = endPositions[i];
                 _particlies[i].Stop();
-                _particlies[i] = particle;
-                particleDuretion = particle.main.duration;
+                _particlies[endPositions.Length + i] = particle;
+                particleDuration = particle.main.duration;
                 particle.Play();
             }
-            _particlies.Clear();
-            await UniTask.WaitForSeconds(particleDuretion);
+            float elapsedTime = 0f;
+            while(elapsedTime < particleDuration)
+            {
+                if(!_isPaused)
+                    elapsedTime += Time.deltaTime;
+
+                await UniTask.Yield();
+            }
             OnComplete?.Invoke(this);
         }
 
         public void Pause(bool isPause)
         {
-            if (_isPausing == isPause)
+            if (_isPaused == isPause)
                 return;
 
-            _isPausing = isPause;
+            _isPaused = isPause;
             for (int i = 0; i < _magicLines.Length; i++)
             {
-                _magicLines[i].SetPause(isPause);
+                if(_magicLines[i] != null)
+                    _magicLines[i].SetPause(isPause);
             }
-            for (int i = 0; i < _particlies.Count; i++)
+            for (int i = 0; i < _particlies.Length; i++)
             {
+                if (_particlies[i] == null)
+                    continue;
+
                 if (isPause)
                     _particlies[i].Pause();
                 else

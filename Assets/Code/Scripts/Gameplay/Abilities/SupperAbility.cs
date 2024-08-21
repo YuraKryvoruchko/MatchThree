@@ -4,20 +4,20 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
-using Core.VFX;
+using System;
 
 namespace Core.Gameplay
 {
     public class SupperAbility : IAbility
     {
         private AssetReference _supperAbilityEffectReference;
-        private SupperAbilityEffect _abilityEffect;
 
         private GameField _gameField;
 
         private IAudioService _audioService;
         private ClipEvent _elementCapturingEvent;
-        private SourceInstance _audioSourceInstance;
+
+        private event Action<bool> OnPause;
 
         public SupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReference supperAbilityEffectReference)
         {
@@ -26,16 +26,19 @@ namespace Core.Gameplay
             _supperAbilityEffectReference = supperAbilityEffectReference;
         }
 
-        void IAbility.Init(GameField gameField)
+        public void Init(GameField gameField)
         {
+            if (_gameField != null)
+                _gameField.OnPause -= SetPause;
+
             _gameField = gameField;
+            _gameField.OnPause += SetPause;
         }
-        void IAbility.SetPause(bool isPause)
+        public void SetPause(bool isPause)
         {
-            _abilityEffect.Pause(isPause);
-            _audioSourceInstance.Pause(isPause);
+            OnPause?.Invoke(isPause);
         }
-        async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell coreCell = _gameField.GetCell(abilityPosition);
@@ -48,42 +51,28 @@ namespace Core.Gameplay
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
-            _audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
+            SourceInstance audioSourceInstance = _audioService.PlayWithSource(_elementCapturingEvent);
+            SupperAbilityEffect abilityEffect = (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
+                coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
 
-            _abilityEffect = await GetEffect(coreCell.transform.position);
-            _abilityEffect.OnComplete += ReleaseEffect;
-            _abilityEffect.OnStoped += ReleaseEffect;
+            OnPause += audioSourceInstance.Pause;
+            OnPause += abilityEffect.Pause;
 
-            UniTask[] tasks = new UniTask[cellList.Count + 1];
-            bool cellsExploded = false;
-            _abilityEffect.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(cellPositions, null, async () =>
+            abilityEffect.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(cellPositions, null, () =>
             {
-                _audioService.ReleaseSource(_audioSourceInstance);
+                OnPause -= audioSourceInstance.Pause;
+                _audioService.ReleaseSource(audioSourceInstance);
                 for (int i = 0; i < cellList.Count; i++)
                 {
                     if (!cellList[i].IsExplode)
-                        tasks[i] = _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(cellList[i].transform.position));
+                        _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(cellList[i].transform.position)).Forget();
                 }
-                tasks[tasks.Length - 1] = _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(coreCell.transform.position));
-                await UniTask.WhenAll(tasks);
-                cellsExploded = true;
+                _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(coreCell.transform.position)).Forget();
             }));
-            _abilityEffect.Play().Forget();
+            await abilityEffect.Play();
 
-            await UniTask.WaitUntil(() => cellsExploded);
-        }
-
-        private async UniTask<SupperAbilityEffect> GetEffect(Vector3 position)
-        {
-            return (await Addressables.InstantiateAsync(_supperAbilityEffectReference,
-                position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
-        }
-        private void ReleaseEffect(IBasicVFXEffect basicEffect)
-        {
-            basicEffect.OnComplete -= ReleaseEffect;
-            basicEffect.OnStoped -= ReleaseEffect;
-            SupperAbilityEffect effect = basicEffect as SupperAbilityEffect;
-            Addressables.ReleaseInstance(effect.gameObject);
+            OnPause -= abilityEffect.Pause;
+            Addressables.ReleaseInstance(abilityEffect.gameObject);
         }
     }
 }
