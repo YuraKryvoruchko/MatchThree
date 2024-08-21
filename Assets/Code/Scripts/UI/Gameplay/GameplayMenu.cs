@@ -76,5 +76,9 @@ namespace Core.UI.Gameplay
             _audioService.ChangeSnapshot(AudioSnapshotType.Default, SNAPSHOT_CHANGING_DELAY);
             _pauseService.SetPause(false);
         }
+        private void BackMenu()
+        {
+            OnMenuBack?.Invoke();
+        }
     }
 }

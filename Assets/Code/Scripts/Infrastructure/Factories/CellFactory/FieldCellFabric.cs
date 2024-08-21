@@ -41,7 +41,7 @@ namespace Core.Infrastructure.Factories
                 _cellStack.Push(cell);
             }
         }
-        Cell ICellFabric.GetCell(CellType type, Vector3 position, Quaternion rotation, Transform parent = null)
+        Cell ICellFabric.GetCell(CellType type, Vector3 position, Quaternion rotation, Transform parent)
         {
             if (_cellStack.Count == 0)
             {
