@@ -446,7 +446,7 @@ namespace Core.Gameplay
 
             for (int i = 1; i <= lenght; i++)
             {
-                tasks[i - 1] = ExplodeCellAsync(new Vector2Int(cellPosition.x + direction.x * i, cellPosition.y + direction.y * i));
+                tasks[i - 1] = ExplodeCellAsync(cellPosition + direction * i);
             }
 
             await UniTask.WhenAll(tasks);
