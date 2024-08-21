@@ -346,7 +346,7 @@ namespace Core.Gameplay
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
-            else if (rightNumber + upNumber >= 2 && rightUpNumber >= 1)
+            else if (rightNumber >= 1 && upNumber >= 1 && rightUpNumber >= 1)
             {
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
@@ -357,7 +357,7 @@ namespace Core.Gameplay
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
-            else if (rightNumber + downNumber >= 2 && rightDownNumber >= 1)
+            else if (rightNumber >= 1 && downNumber >= 1 && rightDownNumber >= 1)
             {
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
@@ -368,7 +368,7 @@ namespace Core.Gameplay
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
-            else if (leftNumber + upNumber >= 2 && leftUpNumber >= 1)
+            else if (leftNumber >= 1 && upNumber >= 1 && leftUpNumber >= 1)
             {
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
@@ -379,7 +379,7 @@ namespace Core.Gameplay
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
-            else if (leftNumber + downNumber >= 2 && leftDownNumber >= 1)
+            else if (leftNumber >= 1 && downNumber >= 1 && leftDownNumber >= 1)
             {
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
