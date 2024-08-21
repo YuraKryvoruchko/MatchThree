@@ -7,7 +7,6 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
-using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
@@ -52,8 +51,8 @@ namespace Core.Gameplay
         [Serializable]
         private class CellConfig
         {
-            public Vector2Int Position;
-            public CellType Type; 
+            public Vector2Int Position = Vector2Int.zero;
+            public CellType Type = 0;
         }
 
         [Inject]
@@ -94,7 +93,7 @@ namespace Core.Gameplay
                     CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
 
-            await MoveDownElements();
+            await MoveDownElementsAsync();
             _gameBlock = false;
         }
         private void OnDrawGizmos()
@@ -133,7 +132,7 @@ namespace Core.Gameplay
             }
 
             OnMove?.Invoke();
-            await SwapCells(firstPosition, secondPosition);
+            await SwapCellsAsync(firstPosition, secondPosition);
 
             Cell firstCell = _map[firstPosition.y, firstPosition.x];
             Cell secondCell = _map[secondPosition.y, secondPosition.x];
@@ -142,22 +141,22 @@ namespace Core.Gameplay
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition);
+                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition).Forget();
             }
             else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition);
+                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition).Forget();
             }
             else if (firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition);
+                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition).Forget();
             }
             else { 
-                await UniTask.WhenAll(HandleMove(firstPosition), HandleMove(secondPosition))
+                await UniTask.WhenAll(HandleMoveAsync(firstPosition), HandleMoveAsync(secondPosition))
                     .ContinueWith((result) =>
                     {
                         isFirstElementMoved = result.Item1;
@@ -166,14 +165,14 @@ namespace Core.Gameplay
             }
                 
             if (!isFirstElementMoved && !isSecondElementMoved)
-                await SwapCells(firstPosition, secondPosition);
+                await SwapCellsAsync(firstPosition, secondPosition);
             else
-                await MoveDownElements();
+                await MoveDownElementsAsync();
 
             _gameBlock = false;
         }
 
-        public async void UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public async UniTaskVoid UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             OnMove?.Invoke();
             ability.Init(this);
@@ -183,7 +182,8 @@ namespace Core.Gameplay
 
             await ability.Execute(swipedCellPosition, abilityPosition);
             _usedAbilities.Remove(ability);
-            await MoveDownElements();
+
+            MoveDownElementsAsync().Forget();
 
             _gameBlock = false;
         }
@@ -214,7 +214,7 @@ namespace Core.Gameplay
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
 
-            MoveDownElements().Forget();
+            MoveDownElementsAsync().Forget();
         }
         public void ReplaceCell(CellType newType, Vector2Int cellPosition)
         {
@@ -269,7 +269,7 @@ namespace Core.Gameplay
                 _startMapPoint.position.y - _interval * cellPosition.y);
         }
 
-        private async UniTask SwapCells(Vector2Int firstPosition, Vector2Int secondPosition)
+        private async UniTask SwapCellsAsync(Vector2Int firstPosition, Vector2Int secondPosition)
         {
             Cell firstCell = _map[firstPosition.y, firstPosition.x], secondCell = _map[secondPosition.y, secondPosition.x];
             Vector3 tmpPosition = firstCell.transform.position;
@@ -282,7 +282,7 @@ namespace Core.Gameplay
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
 
-        private async UniTask<bool> HandleMove(Vector2Int cellPosition)
+        private async UniTask<bool> HandleMoveAsync(Vector2Int cellPosition)
         {
             if (_map[cellPosition.y, cellPosition.x] == null || _map[cellPosition.y, cellPosition.x].IsSpecial)
                 return false;
@@ -300,8 +300,8 @@ namespace Core.Gameplay
             if (upNumber + downNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -310,8 +310,8 @@ namespace Core.Gameplay
             else if (leftNumber + rightNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -320,8 +320,8 @@ namespace Core.Gameplay
             else if (upNumber + leftNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -330,8 +330,8 @@ namespace Core.Gameplay
             else if (upNumber + rightNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -340,8 +340,8 @@ namespace Core.Gameplay
             else if (downNumber + leftNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -350,8 +350,8 @@ namespace Core.Gameplay
             else if (downNumber + rightNumber >= 4)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber), 
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber), 
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -360,9 +360,9 @@ namespace Core.Gameplay
             else if (rightNumber + upNumber >= 2 && rightUpNumber >= 1)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.down, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right + Vector2Int.down, 1),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -371,9 +371,9 @@ namespace Core.Gameplay
             else if (rightNumber + downNumber >= 2 && rightDownNumber >= 1)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.up, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right + Vector2Int.up, 1),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -382,9 +382,9 @@ namespace Core.Gameplay
             else if (leftNumber + upNumber >= 2 && leftUpNumber >= 1)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.down, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left + Vector2Int.down, 1),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -393,9 +393,9 @@ namespace Core.Gameplay
             else if (leftNumber + downNumber >= 2 && leftDownNumber >= 1)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.up, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, 1),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left + Vector2Int.up, 1),
                     ExplodeCell(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
@@ -404,16 +404,16 @@ namespace Core.Gameplay
             else if (rightNumber + leftNumber >= 2)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
                     ExplodeCell(cellPosition)
                 );
             }
             else if (upNumber + downNumber >= 2)
             {
                 await UniTask.WhenAll(
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber),
-                    DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
+                    DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
                     ExplodeCell(cellPosition)
                 );
             }
@@ -448,7 +448,7 @@ namespace Core.Gameplay
             return 1 + GetElementsNumberOnDirection(newPosition, direction);
         }
 
-        private async UniTask DeleteElementsOnDirection(Vector2Int cellPosition, Vector2Int direction, int lenght)
+        private async UniTask DeleteElementsOnDirectionAsync(Vector2Int cellPosition, Vector2Int direction, int lenght)
         {
             UniTask[] tasks = new UniTask[lenght];
 
@@ -460,7 +460,7 @@ namespace Core.Gameplay
             await UniTask.WhenAll(tasks);
         }
 
-        private async UniTask MoveDownElements()
+        private async UniTask MoveDownElementsAsync()
         {
             if (_cellsMovesDown)
                 return;
@@ -502,7 +502,7 @@ namespace Core.Gameplay
                             areElementsMoved = false;
                             _map[lowerElementIndex, i] = _map[j, i];
                             _map[j, i] = null;
-                            _map[lowerElementIndex, i].MoveTo(CellPositionToWorld(new Vector2Int(i, lowerElementIndex)), true, DoCallback);
+                            _map[lowerElementIndex, i].MoveTo(CellPositionToWorld(new Vector2Int(i, lowerElementIndex)), true, (cell) => DoCallback(cell).Forget());
                             lowerElementIndex--;
                         }
                     }
@@ -520,7 +520,7 @@ namespace Core.Gameplay
                         Vector2 pos = CellPositionToWorld(new Vector2Int(i, upperElementIndex - spawnQueue));
                         _map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
                             new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
-                        _map[j, i].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, DoCallback);
+                        _map[j, i].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, (cell) => DoCallback(cell).Forget());
                         areElementsMoved = false;
                         spawnQueue--;
                     }
@@ -530,9 +530,9 @@ namespace Core.Gameplay
 
             _cellsMovesDown = false;
 
-            async void DoCallback(Cell cell)
+            async UniTaskVoid DoCallback(Cell cell)
             {
-                bool handled = await HandleMove(WorldPositionToCell(cell.transform.position));
+                bool handled = await HandleMoveAsync(WorldPositionToCell(cell.transform.position));
                 if (handled == true)
                     areElementsMoved = false;
             }

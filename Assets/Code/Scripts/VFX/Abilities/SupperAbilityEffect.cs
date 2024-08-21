@@ -43,6 +43,8 @@ namespace Core.VFX.Abilities
 
         public async UniTask Play()
         {
+            OnStart?.Invoke(this);
+
             Vector3[] endPositions = _parameters.EndPositions;
             Action<Vector3> OnLineReady = _parameters.OnLineReady;
             Action OnAllReady = _parameters.OnAllReady;

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using DigitalRuby.LightningBolt;
-using Core.Infrastructure.Service;
 using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.VFX.Abilities
@@ -13,7 +12,7 @@ namespace Core.VFX.Abilities
         [SerializeField] private AudioSource _audioSource;
 
         [ProPlayButton]
-        public async void Play(Vector3 startPosition, Vector3 endPosition)
+        public void Play(Vector3 startPosition, Vector3 endPosition)
         {
             _lightningBolt.Init();
             _lightningBolt.StartPosition = startPosition;
