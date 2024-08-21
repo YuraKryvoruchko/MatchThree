@@ -420,7 +420,7 @@ namespace Core.Gameplay
                 for(int j = _verticalMapSize - 1; j >= 0; j--)
                 {
                     if (_map[j, i] != null)
-                        _map[j, i]?.SetPause(isPause);
+                        _map[j, i].SetPause(isPause);
                 }
             }
 
@@ -510,8 +510,7 @@ namespace Core.Gameplay
                             continue;
 
                         Vector2 pos = CellPositionToWorld(new Vector2Int(i, upperElementIndex - spawnQueue));
-                        _map[j, i] = _cellFabric.GetCell(GetRandomElementType(),
-                            new Vector3(pos.x, pos.y, 0), Quaternion.identity, _cellContainer);
+                        _map[j, i] = _cellFabric.GetCell(GetRandomElementType(), pos, Quaternion.identity, _cellContainer);
                         _map[j, i].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, (cell) => DoCallback(cell).Forget());
                         areElementsMoved = false;
                         spawnQueue--;
