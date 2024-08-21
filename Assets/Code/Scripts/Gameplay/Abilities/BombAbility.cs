@@ -17,7 +17,6 @@ namespace Core.Gameplay
 
         private IAudioService _audioService;
         private ClipEvent _explosiveEvent;
-        private SourceInstance _audioSourceInstance;
 
         private event Action<bool> OnPause;
 
@@ -29,48 +28,46 @@ namespace Core.Gameplay
             _bombEffectReference = bombEffectReference;
         }
 
-        void IAbility.Init(GameField gameField)
+        public void Init(GameField gameField)
         {
+            if (_gameField != null)
+                _gameField.OnPause -= SetPause;
+
             _gameField = gameField;
+            _gameField.OnPause += SetPause;
         }
-        void IAbility.SetPause(bool isPause)
+        public void SetPause(bool isPause)
         {
-            _audioSourceInstance.Pause(isPause);
             OnPause?.Invoke(isPause);
         }
-        async UniTask IAbility.Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             Vector3 cellPosition = _gameField.CellPositionToWorld(abilityPosition);
+            SourceInstance audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
             IBasicVFXEffect bombVFXEffect = (await Addressables.InstantiateAsync(_bombEffectReference,
                 cellPosition, Quaternion.identity)).GetComponent<IBasicVFXEffect>();
 
-            bombVFXEffect.OnComplete += ReleaseEffect;
-            bombVFXEffect.OnStoped += ReleaseEffect;
             OnPause += bombVFXEffect.Pause;
-            bombVFXEffect.Play().Forget();
+            OnPause += audioSourceInstance.Pause;
 
-            _audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
+            UniTask explosiveVFXAnimationTask = bombVFXEffect.Play();
 
             int lenghtFromBombCell = (_lineLenght - 1) / 2, taskArrayIndex = 0;
-            UniTask[] explodeTasks = new UniTask[_lineLenght * _lineLenght];
+            UniTask[] explodeTasks = new UniTask[_lineLenght * _lineLenght + 1];
             for (int i = -lenghtFromBombCell; i <= lenghtFromBombCell; i++)
             {
                 for (int j = -lenghtFromBombCell; j <= lenghtFromBombCell; j++, taskArrayIndex++)
                 {
-                    explodeTasks[taskArrayIndex] = _gameField.ExplodeCell(new Vector2Int(abilityPosition.x + i, abilityPosition.y + j));
+                    explodeTasks[taskArrayIndex] = _gameField.ExplodeCellAsync(new Vector2Int(abilityPosition.x + i, abilityPosition.y + j));
                 }
             }
-
+            explodeTasks[^1] = explosiveVFXAnimationTask;
             await UniTask.WhenAll(explodeTasks);
-            _audioService.ReleaseSource(_audioSourceInstance);
-        }
 
-        private void ReleaseEffect(IBasicVFXEffect effect)
-        {
-            effect.OnComplete -= ReleaseEffect;
-            effect.OnStoped -= ReleaseEffect;
-            OnPause -= effect.Pause;
-            Addressables.ReleaseInstance((effect as MonoBehaviour).gameObject);
+            OnPause -= bombVFXEffect.Pause;
+            OnPause -= audioSourceInstance.Pause;
+            _audioService.ReleaseSource(audioSourceInstance);
+            Addressables.ReleaseInstance((bombVFXEffect as MonoBehaviour).gameObject);
         }
     }
 }

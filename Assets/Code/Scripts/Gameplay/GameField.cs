@@ -37,8 +37,6 @@ namespace Core.Gameplay
 
         private Cell[,] _map;
 
-        private List<IAbility> _usedAbilities;
-
         private bool _gameBlock = true;
         private bool _cellsMovesDown = false;
 
@@ -47,6 +45,7 @@ namespace Core.Gameplay
 
         public event Action OnMove;
         public event Action<int> OnExplodeCellWithScore;
+        public event Action<bool> OnPause;
 
         [Serializable]
         private class CellConfig
@@ -59,7 +58,6 @@ namespace Core.Gameplay
         private void Construct(ICellFabric cellFabric, IAbilityFactory abilityFactory, IPauseProvider pauseProvider,
             IAudioService audioService, CellSwipeDetection cellSwipeDetection)
         {
-            _usedAbilities = new List<IAbility>();
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
             _pauseProvider = pauseProvider;
@@ -141,19 +139,19 @@ namespace Core.Gameplay
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition).Forget();
+                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition);
             }
             else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition).Forget();
+                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition);
             }
             else if (firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition).Forget();
+                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition);
             }
             else { 
                 await UniTask.WhenAll(HandleMoveAsync(firstPosition), HandleMoveAsync(secondPosition))
@@ -172,23 +170,14 @@ namespace Core.Gameplay
             _gameBlock = false;
         }
 
-        public async UniTaskVoid UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public void UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             OnMove?.Invoke();
             ability.Init(this);
-            _gameBlock = true;
-
-            _usedAbilities.Add(ability);
-
-            await ability.Execute(swipedCellPosition, abilityPosition);
-            _usedAbilities.Remove(ability);
-
-            MoveDownElementsAsync().Forget();
-
-            _gameBlock = false;
+            ability.Execute(swipedCellPosition, abilityPosition).Forget();
         }
 
-        public async UniTask ExplodeCell(Vector2Int cellPosition)
+        public async UniTask ExplodeCellAsync(Vector2Int cellPosition)
         {
             if (cellPosition.x > _verticalMapSize - 1 || cellPosition.x < 0 || cellPosition.y > _horizontalMapSize - 1 || cellPosition.y < 0 
                 || _map[cellPosition.y, cellPosition.x] == null
@@ -302,7 +291,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Supper, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -312,7 +301,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Supper, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -322,7 +311,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -332,7 +321,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -342,7 +331,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -352,7 +341,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber), 
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.Bomb, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -363,7 +352,7 @@ namespace Core.Gameplay
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right + Vector2Int.down, 1),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -374,7 +363,7 @@ namespace Core.Gameplay
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right + Vector2Int.up, 1),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -385,7 +374,7 @@ namespace Core.Gameplay
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left + Vector2Int.down, 1),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -396,7 +385,7 @@ namespace Core.Gameplay
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, 1),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left + Vector2Int.up, 1),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
                 _map[cellPosition.y, cellPosition.x] =
                     _cellFabric.GetCell(CellType.LightningBolt, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
@@ -406,7 +395,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.right, rightNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.left, leftNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
             }
             else if (upNumber + downNumber >= 2)
@@ -414,7 +403,7 @@ namespace Core.Gameplay
                 await UniTask.WhenAll(
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.down, upNumber),
                     DeleteElementsOnDirectionAsync(cellPosition, Vector2Int.up, downNumber),
-                    ExplodeCell(cellPosition)
+                    ExplodeCellAsync(cellPosition)
                 );
             }
             else
@@ -431,8 +420,8 @@ namespace Core.Gameplay
                 for(int j = _verticalMapSize - 1; j >= 0; j--)
                     _map[j, i].SetPause(isPause);
             }
-            foreach (IAbility ability in _usedAbilities)
-                ability.SetPause(isPause);
+
+            OnPause?.Invoke(isPause);
         }
 
         private int GetElementsNumberOnDirection(Vector2Int position, Vector2Int direction)
@@ -454,7 +443,7 @@ namespace Core.Gameplay
 
             for (int i = 1; i <= lenght; i++)
             {
-                tasks[i - 1] = ExplodeCell(new Vector2Int(cellPosition.x + direction.x * i, cellPosition.y + direction.y * i));
+                tasks[i - 1] = ExplodeCellAsync(new Vector2Int(cellPosition.x + direction.x * i, cellPosition.y + direction.y * i));
             }
 
             await UniTask.WhenAll(tasks);

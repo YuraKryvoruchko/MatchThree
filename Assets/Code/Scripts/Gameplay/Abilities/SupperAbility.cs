@@ -62,9 +62,9 @@ namespace Core.Gameplay
                 for (int i = 0; i < cellList.Count; i++)
                 {
                     if (!cellList[i].IsExplode)
-                        tasks[i] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(cellList[i].transform.position));
+                        tasks[i] = _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(cellList[i].transform.position));
                 }
-                tasks[tasks.Length - 1] = _gameField.ExplodeCell(_gameField.WorldPositionToCell(coreCell.transform.position));
+                tasks[tasks.Length - 1] = _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(coreCell.transform.position));
                 await UniTask.WhenAll(tasks);
                 cellsExploded = true;
             }));

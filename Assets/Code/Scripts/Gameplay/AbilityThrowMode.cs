@@ -25,7 +25,7 @@ namespace Core.Gameplay
         public void Handle(Cell cell)
         {
             Vector2Int cellPosition = _gameField.WorldPositionToCell(cell.transform.position);
-            _gameField.UseAbility(_ability, cellPosition, cellPosition).Forget();
+            _gameField.UseAbility(_ability, cellPosition, cellPosition);
             DisableAbilityThrowMode();
         }
         public void EnableAbilityhrowMode(IAbility ability)

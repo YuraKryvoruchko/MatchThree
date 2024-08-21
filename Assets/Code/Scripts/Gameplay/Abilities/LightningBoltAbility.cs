@@ -59,7 +59,7 @@ namespace Core.Gameplay
                 _gameField.GetAllOfType(swipedCell.Type);
 
             if(swipedCellPosition != abilityPosition)
-                _gameField.ExplodeCell(abilityPosition).Forget();
+                _gameField.ExplodeCellAsync(abilityPosition).Forget();
 
             LightingBoltEffect lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
                 .GetComponent<LightingBoltEffect>();
@@ -76,7 +76,7 @@ namespace Core.Gameplay
                 lightingBoltEffect.Play(startPosition, randomCell.transform.position);
                 audioInstance.Play();
                 if (_severalAbility == null)
-                    await _gameField.ExplodeCell(_gameField.WorldPositionToCell(randomCell.transform.position));
+                    await _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(randomCell.transform.position));
                 else
                     await _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position));
 
