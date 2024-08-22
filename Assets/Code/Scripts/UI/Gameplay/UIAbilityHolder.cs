@@ -61,11 +61,10 @@ namespace Core.UI.Gameplay
             {
                 _clickedButton = button;
 
-                IAbility ability = _abilityFactory.GetAbility(type);
                 if (_abilityThrowMode.IsActive)
-                    _abilityThrowMode.ChangeAbility(ability);
+                    _abilityThrowMode.ChangeAbility(type);
                 else
-                    _abilityThrowMode.EnableAbilityhrowMode(ability);
+                    _abilityThrowMode.EnableAbilityhrowMode(type);
             }
         }
     }

@@ -139,19 +139,19 @@ namespace Core.Gameplay
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(firstCell.Type), secondPosition, firstPosition);
+                UseAbility(firstCell.Type, secondPosition, firstPosition);
             }
             else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAbility(secondCell.Type), firstPosition, secondPosition);
+                UseAbility(secondCell.Type, firstPosition, secondPosition);
             }
             else if (firstCell.IsSpecial && secondCell.IsSpecial)
             {
                 isFirstElementMoved = true;
                 isSecondElementMoved = true;
-                UseAbility(_abilityFactory.GetAdvancedAbility(firstCell.Type, secondCell.Type), firstPosition, secondPosition);
+                UseAbility(secondCell.Type, firstPosition, secondPosition);
             }
             else { 
                 await UniTask.WhenAll(HandleMoveAsync(firstPosition), HandleMoveAsync(secondPosition))
@@ -170,8 +170,12 @@ namespace Core.Gameplay
             _gameBlock = false;
         }
 
-        public void UseAbility(IAbility ability, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public void UseAbility(CellType abilityType, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
+            Cell swipedCell = GetCell(swipedCellPosition);
+            IAbility ability = swipedCell.IsSpecial ? _abilityFactory.GetAdvancedAbility(abilityType, swipedCell.Type)
+                : _abilityFactory.GetAbility(abilityType);
+
             OnMove?.Invoke();
             ability.Init(this);
             ability.Execute(swipedCellPosition, abilityPosition).Forget();

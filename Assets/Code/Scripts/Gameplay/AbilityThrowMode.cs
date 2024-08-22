@@ -9,7 +9,7 @@ namespace Core.Gameplay
         private CellClickDetection _cellClickDetection;
         private GameField _gameField;
 
-        private IAbility _ability;
+        private CellType _abilityType;
 
         public bool IsActive { get; private set; }
 
@@ -25,26 +25,25 @@ namespace Core.Gameplay
         public void Handle(Cell cell)
         {
             Vector2Int cellPosition = _gameField.WorldPositionToCell(cell.transform.position);
-            _gameField.UseAbility(_ability, cellPosition, cellPosition);
+            _gameField.UseAbility(_abilityType, cellPosition, cellPosition);
             DisableAbilityThrowMode();
         }
-        public void EnableAbilityhrowMode(IAbility ability)
+        public void EnableAbilityhrowMode(CellType abilityType)
         {
-            _ability = ability;
+            _abilityType = abilityType;
             _cellClickDetection.OnCellClick += Handle;
             IsActive = true;
             OnEnableMode?.Invoke();
         }
         public void DisableAbilityThrowMode()
         {
-            _ability = null;
             _cellClickDetection.OnCellClick -= Handle;
             IsActive = false;
             OnDisableMode?.Invoke();
         }
-        public void ChangeAbility(IAbility ability)
+        public void ChangeAbility(CellType abilityType)
         {
-            _ability = ability;
+            _abilityType = abilityType;
         }
     }
 }
