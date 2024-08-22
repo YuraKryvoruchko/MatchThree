@@ -306,6 +306,7 @@ namespace Core.Gameplay
                     bestResult = results[i];
             }
 
+            currentCell.HandledTEST = false;
             return bestResult;
         }
         private int GetScoreTEST(Vector2Int cellPosition)
