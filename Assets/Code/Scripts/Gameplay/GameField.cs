@@ -122,8 +122,8 @@ namespace Core.Gameplay
             Vector2Int firstPosition = WorldPositionToCell(cellPosition);
             Vector2Int secondPosition = new Vector2Int(firstPosition.x + Mathf.RoundToInt(swipeDirection.x), firstPosition.y - Mathf.RoundToInt(swipeDirection.y));
 
-            if (!IsPositionInBoard(firstPosition) || !IsPositionInBoard(secondPosition) ||
-                _map[firstPosition.y, firstPosition.x].IsStatic || _map[secondPosition.y, secondPosition.x].IsStatic)
+            if (!IsPositionInBoard(firstPosition) || !IsPositionInBoard(secondPosition) 
+                || !CanHandleCell(GetCell(firstPosition)) || !CanHandleCell(GetCell(secondPosition)))
             {
                 _gameBlock = false;
                 return;
@@ -543,6 +543,10 @@ namespace Core.Gameplay
         private bool IsPositionInBoard(Vector2Int position)
         {
             return position.x < _horizontalMapSize && position.x >= 0 && position.y < _verticalMapSize && position.y >= 0;
+        }
+        private bool CanHandleCell(Cell cell)
+        {
+            return !(cell.IsMove || cell.IsExplode || cell.IsStatic);
         }
     }
 }
