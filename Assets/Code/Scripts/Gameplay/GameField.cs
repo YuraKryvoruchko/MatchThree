@@ -7,6 +7,8 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
+using Unity.VisualScripting;
+
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
@@ -256,6 +258,66 @@ namespace Core.Gameplay
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }
 
+        private struct SearchResultTEST
+        {
+            public int ScoreNumber;
+            public Vector2Int CellPosition;
+
+            public SearchResultTEST(int scoreNumber, Vector2Int cellPosition)
+            {
+                ScoreNumber = scoreNumber;
+                CellPosition = cellPosition;
+            }
+        }
+        private bool HandleMoveTEST(Vector2Int cellPosition)
+        {
+            SearchResultTEST searchResult = FindMaxScoreCombinationTEST(cellPosition, 0, 5);
+            return HandleMove(searchResult.CellPosition);
+        }
+        private SearchResultTEST FindMaxScoreCombinationTEST(Vector2Int cellPosition, int maxScore, int depth)
+        {
+            if (depth <= 0)
+                return new SearchResultTEST(0, cellPosition);
+
+            int scoreOnThisPoint = GetScoreTEST(cellPosition);
+            SearchResultTEST[] results = new SearchResultTEST[4];
+            Cell currentCell = GetCell(cellPosition);
+            currentCell.HandledTEST = true;
+            if (IsPositionInBoard(cellPosition + Vector2Int.left) && CanHandleCell(GetCell(cellPosition + Vector2Int.left)) && !currentCell.HandledTEST && currentCell.Type == GetCell(cellPosition + Vector2Int.left).Type){
+                results[0] = FindMaxScoreCombinationTEST(cellPosition + Vector2Int.left, Mathf.Max(maxScore, scoreOnThisPoint), depth - 1);
+            }
+            else if (IsPositionInBoard(cellPosition + Vector2Int.right) && CanHandleCell(GetCell(cellPosition + Vector2Int.right)) && !currentCell.HandledTEST && currentCell.Type == GetCell(cellPosition + Vector2Int.right).Type)
+            {
+                results[1] = FindMaxScoreCombinationTEST(cellPosition + Vector2Int.right, Mathf.Max(maxScore, scoreOnThisPoint), depth - 1);
+            }
+            else if (IsPositionInBoard(cellPosition + Vector2Int.up) && CanHandleCell(GetCell(cellPosition + Vector2Int.up)) && !currentCell.HandledTEST && currentCell.Type == GetCell(cellPosition + Vector2Int.up).Type)
+            {
+                results[2] = FindMaxScoreCombinationTEST(cellPosition + Vector2Int.up, Mathf.Max(maxScore, scoreOnThisPoint), depth - 1);
+            }
+            else if (IsPositionInBoard(cellPosition + Vector2Int.down) && CanHandleCell(GetCell(cellPosition + Vector2Int.down)) && !currentCell.HandledTEST && currentCell.Type == GetCell(cellPosition + Vector2Int.down).Type)
+            {
+                results[3] = FindMaxScoreCombinationTEST(cellPosition + Vector2Int.down, Mathf.Max(maxScore, scoreOnThisPoint), depth - 1);
+            }
+
+            SearchResultTEST bestResult = new SearchResultTEST(scoreOnThisPoint, cellPosition);
+            for(int i = 0; i < results.Length; i++)
+            {
+                if (results[i].ScoreNumber > bestResult.ScoreNumber)
+                    bestResult = results[i];
+            }
+
+            return bestResult;
+        }
+        private int GetScoreTEST(Vector2Int cellPosition)
+        {
+            return GetElementsNumberOnDirection(cellPosition, Vector2Int.right) + GetElementsNumberOnDirection(cellPosition, Vector2Int.left)
+                + GetElementsNumberOnDirection(cellPosition, Vector2Int.down) + GetElementsNumberOnDirection(cellPosition, Vector2Int.up) 
+                + Mathf.Clamp(GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.down), 0, 1)
+                + Mathf.Clamp(GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.up), 0, 1)
+                + Mathf.Clamp(GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.down), 0, 1)
+                + Mathf.Clamp(GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up), 0, 1);
+        }
+
         private bool HandleMove(Vector2Int cellPosition)
         {
             if (_map[cellPosition.y, cellPosition.x] == null || _map[cellPosition.y, cellPosition.x].IsSpecial)
@@ -469,7 +531,7 @@ namespace Core.Gameplay
 
             void DoCallback(Cell cell)
             {
-                bool handled = HandleMove(WorldPositionToCell(cell.transform.position));
+                bool handled = HandleMoveTEST(WorldPositionToCell(cell.transform.position));
                 if (handled == true)
                     areElementsMoved = false;
             }
