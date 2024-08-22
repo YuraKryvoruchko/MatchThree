@@ -37,8 +37,7 @@ namespace Core.Gameplay
 
         private Cell[,] _map;
 
-        private bool _gameBlock = true;
-        private bool _cellsMovesDown = false;
+        private bool _isBoardFillUp = false;
 
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
@@ -91,8 +90,7 @@ namespace Core.Gameplay
                     CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
 
-            await MoveDownElementsAsync();
-            _gameBlock = false;
+            await FillBoardAsync();
         }
         private void OnDrawGizmos()
         {
@@ -113,10 +111,6 @@ namespace Core.Gameplay
 
         public async void Handle(Vector2 cellPosition, Vector2 swipeDirection)
         {
-            if (_gameBlock)
-                return;
-
-            _gameBlock = true;
             swipeDirection = swipeDirection.normalized;
 
             Vector2Int firstPosition = WorldPositionToCell(cellPosition);
@@ -125,7 +119,6 @@ namespace Core.Gameplay
             if (!IsPositionInBoard(firstPosition) || !IsPositionInBoard(secondPosition) 
                 || !CanHandleCell(GetCell(firstPosition)) || !CanHandleCell(GetCell(secondPosition)))
             {
-                _gameBlock = false;
                 return;
             }
 
@@ -155,9 +148,7 @@ namespace Core.Gameplay
             if (!isFirstElementMoved && !isSecondElementMoved)
                 await SwapCellsAsync(firstPosition, secondPosition);
             else
-                await MoveDownElementsAsync();
-
-            _gameBlock = false;
+                TryMoveDownElements();
         }
 
         public void UseAbility(CellType abilityType, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
@@ -197,7 +188,7 @@ namespace Core.Gameplay
             _cellFabric.ReturnCell(cell);
             OnExplodeCellWithScore?.Invoke(score);
 
-            MoveDownElementsAsync().Forget();
+            TryMoveDownElements();
         }
         public void ReplaceCell(CellType newType, Vector2Int cellPosition)
         {
@@ -402,12 +393,17 @@ namespace Core.Gameplay
                     _cellFabric.GetCell(newElementType, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
         }
 
-        private async UniTask MoveDownElementsAsync()
+        private void TryMoveDownElements()
         {
-            if (_cellsMovesDown)
+            if (!_isBoardFillUp)
+                FillBoardAsync().Forget();
+        }
+        private async UniTask FillBoardAsync()
+        {
+            if (_isBoardFillUp)
                 return;
 
-            _cellsMovesDown = true;
+            _isBoardFillUp = true;
             bool areElementsMoved = false;
             do
             {
@@ -469,7 +465,7 @@ namespace Core.Gameplay
                 await UniTask.Yield();
             } while (!areElementsMoved);
 
-            _cellsMovesDown = false;
+            _isBoardFillUp = false;
 
             void DoCallback(Cell cell)
             {
