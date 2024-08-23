@@ -39,6 +39,9 @@ namespace Core.Gameplay
 
         private Cell[,] _map;
 
+        private int _currentScoreIndex;
+        private int[,] _scoreMap;
+
         private bool _isBoardFillUp = false;
 
         public int VerticalSize { get => _verticalMapSize; }
@@ -96,7 +99,8 @@ namespace Core.Gameplay
         {
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
-            for(int i = 0; i < _cellConfigs.Length; i++)
+            _scoreMap = new int[_verticalMapSize, _horizontalMapSize];
+            for (int i = 0; i < _cellConfigs.Length; i++)
             {
                 Vector2Int cellPosition = _cellConfigs[i].Position;
                 _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(_cellConfigs[i].Type,
@@ -154,8 +158,8 @@ namespace Core.Gameplay
                 UseAbility(secondCell.Type, firstPosition, secondPosition);
             }
             else {
-                isFirstElementMoved = ExplodeCombinationForCell(firstPosition);
-                isSecondElementMoved = ExplodeCombinationForCell(secondPosition);
+                isFirstElementMoved = HandleMove(firstPosition);
+                isSecondElementMoved = HandleMove(secondPosition);
             }
                 
             if (!isFirstElementMoved && !isSecondElementMoved)
@@ -271,42 +275,47 @@ namespace Core.Gameplay
 
         private bool HandleMove(Vector2Int cellPosition)
         {
-            Debug.Log("BBBBBBBBBBBBBBBBBBBBBBBBB");
-            const int NUMBER_OF_SEARCH_RESULTS = 4;
-            SearchResult[] searchResults = new SearchResult[NUMBER_OF_SEARCH_RESULTS] 
-            {
-                FindMaxScoreCombination(cellPosition, Vector2Int.left, 5),
-                FindMaxScoreCombination(cellPosition, Vector2Int.right, 5),
-                FindMaxScoreCombination(cellPosition, Vector2Int.up, 5),
-                FindMaxScoreCombination(cellPosition, Vector2Int.down, 5)
-            };
-            SearchResult bestResult = default;
-            for (int i = 0; i < NUMBER_OF_SEARCH_RESULTS; i++)
-            {
-                if (searchResults[i].ScoreNumber > bestResult.ScoreNumber)
-                    bestResult = searchResults[i];
-            }
-
+            _currentScoreIndex++;
+            SearchResult bestResult = FindMaxScoreCombination(cellPosition, 5);
             if (bestResult.ScoreNumber == 0)
                 return false;
 
-            Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAA");
             return ExplodeCombinationForCell(bestResult.CellPosition);
         }
-        private SearchResult FindMaxScoreCombination(Vector2Int cellPosition, Vector2Int direction, int depth)
+        private SearchResult FindMaxScoreCombination(Vector2Int cellPosition, int depth)
         {
-            if (depth <= 0)
+            if (depth <= 0 || _scoreMap[cellPosition.y, cellPosition.x] == _currentScoreIndex)
                 return new SearchResult(0, cellPosition);
 
+            _scoreMap[cellPosition.y, cellPosition.x] = _currentScoreIndex;
+
             int scoreOnThisPoint = GetScore(cellPosition);
-            SearchResult result = new SearchResult(0, cellPosition);
+            SearchResult[] results = new SearchResult[4];
             Cell currentCell = GetCell(cellPosition);
-            if (CanHandleCellForGetScore(cellPosition + direction, currentCell.Type))
+            if (CanHandleCellForGetScore(cellPosition + Vector2Int.left, currentCell.Type))
             {
-                result = FindMaxScoreCombination(cellPosition + direction, direction, depth - 1);
+                results[0] = FindMaxScoreCombination(cellPosition + Vector2Int.left, depth - 1);
+            }
+            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.right, currentCell.Type))
+            {
+                results[1] = FindMaxScoreCombination(cellPosition + Vector2Int.right, depth - 1);
+            }
+            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.up, currentCell.Type))
+            {
+                results[2] = FindMaxScoreCombination(cellPosition + Vector2Int.up, depth - 1);
+            }
+            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.down, currentCell.Type))
+            {
+                results[3] = FindMaxScoreCombination(cellPosition + Vector2Int.down, depth - 1);
             }
 
-            SearchResult bestResult = result.ScoreNumber < scoreOnThisPoint ? new SearchResult(scoreOnThisPoint, cellPosition) : result;
+            SearchResult bestResult = new SearchResult(scoreOnThisPoint, cellPosition);
+            for (int i = 0; i < results.Length; i++)
+            {
+                if (results[i].ScoreNumber > bestResult.ScoreNumber)
+                    bestResult = results[i];
+            }
+
             return bestResult;
         }
         private int GetScore(Vector2Int cellPosition)
@@ -363,11 +372,11 @@ namespace Core.Gameplay
             }
             else if (rightNumber + leftNumber >= 2)
             {
-                return rightNumber + leftNumber;
+                return 3;
             }
             else if (upNumber + downNumber >= 2)
             {
-                return upNumber + downNumber;
+                return 3;
             }
             else
             {
@@ -402,25 +411,25 @@ namespace Core.Gameplay
                 DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
                 DeleteElementAndReplace(cellPosition, CellType.Supper).Forget();
             }
-            else if (upNumber + leftNumber >= 4)
+            else if (upNumber >= 2 && leftNumber >= 2)
             {
                 DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
                 DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
                 DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
             }
-            else if (upNumber + rightNumber >= 4)
+            else if (upNumber >= 2 && rightNumber >= 2)
             {
                 DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
                 DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
                 DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
             }
-            else if (downNumber + leftNumber >= 4)
+            else if (downNumber >= 2 && leftNumber >= 2)
             {
                 DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
                 DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
                 DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
             }
-            else if (downNumber + rightNumber >= 4)
+            else if (downNumber >= 2 && rightNumber >= 2)
             {
                 DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
                 DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
