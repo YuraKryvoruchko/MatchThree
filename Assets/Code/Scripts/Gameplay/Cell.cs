@@ -21,7 +21,6 @@ namespace Core.Gameplay
         private Tweener _moveTweener;
         private Tweener _explosionTweener;
 
-        public bool HandledTEST { get; set; }
         public CellType Type { get => _type; }
         public int Score { get => _config.Score; }
         public bool IsMove { get; private set; }
