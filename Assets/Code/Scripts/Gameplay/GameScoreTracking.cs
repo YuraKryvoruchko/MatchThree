@@ -7,6 +7,7 @@ namespace Core.Gameplay
     public class GameScoreTracking : IInitializable, IDisposable
     {
         private int _currentScoreCount;
+        private int _recordScoreCount;
 
         private GameField _gameField;
 
@@ -25,13 +26,17 @@ namespace Core.Gameplay
         void IInitializable.Initialize()
         {
             _gameField.OnExplodeCellWithScore += HandleExplodeCell;
+            _recordScoreCount = _savingService.GetLongModeProgress();
         }
         void IDisposable.Dispose()
         {
             _gameField.OnExplodeCellWithScore -= HandleExplodeCell;
 
-            _savingService.SaveLongModeLevelProgress(_currentScoreCount);
-            _savingService.SaveToDisk();
+            if(_currentScoreCount > _recordScoreCount)
+            {
+                _savingService.SaveLongModeLevelProgress(_currentScoreCount);
+                _savingService.SaveToDisk();
+            }
         }
 
         private void HandleExplodeCell(int score)
