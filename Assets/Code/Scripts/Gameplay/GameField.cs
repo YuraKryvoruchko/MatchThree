@@ -7,8 +7,6 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
-using Unity.VisualScripting;
-
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
@@ -39,8 +37,11 @@ namespace Core.Gameplay
 
         private Cell[,] _map;
 
-        private int _currentScoreIndex;
-        private int[,] _scoreMap;
+        private int _currentFindingCombinationIndex;
+        private int[,] _findingCombinationIndexMap;
+
+        private bool _needHandleCells;
+        private bool[,] _cellHandlingMap;
 
         private bool _isBoardFillUp = false;
 
@@ -99,7 +100,8 @@ namespace Core.Gameplay
         {
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
-            _scoreMap = new int[_verticalMapSize, _horizontalMapSize];
+            _findingCombinationIndexMap = new int[_verticalMapSize, _horizontalMapSize];
+            _cellHandlingMap = new bool[_verticalMapSize, _horizontalMapSize];
             for (int i = 0; i < _cellConfigs.Length; i++)
             {
                 Vector2Int cellPosition = _cellConfigs[i].Position;
@@ -189,9 +191,8 @@ namespace Core.Gameplay
             {
                 return;
             }
-
             _audioService.PlayOneShot(_destroyAudio);
-
+            _cellHandlingMap[cellPosition.y, cellPosition.x] = false;
             Cell cell = _map[cellPosition.y, cellPosition.x];
             await cell.Explode();
             if (cell.IsMove)
@@ -275,7 +276,7 @@ namespace Core.Gameplay
 
         private bool HandleMove(Vector2Int cellPosition)
         {
-            _currentScoreIndex++;
+            _currentFindingCombinationIndex++;
             SearchResult bestResult = FindMaxScoreCombination(cellPosition, 5);
             if (bestResult.ScoreNumber == 0)
                 return false;
@@ -284,10 +285,10 @@ namespace Core.Gameplay
         }
         private SearchResult FindMaxScoreCombination(Vector2Int cellPosition, int depth)
         {
-            if (depth <= 0 || _scoreMap[cellPosition.y, cellPosition.x] == _currentScoreIndex)
+            if (depth <= 0 || _findingCombinationIndexMap[cellPosition.y, cellPosition.x] == _currentFindingCombinationIndex)
                 return new SearchResult(0, cellPosition);
 
-            _scoreMap[cellPosition.y, cellPosition.x] = _currentScoreIndex;
+            _findingCombinationIndexMap[cellPosition.y, cellPosition.x] = _currentFindingCombinationIndex;
 
             int scoreOnThisPoint = GetScore(cellPosition);
             SearchResult[] results = new SearchResult[4];
@@ -372,11 +373,11 @@ namespace Core.Gameplay
             }
             else if (rightNumber + leftNumber >= 2)
             {
-                return 3;
+                return rightNumber + leftNumber;
             }
             else if (upNumber + downNumber >= 2)
             {
-                return 3;
+                return upNumber + downNumber;
             }
             else
             {
@@ -590,6 +591,25 @@ namespace Core.Gameplay
                         spawnQueue--;
                     }
                 }
+
+                if (_needHandleCells)
+                {
+                    _needHandleCells = false;
+                    for (int i = 0; i < _horizontalMapSize; i++)
+                    {
+                        for (int j = 0; j < _verticalMapSize; j++)
+                        {
+                            if (_cellHandlingMap[j, i] == true)
+                            {
+                                _cellHandlingMap[j, i] = false;
+                                bool handled = HandleMove(new Vector2Int(i, j));
+                                if (handled == true)
+                                    areElementsMoved = false;
+                            }
+                        }
+                    }
+                }
+
                 await UniTask.Yield();
             } while (!areElementsMoved);
 
@@ -597,9 +617,9 @@ namespace Core.Gameplay
 
             void DoCallback(Cell cell)
             {
-                bool handled = HandleMove(WorldPositionToCell(cell.transform.position));
-                if (handled == true)
-                    areElementsMoved = false;
+                Vector2Int position = WorldPositionToCell(cell.transform.position);
+                _cellHandlingMap[position.y, position.x] = true;
+                _needHandleCells = true;
             }
         }
         private CellType GetRandomElementType()
