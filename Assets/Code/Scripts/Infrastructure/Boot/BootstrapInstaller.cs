@@ -3,8 +3,8 @@ using UnityEngine.AddressableAssets;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
-using Core.Infrastructure.Service.Pause;
 using Core.Infrastructure.Loading;
+using Core.Infrastructure.Service.Saving;
 
 namespace Core.Infrastructure.Boot
 {
@@ -19,6 +19,7 @@ namespace Core.Infrastructure.Boot
         {
             BindAudioService();
             BindSceneService();
+            BindSavingService();
             BindLoadingScreenProvider();
         }
         
@@ -36,6 +37,12 @@ namespace Core.Infrastructure.Boot
         {
             Container
                 .Bind<SceneService>()
+                .AsSingle();
+        }
+        private void BindSavingService()
+        {
+            Container
+                .BindInterfacesAndSelfTo<SavingService>()
                 .AsSingle();
         }
         private void BindLoadingScreenProvider()

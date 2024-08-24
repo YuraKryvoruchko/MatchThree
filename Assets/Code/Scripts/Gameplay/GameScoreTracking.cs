@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Infrastructure.Service.Saving;
+using System;
 using Zenject;
 
 namespace Core.Gameplay
@@ -9,13 +10,16 @@ namespace Core.Gameplay
 
         private GameField _gameField;
 
+        private ISavingService _savingService;
+
         public int CurrentScoreCount { get => _currentScoreCount; }
 
         public event Action<int> OnUpdateScoreCount;
 
-        public GameScoreTracking(GameField gameField)
+        public GameScoreTracking(GameField gameField, ISavingService savingService)
         {
             _gameField = gameField;
+            _savingService = savingService;
         }
 
         void IInitializable.Initialize()
@@ -25,6 +29,9 @@ namespace Core.Gameplay
         void IDisposable.Dispose()
         {
             _gameField.OnExplodeCellWithScore -= HandleExplodeCell;
+
+            _savingService.SaveLongModeLevelProgress(_currentScoreCount);
+            _savingService.SaveToDisk();
         }
 
         private void HandleExplodeCell(int score)
