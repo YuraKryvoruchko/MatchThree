@@ -28,6 +28,9 @@ namespace Core.Infrastructure.Boot
                 .BindInterfacesAndSelfTo<AudioService>()
                 .AsSingle()
                 .WithArguments(_audioServiceConfig);
+            Container
+                .BindInterfacesTo<SetupAudioService>()
+                .AsSingle();
         }
         private void BindSceneService()
         {

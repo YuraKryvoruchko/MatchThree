@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using Core.Infrastructure.Service.Audio;
+using Core.Infrastructure.Service.Saving;
 using Core.Infrastructure.UI;
 
 namespace Core.UI.Gameplay
@@ -81,19 +82,31 @@ namespace Core.UI.Gameplay
 
         private void SwitchBackgroundMusicVolume()
         {
+            float nextVolumeValue;
             if (_audioService.GetVolume(AudioGroupType.Music) < 0f)
-                _audioService.SetVolume(AudioGroupType.Music, 0f);
+                nextVolumeValue = 0f;
             else
-                _audioService.SetVolume(AudioGroupType.Music, -80f);
+                nextVolumeValue = -80f;
+
+            _audioService.SetVolume(AudioGroupType.Music, nextVolumeValue);
+
+            PlayerPrefs.SetFloat(SettingKeysEnum.MUSIC_VOLUME_VALUE_KEY, nextVolumeValue);
+            PlayerPrefs.Save();
 
             _musicButton.Switch();
         }
         private void SwitchSoundsVolume()
         {
+            float nextVolumeValue;
             if (_audioService.GetVolume(AudioGroupType.Sound) < 0f)
-                _audioService.SetVolume(AudioGroupType.Sound, 0f);
+                nextVolumeValue = 0f;
             else
-                _audioService.SetVolume(AudioGroupType.Sound, -80f);
+                nextVolumeValue = -80f;
+
+            _audioService.SetVolume(AudioGroupType.Sound, nextVolumeValue);
+
+            PlayerPrefs.SetFloat(SettingKeysEnum.SOUND_VOLUME_VALUE_KEY, nextVolumeValue);
+            PlayerPrefs.Save();
 
             _soundButton.Switch();
         }
