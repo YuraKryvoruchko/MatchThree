@@ -44,3 +44,4 @@
 - [Extenject Dependency Injection IOC](https://assetstore.unity.com/packages/tools/utilities/extenject-dependency-injection-ioc-157735)
 - [TextMesh Pro](https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/index.html)
 - [UniTask](https://github.com/Cysharp/UniTask)
+- [Save Game](https://assetstore.unity.com/packages/tools/input-management/save-game-110382)
