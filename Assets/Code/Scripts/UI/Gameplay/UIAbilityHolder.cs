@@ -15,16 +15,14 @@ namespace Core.UI.Gameplay
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _uiClickKey;
 
-        private IAbilityFactory _abilityFactory;
         private IAudioService _audioService;
         private AbilityThrowMode _abilityThrowMode;
 
         private Button _clickedButton;
 
         [Inject] 
-        private void Construct(IAbilityFactory abilityFactory, IAudioService audioService, AbilityThrowMode abilityThrowMode)
-        {
-            _abilityFactory = abilityFactory;
+        private void Construct(IAudioService audioService, AbilityThrowMode abilityThrowMode)
+        {;
             _audioService = audioService;
             _abilityThrowMode = abilityThrowMode;
         }
