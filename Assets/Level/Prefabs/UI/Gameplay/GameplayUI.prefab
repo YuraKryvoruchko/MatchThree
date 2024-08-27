@@ -544,6 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d3807dd8351ef488bc4c15a194f49f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _updateScoreDelay: 0.25
   _slider: {fileID: 2390159394887191479}
 --- !u!1 &755041367615458753
 GameObject:
