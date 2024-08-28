@@ -50,6 +50,7 @@ namespace Core.Gameplay
 
         public event Action OnMove;
         public event Action<int> OnExplodeCellWithScore;
+        public event Action<CellExplosionResult> OnExplodeCellWithResult;
         public event Action<bool> OnPause;
 
         [Serializable]
@@ -68,6 +69,12 @@ namespace Core.Gameplay
                 ScoreNumber = scoreNumber;
                 CellPosition = cellPosition;
             }
+        }
+
+        public struct CellExplosionResult
+        {
+            public int Score;
+            public CellType Type;
         }
 
         [Inject]
@@ -203,8 +210,11 @@ namespace Core.Gameplay
 
             _map[cellPosition.y, cellPosition.x] = null;
             int score = cell.Score;
+            CellType type = cell.Type;
             _cellFabric.ReturnCell(cell);
+
             OnExplodeCellWithScore?.Invoke(score);
+            OnExplodeCellWithResult?.Invoke(new CellExplosionResult() { Score = score, Type = type });
 
             TryFillBoard();
         }
