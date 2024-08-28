@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Zenject;
 
 using CellExplosionResult = Core.Gameplay.GameField.CellExplosionResult;
@@ -8,7 +9,6 @@ namespace Core.Gameplay
 {
     public class LevelTaskCompletionChecker : IInitializable, IDisposable
     {
-        private LevelTask[] _levelTasks;
         private GameField _gameField;
 
         private Dictionary<CellType, int> _dictionary;
@@ -16,10 +16,12 @@ namespace Core.Gameplay
         public event Action<CellType, int> OnExplodeCell;
         public event Action OnAllTaskCompleted;
 
-        public LevelTaskCompletionChecker(GameField gameField)
+        public LevelTaskCompletionChecker(GameField gameField, LevelTask[] levelTasks)
         {
-            _dictionary = new Dictionary<CellType, int>();
             _gameField = gameField;
+            _dictionary = new Dictionary<CellType, int>(levelTasks.Length);
+            for (int i = 0; i < levelTasks.Length; i++)
+                _dictionary.Add(levelTasks[i].CellType, levelTasks[i].Count);
         }
         public void Initialize()
         {
@@ -27,6 +29,7 @@ namespace Core.Gameplay
         }
         public void Dispose()
         {
+            _dictionary.Clear();
             _gameField.OnExplodeCellWithResult -= HandleCellExplosion;
         }
 
@@ -44,8 +47,9 @@ namespace Core.Gameplay
     }
 
     [Serializable]
-    public struct LevelTask
+    public class LevelTask
     {
+        public Sprite Icon;
         public int Count;
         public CellType CellType;
     }
