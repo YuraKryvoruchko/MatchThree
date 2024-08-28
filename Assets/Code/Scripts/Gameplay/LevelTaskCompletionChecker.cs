@@ -11,14 +11,18 @@ namespace Core.Gameplay
     {
         private GameField _gameField;
 
+        private LevelTask[] _tasks;
         private Dictionary<CellType, int> _dictionary;
 
         public event Action<CellType, int> OnExplodeCell;
         public event Action OnAllTaskCompleted;
 
+        public LevelTask[] Tasks { get => _tasks; }
+
         public LevelTaskCompletionChecker(GameField gameField, LevelTask[] levelTasks)
         {
             _gameField = gameField;
+            _tasks = levelTasks;
             _dictionary = new Dictionary<CellType, int>(levelTasks.Length);
             for (int i = 0; i < levelTasks.Length; i++)
                 _dictionary.Add(levelTasks[i].CellType, levelTasks[i].Count);
