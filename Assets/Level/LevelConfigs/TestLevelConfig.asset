@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61842c072cdc281488ce702906e935e2, type: 3}
   m_Name: TestLevelConfig
   m_EditorClassIdentifier: 
+  MoveCount: 20
   Tasks:
   - Icon: {fileID: 21300000, guid: b7481a4c424715542a70ac1efc7468db, type: 3}
     Count: 30
