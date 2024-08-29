@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Zenject;
 
 using CellExplosionResult = Core.Gameplay.GameField.CellExplosionResult;
@@ -48,13 +47,5 @@ namespace Core.Gameplay
             if (_dictionary.Count == 0)
                 OnAllTaskCompleted?.Invoke();
         }
-    }
-
-    [Serializable]
-    public class LevelTask
-    {
-        public Sprite Icon;
-        public int Count;
-        public CellType CellType;
     }
 }
