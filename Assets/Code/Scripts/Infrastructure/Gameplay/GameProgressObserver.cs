@@ -6,33 +6,29 @@ namespace Core.Infrastructure.Gameplay
 {
     public class GameProgressObserver : IDisposable
     {
-        private GameField _gameField;
-
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
+        private PlayerMoveObserver _playerMoveObserver;
 
-        private int _moveCount;
-
-        public GameProgressObserver(LevelConfig levelConfig, GameField gameField, LevelTaskCompletionChecker levelTaskCompletionChecker)
+        public GameProgressObserver(LevelConfig levelConfig, PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker)
         {
             _levelConfig = levelConfig;
 
-            _gameField = gameField;
-            _gameField.OnMove += HandleMoveOnField;
+            _playerMoveObserver = playerMoveObserver;
+            _playerMoveObserver.OnMove += HandleMoveOnField;
 
             _taskCompletionChecker = levelTaskCompletionChecker;
             _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
         }
         public void Dispose()
         {
-            _gameField.OnMove -= HandleMoveOnField;
+            _playerMoveObserver.OnMove -= HandleMoveOnField;
             _taskCompletionChecker.OnAllTaskCompleted -= HandleTaskCompleting;
         }
 
         private void HandleMoveOnField()
         {
-            _moveCount++;
-            if (_moveCount != _levelConfig.MoveCount)
+            if (_playerMoveObserver.Count != _levelConfig.MoveCount)
                 return;
                 
             Debug.Log("Game Over!");
