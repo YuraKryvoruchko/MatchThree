@@ -10,6 +10,9 @@ namespace Core.Infrastructure.Gameplay
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveObserver _playerMoveObserver;
 
+        public event Action OnLose;
+        public event Action<int> OnComplete;
+
         public GameProgressObserver(LevelConfig levelConfig, PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker)
         {
             _levelConfig = levelConfig;
@@ -30,7 +33,7 @@ namespace Core.Infrastructure.Gameplay
         {
             if (_playerMoveObserver.Count != _levelConfig.MoveCount)
                 return;
-                
+            
             Debug.Log("Game Over!");
         }
         private void HandleTaskCompleting()
