@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Level/Scenes/Gameplay.unity
+    path: Assets/Level/Scenes/LongModeGameplay.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 20c567138c7c2604d826513f059c8c63, type: 2}
