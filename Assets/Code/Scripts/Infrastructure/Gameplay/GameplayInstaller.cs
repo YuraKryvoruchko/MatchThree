@@ -7,12 +7,16 @@ using Core.Gameplay;
 using Core.UI.Gameplay;
 using Core.Infrastructure.Service.Pause;
 using UnityEngine.AddressableAssets;
+using Core.Infrastructure.Service.Saving;
 
 namespace Core.Infrastructure.Gameplay
 {
     public class GameplayInstaller : MonoInstaller
     {
         [Header("Mode")]
+#if UNITY_EDITOR
+        [SerializeField] private bool _setInInspector;
+#endif
         [SerializeField] private bool _isLevelMode;
         [Header("Game Objects")]
         [SerializeField] private Camera _mainCamera;
@@ -29,6 +33,11 @@ namespace Core.Infrastructure.Gameplay
 
         public override void InstallBindings()
         {
+#if UNITY_EDITOR
+            if(!_setInInspector)
+#endif
+                _isLevelMode = PlayerPrefs.GetInt(PlayerPrefsEnum.GameModeSettings.IS_LEVEL_MODE_VALUE, 0) > 0;
+
             BindPauseServiceAndPauseProvider();
             BindCellFabric();
             BindAbilityFabric();
