@@ -90,7 +90,7 @@ namespace Core.UI.Gameplay
 
             _audioService.SetVolume(AudioGroupType.Music, nextVolumeValue);
 
-            PlayerPrefs.SetFloat(SettingKeysEnum.MUSIC_VOLUME_VALUE_KEY, nextVolumeValue);
+            PlayerPrefs.SetFloat(PlayerPrefsEnum.AudioSettings.MUSIC_VOLUME_VALUE_KEY, nextVolumeValue);
             PlayerPrefs.Save();
 
             _musicButton.Switch();
@@ -105,7 +105,7 @@ namespace Core.UI.Gameplay
 
             _audioService.SetVolume(AudioGroupType.Sound, nextVolumeValue);
 
-            PlayerPrefs.SetFloat(SettingKeysEnum.SOUND_VOLUME_VALUE_KEY, nextVolumeValue);
+            PlayerPrefs.SetFloat(PlayerPrefsEnum.AudioSettings.SOUND_VOLUME_VALUE_KEY, nextVolumeValue);
             PlayerPrefs.Save();
 
             _soundButton.Switch();
