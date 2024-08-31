@@ -4,35 +4,50 @@ using Zenject;
 
 namespace Core.Infrastructure.Gameplay
 {
-    public class LevelModeInstaller : MonoInstaller
+    public class GameModeInstaller : MonoInstaller
     {
+        [Header("Mode")]
+        [SerializeField] private bool _isLevelMode;
+        [Header("Configs")]
         [SerializeField] private LevelConfig _levelConfig;
 
         public override void InstallBindings()
         {
+            BindPlayerMoveTracking();
             BindLevelTaskCompletionChecker();
-            BindPlayerMoveObserver();
             BindGameProgressObserver();
         }
         
         private void BindLevelTaskCompletionChecker()
         {
+            if (!_isLevelMode)
+                return;
+
             Container
                 .BindInterfacesAndSelfTo<LevelTaskCompletionChecker>()
                 .AsSingle()
                 .WithArguments(_levelConfig.Tasks);
         }
-        private void BindPlayerMoveObserver()
+        private void BindPlayerMoveTracking()
         {
             Container
-                .BindInterfacesAndSelfTo<PlayerMoveObserver>()
+                .BindInterfacesAndSelfTo<PlayerMoveTracking>()
                 .AsSingle();
         }
         private void BindGameProgressObserver()
         {
-            Container
-                .BindInterfacesAndSelfTo<LevelModeSimulation>()
-                .AsSingle();
+            if (_isLevelMode)
+            {
+                Container
+                    .BindInterfacesTo<LevelModeSimulation>()
+                    .AsSingle();
+            }
+            else
+            {
+                Container
+                    .BindInterfacesTo<LongModeSimulation>()
+                    .AsSingle();
+            }
         }
     }
 }

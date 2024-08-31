@@ -2,7 +2,7 @@
 
 namespace Core.Gameplay
 {
-    public class PlayerMoveObserver : IDisposable
+    public class PlayerMoveTracking : IDisposable
     {
         private GameField _gameField;
 
@@ -12,7 +12,7 @@ namespace Core.Gameplay
 
         public event Action OnMove;
 
-        public PlayerMoveObserver(GameField gameField)
+        public PlayerMoveTracking(GameField gameField)
         {
             _gameField = gameField;
             _gameField.OnMove += HandleMove;

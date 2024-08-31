@@ -12,8 +12,8 @@ namespace Core.Infrastructure.Gameplay
     {
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
-        private PlayerMoveObserver _playerMoveObserver;
-        private GameScoreTracking _gameScoreObserver;
+        private PlayerMoveTracking _playerMoveTracking;
+        private GameScoreTracking _gameScoreTracking;
 
         private ILevelService _levelService;
         private IWindowService _windowService;
@@ -21,13 +21,13 @@ namespace Core.Infrastructure.Gameplay
 
         private bool _isLevelCompleted;
 
-        public LevelModeSimulation(PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker,
-            GameScoreTracking gameScoreObserver, ILevelService levelService, IWindowService windowService, ISavingService savingService)
+        public LevelModeSimulation(PlayerMoveTracking playerMoveTracking, LevelTaskCompletionChecker levelTaskCompletionChecker,
+            GameScoreTracking gameScoreTracking, ILevelService levelService, IWindowService windowService, ISavingService savingService)
         {
-            _gameScoreObserver = gameScoreObserver;
+            _gameScoreTracking = gameScoreTracking;
 
-            _playerMoveObserver = playerMoveObserver;
-            _playerMoveObserver.OnMove += HandleMoveOnField;
+            _playerMoveTracking = playerMoveTracking;
+            _playerMoveTracking.OnMove += HandleMoveOnField;
 
             _taskCompletionChecker = levelTaskCompletionChecker;
             _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
@@ -42,7 +42,7 @@ namespace Core.Infrastructure.Gameplay
         }
         public void Dispose()
         {
-            _playerMoveObserver.OnMove -= HandleMoveOnField;
+            _playerMoveTracking.OnMove -= HandleMoveOnField;
             _taskCompletionChecker.OnAllTaskCompleted -= HandleTaskCompleting;
         }
 
@@ -57,7 +57,7 @@ namespace Core.Infrastructure.Gameplay
 
         private void HandleMoveOnField()
         {
-            if (_playerMoveObserver.Count != _levelConfig.MoveCount)
+            if (_playerMoveTracking.Count != _levelConfig.MoveCount)
                 return;
 
             HandleTaskCompleting();
@@ -69,7 +69,7 @@ namespace Core.Infrastructure.Gameplay
             UniTask.Void(async () =>
             {
                 CompletePopup completePopup = await _windowService.OpenPopup<CompletePopup>("CompletePopup");
-                completePopup.Activate(_taskCompletionChecker.GetProgress(), _gameScoreObserver.CurrentScore).Forget();
+                completePopup.Activate(_taskCompletionChecker.GetProgress(), _gameScoreTracking.CurrentScore).Forget();
             });
 
             HandleEndGame();

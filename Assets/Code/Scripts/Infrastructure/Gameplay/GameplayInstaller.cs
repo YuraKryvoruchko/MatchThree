@@ -5,7 +5,6 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Factories;
 using Core.Gameplay;
 using Core.UI.Gameplay;
-using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Pause;
 
 namespace Core.Infrastructure.Gameplay
