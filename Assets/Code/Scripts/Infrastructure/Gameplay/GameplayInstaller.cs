@@ -6,16 +6,21 @@ using Core.Infrastructure.Factories;
 using Core.Gameplay;
 using Core.UI.Gameplay;
 using Core.Infrastructure.Service.Pause;
+using UnityEngine.AddressableAssets;
 
 namespace Core.Infrastructure.Gameplay
 {
     public class GameplayInstaller : MonoInstaller
     {
+        [Header("Mode")]
+        [SerializeField] private bool _isLevelMode;
         [Header("Game Objects")]
         [SerializeField] private Camera _mainCamera;
         [SerializeField] private GameField _gameField;
-        [Header("Startups")]
-        [SerializeField] private GameplayUIStartup _uiStartup;
+        [Header("Startups\nUI")]
+        [SerializeField] private Transform _uiContainer;
+        [SerializeField] private AssetReferenceGameObject _longModeMenu;
+        [SerializeField] private AssetReferenceGameObject _levelModeMenu;
         [Header("Input")]
         [SerializeField] private SwipeDetection _swipeDetection;
         [Header("Configs\nFabrics")]
@@ -33,7 +38,11 @@ namespace Core.Infrastructure.Gameplay
             BindGameField();
             BindAbilityThrowMode();
             BindGameScoreTracking();
+            BindPlayerMoveTracking();
             BindGameplayUIStartup();
+
+            BindLevelTaskCompletionChecker();
+            BindGameModeSimulation();
         }
 
         private void BindPauseServiceAndPauseProvider()
@@ -93,6 +102,12 @@ namespace Core.Infrastructure.Gameplay
                 .Bind<AbilityThrowMode>()
                 .AsSingle();
         }
+        private void BindPlayerMoveTracking()
+        {
+            Container
+                .BindInterfacesAndSelfTo<PlayerMoveTracking>()
+                .AsSingle();
+        }
         private void BindGameScoreTracking()
         {
             Container
@@ -101,10 +116,44 @@ namespace Core.Infrastructure.Gameplay
         }
         private void BindGameplayUIStartup()
         {
+            if (_isLevelMode)
+            {
+                Container
+                    .BindInterfacesTo<GameplayUIStartup>()
+                    .AsSingle()
+                    .WithArguments(_levelModeMenu, _uiContainer);
+            }
+            else
+            {
+                Container
+                    .BindInterfacesTo<GameplayUIStartup>()
+                    .AsSingle()
+                    .WithArguments(_longModeMenu, _uiContainer);
+            }
+        }
+        private void BindLevelTaskCompletionChecker()
+        {
+            if (!_isLevelMode)
+                return;
+
             Container
-                .BindInterfacesTo<GameplayUIStartup>()
-                .FromInstance(_uiStartup)
+                .BindInterfacesAndSelfTo<LevelTaskCompletionChecker>()
                 .AsSingle();
+        }
+        private void BindGameModeSimulation()
+        {
+            if (_isLevelMode)
+            {
+                Container
+                    .BindInterfacesTo<LevelModeSimulation>()
+                    .AsSingle();
+            }
+            else
+            {
+                Container
+                    .BindInterfacesTo<LongModeSimulation>()
+                    .AsSingle();
+            }
         }
     }
 }

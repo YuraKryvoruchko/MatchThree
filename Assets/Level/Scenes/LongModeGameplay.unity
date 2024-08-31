@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 71062783}
-  - component: {fileID: 71062784}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -155,20 +154,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &71062784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71062782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 582704c7b7d037b4bb55f2d1ab279603, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameplayMenuPrefab: {fileID: 4753894002720437633, guid: 72dd13d23dd6a2843942e88803f01715, type: 3}
-  _uiContainer: {fileID: 71062783}
 --- !u!1 &80933698
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,9 +710,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3c4d4f2c86b0f45a70fa2a0fe62a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isLevelMode: 0
   _mainCamera: {fileID: 519420031}
   _gameField: {fileID: 1658689104}
-  _uiStartup: {fileID: 71062784}
+  _uiContainer: {fileID: 71062783}
+  _longModeMenu:
+    m_AssetGUID: 72dd13d23dd6a2843942e88803f01715
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 1
+  _levelModeMenu:
+    m_AssetGUID: 32e6fc48ec0b3dc45a30dd0d678d994d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _swipeDetection: {fileID: 1408872457}
   _cellFabricConfig:
     CellPrefab: {fileID: -6854740434885365437, guid: 02116af72d403284d891ef602cc6ff18, type: 3}
@@ -1080,7 +1076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05000019
+      value: 1.7753849
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1116,7 +1112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100405787760873926, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: orthographic size
-      value: 8.4
+      value: 10.225385
       objectReference: {fileID: 0}
     - target: {fileID: 7573291798101294480, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_Name

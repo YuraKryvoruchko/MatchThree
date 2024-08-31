@@ -1,29 +1,30 @@
 using UnityEngine;
 using Zenject;
 using Core.Infrastructure.Service;
-using Core.Infrastructure.UI;
 using Cysharp.Threading.Tasks;
+using UnityEngine.AddressableAssets;
 
 namespace Core.UI.Gameplay
 {
-    public class GameplayUIStartup : MonoBehaviour, IInitializable
+    public class GameplayUIStartup : IInitializable
     {
-        [SerializeField] private WindowBase _gameplayMenuPrefab;
-        [SerializeField] private Transform _uiContainer;
+        private AssetReferenceGameObject _gameplayMenuReference;
+        private Transform _uiContainer;
 
         private IWindowService _windowService;
 
-        [Inject]
-        private void Construct(IWindowService windowService)
+        public GameplayUIStartup(IWindowService windowService, AssetReferenceGameObject gameplayMenuReference, Transform uiContainer)
         {
             _windowService = windowService;
+            _gameplayMenuReference = gameplayMenuReference;
+            _uiContainer = uiContainer;
         }
 
         void IInitializable.Initialize()
         {
             UniTask.Void(async () => 
             {
-                GameplayMenu menu = await _windowService.OpenWindow<GameplayMenu>(_gameplayMenuPrefab.Path);
+                GameplayMenu menu = await _windowService.OpenWindow<GameplayMenu>(_gameplayMenuReference.AssetGUID);
                 menu.transform.SetParent(_uiContainer);
             });
         }

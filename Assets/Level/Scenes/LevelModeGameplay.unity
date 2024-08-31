@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 71062783}
-  - component: {fileID: 71062784}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -155,20 +154,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &71062784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71062782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 582704c7b7d037b4bb55f2d1ab279603, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameplayMenuPrefab: {fileID: 524286969702319929, guid: 32e6fc48ec0b3dc45a30dd0d678d994d, type: 3}
-  _uiContainer: {fileID: 71062783}
 --- !u!1 &80933698
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +627,6 @@ GameObject:
   - component: {fileID: 1408872459}
   - component: {fileID: 1408872460}
   - component: {fileID: 1408872458}
-  - component: {fileID: 1408872462}
   - component: {fileID: 1408872457}
   - component: {fileID: 1408872461}
   m_Layer: 0
@@ -726,9 +710,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3c4d4f2c86b0f45a70fa2a0fe62a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isLevelMode: 1
   _mainCamera: {fileID: 519420031}
   _gameField: {fileID: 1658689104}
-  _uiStartup: {fileID: 71062784}
+  _uiContainer: {fileID: 71062783}
+  _longModeMenu:
+    m_AssetGUID: 72dd13d23dd6a2843942e88803f01715
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _levelModeMenu:
+    m_AssetGUID: 32e6fc48ec0b3dc45a30dd0d678d994d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _swipeDetection: {fileID: 1408872457}
   _cellFabricConfig:
     CellPrefab: {fileID: -6854740434885365437, guid: 02116af72d403284d891ef602cc6ff18, type: 3}
@@ -783,7 +778,6 @@ MonoBehaviour:
   _monoInstallers:
   - {fileID: 1408872460}
   - {fileID: 1408872458}
-  - {fileID: 1408872462}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -826,20 +820,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _event: {fileID: 11400000, guid: 47832958bdf9d8d49825aec79b75970d, type: 2}
---- !u!114 &1408872462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408872455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76445e4499d837c40b669bf2939a20a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isLevelMode: 1
-  _levelConfig: {fileID: 11400000, guid: 10a26a2a4ed18c5458d393c10c4e2a90, type: 2}
 --- !u!1 &1456452651
 GameObject:
   m_ObjectHideFlags: 0

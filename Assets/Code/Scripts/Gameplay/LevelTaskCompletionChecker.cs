@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Zenject;
+using Core.Infrastructure.Service;
 
 using CellExplosionResult = Core.Gameplay.GameField.CellExplosionResult;
 
@@ -21,15 +22,15 @@ namespace Core.Gameplay
 
         public LevelTask[] Tasks { get => _tasks; }
 
-        public LevelTaskCompletionChecker(GameField gameField, LevelTask[] levelTasks)
+        public LevelTaskCompletionChecker(GameField gameField, ILevelService levelService)
         {
             _gameField = gameField;
-            _tasks = levelTasks;
-            _dictionary = new Dictionary<CellType, int>(levelTasks.Length);
-            for (int i = 0; i < levelTasks.Length; i++)
+            _tasks = levelService.GetCurrentLevelConfig().Tasks;
+            _dictionary = new Dictionary<CellType, int>(_tasks.Length);
+            for (int i = 0; i < _tasks.Length; i++)
             {
-                _dictionary.Add(levelTasks[i].CellType, levelTasks[i].Count);
-                _progressPerExplosion += levelTasks[i].Count;
+                _dictionary.Add(_tasks[i].CellType, _tasks[i].Count);
+                _progressPerExplosion += _tasks[i].Count;
             }
 
             _progressPerExplosion = 1f / _progressPerExplosion;
