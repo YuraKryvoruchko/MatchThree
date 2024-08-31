@@ -5,6 +5,7 @@ using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
 using Core.Infrastructure.Service.Saving;
+using Core.Infrastructure.Gameplay;
 
 namespace Core.Infrastructure.Boot
 {
@@ -12,6 +13,8 @@ namespace Core.Infrastructure.Boot
     {
         [Header("Audio Settings")]
         [SerializeField] private AudioServiceConfig _audioServiceConfig;
+        [Header("Level Settings")]
+        [SerializeField] private LevelConfigContainer _levelConfigContainer;
         [Header("Loading Screen")]
         [SerializeField] private AssetReference _loadingScreenPrefabReference;
 
@@ -20,6 +23,7 @@ namespace Core.Infrastructure.Boot
             BindAudioService();
             BindSceneService();
             BindSavingService();
+            BindLevelService();
             BindLoadingScreenProvider();
         }
         
@@ -44,6 +48,14 @@ namespace Core.Infrastructure.Boot
             Container
                 .BindInterfacesAndSelfTo<SavingService>()
                 .AsSingle();
+        }
+        private void BindLevelService()
+        {
+            Container
+                .Bind<ILevelService>()
+                .To<LevelService>()
+                .AsSingle()
+                .WithArguments(_levelConfigContainer);
         }
         private void BindLoadingScreenProvider()
         {

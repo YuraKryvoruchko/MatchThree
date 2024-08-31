@@ -32,8 +32,7 @@ namespace Core.Infrastructure.Gameplay
         {
             Container
                 .BindInterfacesAndSelfTo<GameProgressObserver>()
-                .AsSingle()
-                .WithArguments(_levelConfig);
+                .AsSingle();
         }
     }
 }

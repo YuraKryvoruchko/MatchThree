@@ -1,28 +1,28 @@
 ﻿using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Zenject;
 using Core.Gameplay;
 using Core.Infrastructure.Service;
-using Cysharp.Threading.Tasks;
 using Core.UI.Gameplay;
 
 namespace Core.Infrastructure.Gameplay
 {
-    public class GameProgressObserver : IDisposable
+    public class GameProgressObserver : IInitializable, IDisposable
     {
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveObserver _playerMoveObserver;
 
+        private ILevelService _levelService;
         private IWindowService _windowService;
 
         public event Action OnLose;
         public event Action<int> OnComplete;
 
-        public GameProgressObserver(LevelConfig levelConfig, PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker,
+        public GameProgressObserver(PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker, ILevelService levelService,
             IWindowService windowService)
         {
-            _levelConfig = levelConfig;
-
             _playerMoveObserver = playerMoveObserver;
             _playerMoveObserver.OnMove += HandleMoveOnField;
 
@@ -30,6 +30,11 @@ namespace Core.Infrastructure.Gameplay
             _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
 
             _windowService = windowService;
+            _levelService = levelService;
+        }
+        public void Initialize()
+        {
+            _levelConfig = _levelService.GetCurrentLevelConfig();
         }
         public void Dispose()
         {
