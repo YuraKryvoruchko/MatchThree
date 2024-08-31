@@ -57,7 +57,7 @@ namespace Core.UI.Gameplay
         {
             _closeButton.interactable = true;
             _quitButton.interactable = true;
-            _closeButton.interactable = true;
+            _replayButton.interactable = true;
             _musicButton.Button.interactable = true;
             _soundButton.Button.interactable = true;
         }
@@ -65,7 +65,7 @@ namespace Core.UI.Gameplay
         {
             _closeButton.interactable = false;
             _quitButton.interactable = false;
-            _closeButton.interactable = false;
+            _replayButton.interactable = false;
             _musicButton.Button.interactable = false;
             _soundButton.Button.interactable = false;
         }
