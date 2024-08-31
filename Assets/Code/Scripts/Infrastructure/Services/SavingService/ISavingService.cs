@@ -4,8 +4,8 @@
     {
         void SaveToDisk();
 
-        void SaveLevelProgress(int levelId, int progress);
-        int GetLevelProgress(int levelId);
+        void SaveLevelProgress(int levelId, float progress);
+        float GetLevelProgress(int levelId);
 
         void SaveLongModeLevelProgress(int numberOfScore);
         int GetLongModeProgress();

@@ -5,7 +5,7 @@ namespace Core.Infrastructure.Service
     public interface ILevelService
     {
         int LevelConfigCount { get; }
-        int CurrentLevelConfigIndex { get; }
+        int CurentLevelConfigIndex { get; }
 
         bool IsLevelConfigSeted();
 

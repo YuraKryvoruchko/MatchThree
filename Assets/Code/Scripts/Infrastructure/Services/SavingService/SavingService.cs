@@ -17,17 +17,17 @@ namespace Core.Infrastructure.Service.Saving
         {
             SaveSystem.SaveToDisk();
         }
-        public void SaveLevelProgress(int levelId, int progress)
+        public void SaveLevelProgress(int levelId, float progress)
         {
-            SaveSystem.SetInt(levelId.ToString(), progress);
+            SaveSystem.SetFloat(levelId.ToString(), progress);
         }
         public void SaveLongModeLevelProgress(int numberOfScore)
         {
             SaveSystem.SetInt(LONG_MODE_LEVEL_KEY, numberOfScore);
         }
-        public int GetLevelProgress(int levelId)
+        public float GetLevelProgress(int levelId)
         {
-            return SaveSystem.GetInt(levelId.ToString());
+            return SaveSystem.GetFloat(levelId.ToString());
         }
         public int GetLongModeProgress()
         {
