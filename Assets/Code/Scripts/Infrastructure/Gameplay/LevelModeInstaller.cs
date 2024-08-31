@@ -31,7 +31,7 @@ namespace Core.Infrastructure.Gameplay
         private void BindGameProgressObserver()
         {
             Container
-                .BindInterfacesAndSelfTo<GameProgressObserver>()
+                .BindInterfacesAndSelfTo<LevelModeSimulation>()
                 .AsSingle();
         }
     }

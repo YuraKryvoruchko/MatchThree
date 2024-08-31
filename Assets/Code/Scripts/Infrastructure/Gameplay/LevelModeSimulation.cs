@@ -8,7 +8,7 @@ using Core.Infrastructure.Service.Saving;
 
 namespace Core.Infrastructure.Gameplay
 {
-    public class GameProgressObserver : IGameModeSimulation, IInitializable, IDisposable
+    public class LevelModeSimulation : IGameModeSimulation, IInitializable, IDisposable
     {
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
@@ -21,7 +21,7 @@ namespace Core.Infrastructure.Gameplay
 
         private bool _isLevelCompleted;
 
-        public GameProgressObserver(PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker,
+        public LevelModeSimulation(PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker,
             GameScoreObserver gameScoreObserver, ILevelService levelService, IWindowService windowService, ISavingService savingService)
         {
             _gameScoreObserver = gameScoreObserver;
