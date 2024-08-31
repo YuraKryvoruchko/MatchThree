@@ -5,11 +5,11 @@ namespace Core.Infrastructure.Gameplay
 {
     public class LongModeSimulation : IGameModeSimulation
     {
-        private GameScoreObserver _gameScoreObserver;
+        private GameScoreTracking _gameScoreObserver;
 
         private ISavingService _savingService;
 
-        public LongModeSimulation(GameScoreObserver gameScoreObserver,ISavingService savingService)
+        public LongModeSimulation(GameScoreTracking gameScoreObserver,ISavingService savingService)
         {
             _gameScoreObserver = gameScoreObserver;
 

@@ -41,7 +41,7 @@ namespace Core.UI.Gameplay
         private void Construct(GameScoreTracking gameScoreTracking, ISavingService savingService, IPauseProvider pauseProvider)
         {
             _gameScoreTracking = gameScoreTracking;
-            _gameScoreTracking.OnUpdateScoreCount += HandleUpdateScoreCount;
+            _gameScoreTracking.OnUpdate += HandleUpdateScoreCount;
             _pauseProvider = pauseProvider;
             _pauseProvider.OnPause += HandlePause;
 
@@ -54,12 +54,12 @@ namespace Core.UI.Gameplay
         private void OnDestroy()
         {
             _pauseProvider.OnPause -= HandlePause;
-            _gameScoreTracking.OnUpdateScoreCount -= HandleUpdateScoreCount;
+            _gameScoreTracking.OnUpdate -= HandleUpdateScoreCount;
         }
         
-        private void HandleUpdateScoreCount(int scoreCount)
+        private void HandleUpdateScoreCount()
         {
-            float progress = (float)scoreCount / (float)_recordValue;
+            float progress = (float)_gameScoreTracking.CurrentScore / (float)_recordValue;
             if (_tweener.IsActive())
                 _tweener.ChangeEndValue(progress, _updateScoreDelay, true);
             else

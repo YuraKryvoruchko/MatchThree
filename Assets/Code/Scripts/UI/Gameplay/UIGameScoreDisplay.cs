@@ -15,17 +15,17 @@ namespace Core.UI.Gameplay
         private void Construct(GameScoreTracking gameScoreTracking)
         {
             _gameScoreTracking = gameScoreTracking;
-            _gameScoreTracking.OnUpdateScoreCount += UpdateText;
+            _gameScoreTracking.OnUpdate += UpdateText;
         }
 
         private void OnDestroy()
         {
-            _gameScoreTracking.OnUpdateScoreCount -= UpdateText;
+            _gameScoreTracking.OnUpdate -= UpdateText;
         }
 
-        private void UpdateText(int scoreCount)
+        private void UpdateText()
         {
-            _scoreText.text = scoreCount.ToString();
+            _scoreText.text = _gameScoreTracking.CurrentScore.ToString();
         }
     }
 }

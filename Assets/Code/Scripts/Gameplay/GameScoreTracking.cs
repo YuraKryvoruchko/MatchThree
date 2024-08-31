@@ -1,48 +1,29 @@
-﻿using Core.Infrastructure.Service.Saving;
-using System;
-using Zenject;
+﻿using System;
 
 namespace Core.Gameplay
 {
-    public class GameScoreTracking : IInitializable, IDisposable
+    public class GameScoreTracking : IDisposable
     {
-        private int _currentScoreCount;
-        private int _recordScoreCount;
-
         private GameField _gameField;
 
-        private ISavingService _savingService;
+        public int CurrentScore { get; private set; }
 
-        public int CurrentScoreCount { get => _currentScoreCount; }
+        public event Action OnUpdate;
 
-        public event Action<int> OnUpdateScoreCount;
-
-        public GameScoreTracking(GameField gameField, ISavingService savingService)
+        public GameScoreTracking(GameField gameField) 
         {
             _gameField = gameField;
-            _savingService = savingService;
+            _gameField.OnExplodeCellWithScore += HandleCellExplosion;
+        }
+        public void Dispose()
+        {
+            _gameField.OnExplodeCellWithScore -= HandleCellExplosion;
         }
 
-        void IInitializable.Initialize()
+        private void HandleCellExplosion(int score)
         {
-            _gameField.OnExplodeCellWithScore += HandleExplodeCell;
-            _recordScoreCount = _savingService.GetLongModeProgress();
-        }
-        void IDisposable.Dispose()
-        {
-            _gameField.OnExplodeCellWithScore -= HandleExplodeCell;
-
-            if(_currentScoreCount > _recordScoreCount)
-            {
-                _savingService.SaveLongModeLevelProgress(_currentScoreCount);
-                _savingService.SaveToDisk();
-            }
-        }
-
-        private void HandleExplodeCell(int score)
-        {
-            _currentScoreCount += score;
-            OnUpdateScoreCount?.Invoke(_currentScoreCount);
+            CurrentScore += score;
+            OnUpdate?.Invoke();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Core.Infrastructure.Gameplay
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveObserver _playerMoveObserver;
-        private GameScoreObserver _gameScoreObserver;
+        private GameScoreTracking _gameScoreObserver;
 
         private ILevelService _levelService;
         private IWindowService _windowService;
@@ -22,7 +22,7 @@ namespace Core.Infrastructure.Gameplay
         private bool _isLevelCompleted;
 
         public LevelModeSimulation(PlayerMoveObserver playerMoveObserver, LevelTaskCompletionChecker levelTaskCompletionChecker,
-            GameScoreObserver gameScoreObserver, ILevelService levelService, IWindowService windowService, ISavingService savingService)
+            GameScoreTracking gameScoreObserver, ILevelService levelService, IWindowService windowService, ISavingService savingService)
         {
             _gameScoreObserver = gameScoreObserver;
 

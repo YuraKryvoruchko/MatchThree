@@ -34,7 +34,6 @@ namespace Core.Infrastructure.Gameplay
             BindGameField();
             BindAbilityThrowMode();
             BindGameScoreTracking();
-            BindGameScoreObserver();
             BindGameplayUIStartup();
         }
 
@@ -99,12 +98,6 @@ namespace Core.Infrastructure.Gameplay
         {
             Container
                 .BindInterfacesAndSelfTo<GameScoreTracking>()
-                .AsSingle();
-        }
-        private void BindGameScoreObserver()
-        {
-            Container
-                .BindInterfacesAndSelfTo<GameScoreObserver>()
                 .AsSingle();
         }
         private void BindGameplayUIStartup()
