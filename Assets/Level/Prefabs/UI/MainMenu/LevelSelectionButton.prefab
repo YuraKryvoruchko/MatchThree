@@ -160,6 +160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2259054186966282761}
   - component: {fileID: 3165630988657867162}
+  - component: {fileID: 1606715738596228579}
   m_Layer: 0
   m_Name: LevelSelectionButton
   m_TagString: Untagged
@@ -233,6 +234,27 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1606715738596228579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3625383303364740821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6bf17961546374984f04a1f85b02b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseButton: {fileID: 3165630988657867162}
+  _levelNumberText: {fileID: 4414298202563144281}
+  _starSettings:
+  - Image: {fileID: 67636473749834316}
+    MinProgress: 0.2
+  - Image: {fileID: 6867323394490214365}
+    MinProgress: 0.6
+  - Image: {fileID: 945504676794273519}
+    MinProgress: 1
 --- !u!1 &6636792238868538142
 GameObject:
   m_ObjectHideFlags: 0
