@@ -27,6 +27,9 @@ namespace Core.Infrastructure.Boot
 
         public async void Initialize()
         {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = (int)Screen.currentResolution.refreshRateRatio.value;
+
             await Addressables.InitializeAsync();
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(2);
             queue.Enqueue(new AudioListLoadingOperation(_mainMenuAudio));
