@@ -4,7 +4,7 @@ using Core.Input;
 using Core.Gameplay.Input;
 using Core.Infrastructure.Factories;
 using Core.Gameplay;
-using Core.UI.Gameplay;
+using Core.UI;
 using Core.Infrastructure.Service.Pause;
 using UnityEngine.AddressableAssets;
 using Core.Infrastructure.Service.Saving;
@@ -128,14 +128,14 @@ namespace Core.Infrastructure.Gameplay
             if (_isLevelMode)
             {
                 Container
-                    .BindInterfacesTo<GameplayUIStartup>()
+                    .BindInterfacesTo<UIStartup>()
                     .AsSingle()
                     .WithArguments(_levelModeMenu, _uiContainer);
             }
             else
             {
                 Container
-                    .BindInterfacesTo<GameplayUIStartup>()
+                    .BindInterfacesTo<UIStartup>()
                     .AsSingle()
                     .WithArguments(_longModeMenu, _uiContainer);
             }

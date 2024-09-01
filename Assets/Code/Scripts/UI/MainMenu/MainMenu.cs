@@ -4,13 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using Zenject;
+using Cysharp.Threading.Tasks;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
+using Core.Infrastructure.UI;
 
 namespace Core.UI
 {
-    public class MainMenu : MonoBehaviour
+    public class MainMenu : WindowBase
     {
         [Header("Buttons")]
         [SerializeField] private Button _chooseLevelButton;
@@ -19,6 +21,8 @@ namespace Core.UI
         [Header("Scene Keys")]
         [SerializeField] private AssetReference _mainMenuScene;
         [SerializeField] private AssetReference _gamePlayScene;
+        [Header("SelectLevelMenu")]
+        [SerializeField] private AssetReferenceGameObject _selectLevelMenuReference;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _clickAudioPath;
         [Header("Loadable Audio")]
@@ -28,34 +32,69 @@ namespace Core.UI
         private ILoadingScreenProvider _loadingScreenProvider;
 
         private SceneService _sceneService;
+        private IWindowService _windowService;
         private IAudioService _audioService;
 
+        public override event Action OnMenuBack;
+
         [Inject]
-        private void Construct(SceneService sceneService, IAudioService audioService, ILoadingScreenProvider loadingScreenProvider)
+        private void Construct(SceneService sceneService, IWindowService windowService, IAudioService audioService, ILoadingScreenProvider loadingScreenProvider)
         {
+            _windowService = windowService;
             _sceneService = sceneService;
             _audioService = audioService;
             _loadingScreenProvider = loadingScreenProvider;
         }
 
-        private void Awake()
+        protected override void OnShow()
         {
-            _startLongModeButton.onClick.AddListener(LoadLongMode);
             _startLongModeButton.onClick.AddListener(() => _audioService.PlayOneShot(_clickAudioPath));
+            _startLongModeButton.onClick.AddListener(LoadLongMode);
+            _chooseLevelButton.onClick.AddListener(() => _audioService.PlayOneShot(_clickAudioPath));
+            _chooseLevelButton.onClick.AddListener(OpenSelectLevelMenu);
+            gameObject.SetActive(true);
         }
-        private void OnDestroy()
+        protected override void OnHide()
         {
             _startLongModeButton.onClick.RemoveAllListeners();
+            _chooseLevelButton.onClick.RemoveAllListeners();
+            gameObject.SetActive(false);
+        }
+        protected override void OnFocus()
+        {
+            SetInteractable(true);
+        }
+        protected override void OnUnfocus()
+        {
+            SetInteractable(false);
+        }
+        protected override void OnClose()
+        {
         }
 
-        private async void LoadLongMode()
+        private void LoadLongMode()
         {
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(4);
             queue.Enqueue(new AudioListUnloadingOperation(_unloadingAudioList));
             queue.Enqueue(new SceneUnloadingOperation(_sceneService, _mainMenuScene));
             queue.Enqueue(new AudioListLoadingOperation(_loadingAudioList));
             queue.Enqueue(new SceneLoadingOperation(_sceneService, _gamePlayScene));
-            await _loadingScreenProvider.LoadAndDestroy(queue);
+            _loadingScreenProvider.LoadAndDestroy(queue);
+        }
+        private void OpenSelectLevelMenu()
+        {
+            UniTask.Void(async () =>
+            {
+                SelectLevelMenu selectLevelMenu = await _windowService.OpenWindow<SelectLevelMenu>(_selectLevelMenuReference.AssetGUID);
+                selectLevelMenu.transform.SetParent(transform.parent);
+                selectLevelMenu.ShowButtons();
+            });
+        }
+        private void SetInteractable(bool interactable)
+        {
+            _chooseLevelButton.interactable = interactable;
+            _startLongModeButton.interactable = interactable;
+            _settingsButton.interactable = interactable;
         }
     }
 }
