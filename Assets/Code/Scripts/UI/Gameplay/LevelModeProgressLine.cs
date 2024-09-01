@@ -9,7 +9,7 @@ using Core.Infrastructure.Service.Pause;
 
 namespace Core.UI.Gameplay
 {
-    public class UILongModeProgressLine : MonoBehaviour
+    public class LevelModeProgressLine : MonoBehaviour
     {
         [Header("Settings")]
         [SerializeField] private float _updateScoreDelay = 0.25f;

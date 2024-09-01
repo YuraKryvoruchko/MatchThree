@@ -43,9 +43,7 @@ namespace Core.UI
                 if (_starSettings[i].MinProgress > progress)
                     break;
 
-                Color color = _starSettings[i].Image.color;
-                color.a = 1f;
-                _starSettings[i].Image.color = color;
+                _starSettings[i].Image.color = Color.white;
             }
         }
     }

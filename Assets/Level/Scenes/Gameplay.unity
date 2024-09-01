@@ -625,8 +625,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1408872456}
   - component: {fileID: 1408872459}
-  - component: {fileID: 1408872458}
   - component: {fileID: 1408872460}
+  - component: {fileID: 1408872458}
   - component: {fileID: 1408872457}
   - component: {fileID: 1408872461}
   m_Layer: 0
@@ -710,6 +710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3c4d4f2c86b0f45a70fa2a0fe62a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _setInInspector: 0
   _isLevelMode: 0
   _mainCamera: {fileID: 519420031}
   _gameField: {fileID: 1658689104}
@@ -718,7 +719,7 @@ MonoBehaviour:
     m_AssetGUID: 72dd13d23dd6a2843942e88803f01715
     m_SubObjectName: 
     m_SubObjectType: 
-    m_EditorAssetChanged: 1
+    m_EditorAssetChanged: 0
   _levelModeMenu:
     m_AssetGUID: 32e6fc48ec0b3dc45a30dd0d678d994d
     m_SubObjectName: 

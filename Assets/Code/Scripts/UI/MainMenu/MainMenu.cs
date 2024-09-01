@@ -9,6 +9,7 @@ using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
 using Core.Infrastructure.UI;
+using Core.Infrastructure.Service.Saving;
 
 namespace Core.UI
 {
@@ -74,6 +75,7 @@ namespace Core.UI
 
         private void LoadLongMode()
         {
+            PlayerPrefs.SetInt(PlayerPrefsEnum.GameModeSettings.IS_LEVEL_MODE_VALUE, 0);
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(4);
             queue.Enqueue(new AudioListUnloadingOperation(_unloadingAudioList));
             queue.Enqueue(new SceneUnloadingOperation(_sceneService, _mainMenuScene));

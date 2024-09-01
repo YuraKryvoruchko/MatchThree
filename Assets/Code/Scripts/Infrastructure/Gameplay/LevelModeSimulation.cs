@@ -52,7 +52,10 @@ namespace Core.Infrastructure.Gameplay
                 return;
 
             if(_savingService.GetLevelProgress(_levelService.CurentLevelConfigIndex) < _taskCompletionChecker.GetProgress())
+            {
                 _savingService.SaveLevelProgress(_levelService.CurentLevelConfigIndex, _taskCompletionChecker.GetProgress());
+                _savingService.SaveToDisk();
+            }
         }
 
         private void HandleMoveOnField()

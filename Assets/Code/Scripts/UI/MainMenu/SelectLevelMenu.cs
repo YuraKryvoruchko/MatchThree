@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.UI;
@@ -17,6 +19,9 @@ namespace Core.UI
         [Header("Select Button Settings")]
         [SerializeField] private SelectLevelButton _selectLevelButtonPrefab;
         [SerializeField] private Transform _buttonContainer;
+        [Header("Scene Keys")]
+        [SerializeField] private AssetReference _mainMenuSceneReference;
+        [SerializeField] private AssetReference _gamePlayMenuSceneReference;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _clickAudioEvent;
 
@@ -81,6 +86,15 @@ namespace Core.UI
             _audioService.PlayOneShot(_clickAudioEvent);
 
             UnsubscribeFromButtons();
+            _levelService.SetCurrentLevelConfigByIndex(button.LevelIndex);
+
+            PlayerPrefs.SetInt(PlayerPrefsEnum.GameModeSettings.IS_LEVEL_MODE_VALUE, 1);
+
+            Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(2);
+            queue.Enqueue(new SceneUnloadingOperation(_sceneService, _mainMenuSceneReference));
+            queue.Enqueue(new SceneLoadingOperation(_sceneService, _gamePlayMenuSceneReference));
+            _loadingScreenProvider.LoadAndDestroy(queue);
+
             Debug.Log($"Load level with index {button.LevelIndex}");
         }
         private void UnsubscribeFromButtons()

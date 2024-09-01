@@ -876,6 +876,16 @@ MonoBehaviour:
   _backButton: {fileID: 3874948422471912871}
   _selectLevelButtonPrefab: {fileID: 1606715738596228579, guid: 82e7dfcd0cc53af48ba468a7667ca8ff, type: 3}
   _buttonContainer: {fileID: 5864485670525361405}
+  _mainMenuSceneReference:
+    m_AssetGUID: fd946f7ef756de9448dd1cfb2d804425
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _gamePlayMenuSceneReference:
+    m_AssetGUID: 38bd489b673af414ba003580323f54e7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _clickAudioEvent: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
 --- !u!1001 &6560651633399356340
 PrefabInstance:

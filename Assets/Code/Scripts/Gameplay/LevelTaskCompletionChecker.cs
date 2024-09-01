@@ -14,8 +14,8 @@ namespace Core.Gameplay
         private LevelTask[] _tasks;
         private Dictionary<CellType, int> _dictionary;
 
-        private float _progress;
-        private float _progressPerExplosion;
+        private int _totalTaskElementCount = 0;
+        private int _completedTaskElementCount = 0;
 
         public event Action<CellType, int> OnExplodeCell;
         public event Action OnAllTaskCompleted;
@@ -30,10 +30,8 @@ namespace Core.Gameplay
             for (int i = 0; i < _tasks.Length; i++)
             {
                 _dictionary.Add(_tasks[i].CellType, _tasks[i].Count);
-                _progressPerExplosion += _tasks[i].Count;
+                _totalTaskElementCount += _tasks[i].Count;
             }
-
-            _progressPerExplosion = 1f / _progressPerExplosion;
         }
         public void Initialize()
         {
@@ -47,7 +45,7 @@ namespace Core.Gameplay
 
         public float GetProgress()
         {
-            return _progress;
+            return _completedTaskElementCount / _totalTaskElementCount;
         }
 
         private void HandleCellExplosion(CellExplosionResult cellExplosionResult)
@@ -55,7 +53,7 @@ namespace Core.Gameplay
             if (!_dictionary.ContainsKey(cellExplosionResult.Type))
                 return;
 
-            _progress += _progressPerExplosion;
+            _completedTaskElementCount++;
             _dictionary[cellExplosionResult.Type]--;
             OnExplodeCell?.Invoke(cellExplosionResult.Type, _dictionary[cellExplosionResult.Type]);
 
