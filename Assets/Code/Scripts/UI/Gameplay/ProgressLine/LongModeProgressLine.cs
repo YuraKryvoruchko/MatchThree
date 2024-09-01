@@ -34,7 +34,10 @@ namespace Core.UI.Gameplay
 
         private void HandleUpdateScoreCount()
         {
-            base.SetSliderValue(_gameScoreTracking.CurrentScore / _recordValue);
+            if(_recordValue == 0)
+                base.SetSliderValue(_gameScoreTracking.CurrentScore);
+            else
+                base.SetSliderValue(_gameScoreTracking.CurrentScore / _recordValue);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Zenject;
 using Core.Infrastructure.Service.Pause;
 
 namespace Core.UI.Gameplay
@@ -8,10 +9,7 @@ namespace Core.UI.Gameplay
     public abstract class BaseProgressLine : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private float _updateScoreDelay = 0.25f;
-        [Space]
-        [SerializeField] private bool _showStars;
-        [SerializeField] private float _starShowingDelay = 0.25f;
+        [SerializeField] private float _updateSliderValueTime = 0.25f;
         [Header("Components")]
         [SerializeField] private Slider _slider;
 
@@ -19,12 +17,14 @@ namespace Core.UI.Gameplay
 
         private IPauseProvider _pauseProvider;
 
+        [Inject]
         private void Construct(IPauseProvider pauseProvider)
         {
             _pauseProvider = pauseProvider;
         }
         protected void Start()
         {
+            _slider.value = 0f;
             _pauseProvider.OnPause += HandlePause;
             OnStart();
         }
@@ -37,9 +37,9 @@ namespace Core.UI.Gameplay
         protected void SetSliderValue(float value)
         {
             if (_tweener.IsActive())
-                _tweener.ChangeEndValue(value, _updateScoreDelay, true);
+                _tweener.ChangeEndValue(value, _updateSliderValueTime, true);
             else
-                _tweener = _slider.DOValue(value, _updateScoreDelay);
+                _tweener = _slider.DOValue(value, _updateSliderValueTime);
         }
         private void HandlePause(bool isPause)
         {

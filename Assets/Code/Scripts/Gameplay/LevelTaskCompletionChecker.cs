@@ -45,7 +45,7 @@ namespace Core.Gameplay
 
         public float GetProgress()
         {
-            return _completedTaskElementCount / _totalTaskElementCount;
+            return (float)_completedTaskElementCount / _totalTaskElementCount;
         }
 
         private void HandleCellExplosion(CellExplosionResult cellExplosionResult)
