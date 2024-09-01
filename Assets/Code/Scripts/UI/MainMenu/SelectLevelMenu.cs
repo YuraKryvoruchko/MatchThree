@@ -1,12 +1,22 @@
+<<<<<<< HEAD
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+=======
+﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
 using Zenject;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
+<<<<<<< HEAD
 using Core.Infrastructure.Service.Saving;
+=======
+using System;
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
 
 namespace Core.UI
 {
@@ -14,6 +24,7 @@ namespace Core.UI
     {
         [Header("Buttons")]
         [SerializeField] private Button _backButton;
+<<<<<<< HEAD
         [Header("Select Button Settings")]
         [SerializeField] private SelectLevelButton _selectLevelButtonPrefab;
         [SerializeField] private Transform _buttonContainer;
@@ -21,29 +32,46 @@ namespace Core.UI
         [SerializeField] private ClipEvent _clickAudioEvent;
 
         private SelectLevelButton[] _buttons;
+=======
+        [Header("Scene Keys")]
+        [SerializeField] private AssetReferenceGameObject _levelSelectionButtonReference;
+        [Header("Audio Keys")]
+        [SerializeField] private ClipEvent _clickAudioPath;
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
 
         private ILoadingScreenProvider _loadingScreenProvider;
 
         private SceneService _sceneService;
         private IAudioService _audioService;
         private ILevelService _levelService;
+<<<<<<< HEAD
         private ISavingService _savingService;
+=======
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
 
         public override event Action OnMenuBack;
 
         [Inject]
+<<<<<<< HEAD
         private void Construct(SceneService sceneService, IAudioService audioService, ILevelService levelService, ISavingService savingService,
+=======
+        private void Construct(SceneService sceneService, IAudioService audioService, ILevelService levelService, 
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
             ILoadingScreenProvider loadingScreenProvider)
         {
             _sceneService = sceneService;
             _audioService = audioService;
             _levelService = levelService;
+<<<<<<< HEAD
             _savingService = savingService;
+=======
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
             _loadingScreenProvider = loadingScreenProvider;
         }
 
         protected override void OnShow()
         {
+<<<<<<< HEAD
             _backButton.onClick.AddListener(() => OnMenuBack?.Invoke());
         }
         protected override void OnHide()
@@ -93,6 +121,25 @@ namespace Core.UI
             {
                 _buttons[i].OnClick -= HandleClick;
             }
+=======
+            throw new NotImplementedException();
+        }
+        protected override void OnHide()
+        {
+            throw new NotImplementedException();
+        }
+        protected override void OnFocus()
+        {
+            throw new NotImplementedException();
+        }
+        protected override void OnUnfocus()
+        {
+            throw new NotImplementedException();
+        }
+        protected override void OnClose()
+        {
+            throw new NotImplementedException();
+>>>>>>> b34025bea1305964adb62870fd56e19165d73720
         }
     }
 }
