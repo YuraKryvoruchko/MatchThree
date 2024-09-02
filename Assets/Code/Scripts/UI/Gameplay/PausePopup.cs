@@ -93,12 +93,14 @@ namespace Core.UI.Gameplay
 
         private void QuitToMainMenu()
         {
+            _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             _gameModeSimulation.HandleEndGame();
             _levelService.ResetLevelConfigIndex();
             _levelSceneSimulation.QuitToMainMenu();
         }
         private void RestartLevel()
         {
+            _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             _gameModeSimulation.HandleEndGame();
             _levelSceneSimulation.RestartLevel();
         }

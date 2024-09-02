@@ -95,6 +95,7 @@ namespace Core.UI.Gameplay
 
         private void LoadNextLevel()
         {
+            _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             if (_levelService.LevelConfigCount - 1 == _levelService.CurentLevelConfigIndex)
                 QuitToMainMenu();
 
@@ -104,6 +105,7 @@ namespace Core.UI.Gameplay
         }
         private void RestartLevel()
         {
+            _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             _gameModeSimulation.HandleEndGame();
             _levelSceneSimulation.RestartLevel();
         }
