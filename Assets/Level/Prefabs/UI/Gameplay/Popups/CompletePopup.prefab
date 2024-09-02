@@ -977,8 +977,8 @@ MonoBehaviour:
   _windowPrefabPath: CompletePopup
   _isPopup: 1
   _menuCanvas: {fileID: 7466545105471520993}
-  _nextButton: {fileID: 4191596841124592176}
-  _quitButton: {fileID: 1059221448377383286}
+  _nextLevelButton: {fileID: 4191596841124592176}
+  _restartLevelButton: {fileID: 1059221448377383286}
   _scoreText: {fileID: 1059221449863207308}
   _scoreAccumulationTime: 3.5
   _stars:

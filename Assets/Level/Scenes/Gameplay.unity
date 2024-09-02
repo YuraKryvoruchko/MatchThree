@@ -725,6 +725,16 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _gameScene:
+    m_AssetGUID: 38bd489b673af414ba003580323f54e7
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _mainScene:
+    m_AssetGUID: fd946f7ef756de9448dd1cfb2d804425
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _swipeDetection: {fileID: 1408872457}
   _cellFabricConfig:
     CellPrefab: {fileID: -6854740434885365437, guid: 02116af72d403284d891ef602cc6ff18, type: 3}
@@ -1077,7 +1087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.7753849
+      value: -0.05000019
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1113,7 +1123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100405787760873926, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: orthographic size
-      value: 10.225385
+      value: 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 7573291798101294480, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_Name

@@ -10,6 +10,7 @@ namespace Core.Infrastructure.Service
         bool IsLevelConfigSeted();
 
         void SetCurrentLevelConfigByIndex(int index);
+        void ResetLevelConfigIndex();
         LevelConfig GetCurrentLevelConfig();
         LevelConfig GetLevelConfigByIndex(int index);
     }

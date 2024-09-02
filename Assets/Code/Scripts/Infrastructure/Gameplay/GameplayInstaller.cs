@@ -25,6 +25,9 @@ namespace Core.Infrastructure.Gameplay
         [SerializeField] private Transform _uiContainer;
         [SerializeField] private AssetReferenceGameObject _longModeMenu;
         [SerializeField] private AssetReferenceGameObject _levelModeMenu;
+        [Header("Scene")]
+        [SerializeField] private AssetReference _gameScene;
+        [SerializeField] private AssetReference _mainScene;
         [Header("Input")]
         [SerializeField] private SwipeDetection _swipeDetection;
         [Header("Configs\nFabrics")]
@@ -52,6 +55,7 @@ namespace Core.Infrastructure.Gameplay
 
             BindLevelTaskCompletionChecker();
             BindGameModeSimulation();
+            BindLevelSceneSimulation();
         }
 
         private void BindPauseServiceAndPauseProvider()
@@ -163,6 +167,14 @@ namespace Core.Infrastructure.Gameplay
                     .BindInterfacesTo<LongModeSimulation>()
                     .AsSingle();
             }
+        }
+        private void BindLevelSceneSimulation()
+        {
+            Container
+                .Bind<ILevelSceneSimulation>()
+                .To<LevelSceneSimulation>()
+                .AsSingle()
+                .WithArguments(_gameScene, _mainScene);
         }
     }
 }

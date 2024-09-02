@@ -5,6 +5,8 @@ using Zenject;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Service.Saving;
 using Core.Infrastructure.UI;
+using Core.Infrastructure.Gameplay;
+using Core.Infrastructure.Service;
 
 namespace Core.UI.Gameplay
 {
@@ -12,7 +14,7 @@ namespace Core.UI.Gameplay
     {
         [Header("Buttons")]
         [SerializeField] private Button _closeButton;
-        [SerializeField] private Button _replayButton;
+        [SerializeField] private Button _restartButton;
         [SerializeField] private Button _quitButton;
         [Header("Switched Button")]
         [SerializeField] private SwitchButton _musicButton;
@@ -22,20 +24,29 @@ namespace Core.UI.Gameplay
         [SerializeField] private ClipEvent _uiSwitchKey;
 
         private IAudioService _audioService;
+        private IGameModeSimulation _gameModeSimulation;
+        private ILevelSceneSimulation _levelSceneSimulation;
+        private ILevelService _levelService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(IAudioService audioService)
+        private void Construct(IAudioService audioService, IGameModeSimulation gameModeSimulation,
+            ILevelSceneSimulation levelSceneSimulation, ILevelService levelService)
         {
             _audioService = audioService;
+            _gameModeSimulation = gameModeSimulation;
+            _levelSceneSimulation = levelSceneSimulation;
+            _levelService = levelService;
         }
 
         protected override void OnShow()
         {
             _closeButton.onClick.AddListener(BackMenu);
             _closeButton.onClick.AddListener(ClickSound);
-            _replayButton.onClick.AddListener(ClickSound);
+            _restartButton.onClick.AddListener(RestartLevel);
+            _restartButton.onClick.AddListener(ClickSound);
+            _quitButton.onClick.AddListener(QuitToMainMenu);
             _quitButton.onClick.AddListener(ClickSound);
             _musicButton.Button.onClick.AddListener(SwitchBackgroundMusicVolume);
             _musicButton.Button.onClick.AddListener(SwitchSound);
@@ -48,7 +59,7 @@ namespace Core.UI.Gameplay
         protected override void OnHide()
         {
             _closeButton.onClick.RemoveAllListeners();
-            _replayButton.onClick.RemoveAllListeners();
+            _restartButton.onClick.RemoveAllListeners();
             _quitButton.onClick.RemoveAllListeners();
             _musicButton.Button.onClick.RemoveAllListeners();
             _soundButton.Button.onClick.RemoveAllListeners();
@@ -57,7 +68,7 @@ namespace Core.UI.Gameplay
         {
             _closeButton.interactable = true;
             _quitButton.interactable = true;
-            _replayButton.interactable = true;
+            _restartButton.interactable = true;
             _musicButton.Button.interactable = true;
             _soundButton.Button.interactable = true;
         }
@@ -65,7 +76,7 @@ namespace Core.UI.Gameplay
         {
             _closeButton.interactable = false;
             _quitButton.interactable = false;
-            _replayButton.interactable = false;
+            _restartButton.interactable = false;
             _musicButton.Button.interactable = false;
             _soundButton.Button.interactable = false;
         }
@@ -78,6 +89,18 @@ namespace Core.UI.Gameplay
         private void BackMenu()
         {
             OnMenuBack?.Invoke();
+        }
+
+        private void QuitToMainMenu()
+        {
+            _gameModeSimulation.HandleEndGame();
+            _levelService.ResetLevelConfigIndex();
+            _levelSceneSimulation.QuitToMainMenu();
+        }
+        private void RestartLevel()
+        {
+            _gameModeSimulation.HandleEndGame();
+            _levelSceneSimulation.RestartLevel();
         }
 
         private void SwitchBackgroundMusicVolume()

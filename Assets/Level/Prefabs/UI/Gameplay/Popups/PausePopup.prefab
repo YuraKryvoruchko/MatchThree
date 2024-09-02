@@ -95,7 +95,7 @@ MonoBehaviour:
   _isPopup: 1
   _menuCanvas: {fileID: -4090626065286693703}
   _closeButton: {fileID: 3200160638483154067}
-  _replayButton: {fileID: 8519507131843060030}
+  _restartButton: {fileID: 8519507131843060030}
   _quitButton: {fileID: 8519507132603593053}
   _musicButton: {fileID: 1538703925918447550}
   _soundButton: {fileID: 6272893339537115986}
