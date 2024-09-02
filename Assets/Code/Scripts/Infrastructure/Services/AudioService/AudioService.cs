@@ -60,7 +60,8 @@ namespace Core.Infrastructure.Service.Audio
         void IDisposable.Dispose()
         {
             foreach (SourceInstance instance in _sourceInstances)
-                ReleaseSource(instance);
+                ReleaseSourceWithoutRemoving(instance);
+            _sourceInstances.Clear();
         }
 
         public void PlayOneShot(ClipEvent clipEvent)
@@ -110,9 +111,8 @@ namespace Core.Infrastructure.Service.Audio
         }
         public void ReleaseSource(SourceInstance sourceInstance)
         {
-            sourceInstance.Stop();
+            ReleaseSourceWithoutRemoving(sourceInstance);
             _sourceInstances.Remove(sourceInstance);
-            sourceInstance.Dispose();
         }
 
         public void PauseAll(bool isPause)
@@ -166,6 +166,14 @@ namespace Core.Infrastructure.Service.Audio
             sourceInstance.OnEndPlaying -= HandleEndSourceInstancePlaying;
             sourceInstance.Dispose();
             _sourceInstances.Remove(sourceInstance);
+        }
+        private void ReleaseSourceWithoutRemoving(SourceInstance sourceInstance)
+        {
+            if (sourceInstance.IsDisposed)
+                return;
+
+            sourceInstance.Stop();
+            sourceInstance.Dispose();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Core.Infrastructure.Service.Audio
 
         public bool IsPause { get; private set; }
 
+        public bool IsDisposed { get; private set; }
+
         public event Action<SourceInstance> OnEndPlaying;
 
         public SourceInstance(AudioSource source, ClipEvent clipReference)
@@ -50,6 +52,7 @@ namespace Core.Infrastructure.Service.Audio
 
         public void Dispose()
         {
+            IsDisposed = true;
             GameObject.Destroy(_source.gameObject);
         }
 
