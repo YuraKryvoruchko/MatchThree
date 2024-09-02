@@ -54,7 +54,6 @@ namespace Core.UI.Gameplay
         private void HandleUpdate(CellType type, int count)
         {
             float progress = _levelTaskCompletionChecker.GetProgress();
-            Debug.Log(progress);
             base.SetSliderValue(progress);
 
             for (int i = 0; i < _stars.Length; i++)
