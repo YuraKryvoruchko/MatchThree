@@ -44,9 +44,11 @@ namespace Core.Gameplay
         private bool[,] _cellHandlingMap;
 
         private bool _isBoardFillUp = false;
+        private bool _isSwapHandling = true;
 
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
+        public bool IsBoardFillUp { get => _isBoardFillUp; }
 
         public event Action OnMove;
         public event Action<int> OnExplodeCellWithScore;
@@ -59,6 +61,7 @@ namespace Core.Gameplay
             public Vector2Int Position = Vector2Int.zero;
             public CellType Type = 0;
         }
+
         private struct SearchResult
         {
             public int ScoreNumber;
@@ -70,7 +73,6 @@ namespace Core.Gameplay
                 CellPosition = cellPosition;
             }
         }
-
         public struct CellExplosionResult
         {
             public int Score;
@@ -84,9 +86,7 @@ namespace Core.Gameplay
             _cellFabric = cellFabric;
             _abilityFactory = abilityFactory;
             _pauseProvider = pauseProvider;
-            _pauseProvider.OnPause += HandlePause;
             _cellSwipeDetection = cellSwipeDetection;
-            _cellSwipeDetection.OnTrySwipeCellWithGetDirection += Handle;
             _audioService = audioService;
         }
 
@@ -97,14 +97,11 @@ namespace Core.Gameplay
             ReplaceCell(type, cellPosition);
         }
 #endif
-
-        private void OnDestroy()
-        {
-            _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
-            _pauseProvider.OnPause -= HandlePause;
-        }
         private void Start()
         {
+            _pauseProvider.OnPause += HandlePause;
+            _cellSwipeDetection.OnTrySwipeCellWithGetDirection += HandleSwipeCellWithDirection;
+
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
             _findingCombinationIndexMap = new int[_verticalMapSize, _horizontalMapSize];
@@ -117,6 +114,11 @@ namespace Core.Gameplay
             }
 
             FillBoardAsync().Forget();
+        }
+        private void OnDestroy()
+        {
+            _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= HandleSwipeCellWithDirection;
+            _pauseProvider.OnPause -= HandlePause;
         }
         private void OnDrawGizmos()
         {
@@ -135,8 +137,11 @@ namespace Core.Gameplay
             Gizmos.DrawLine(lines[2], lines[0]);
         }
 
-        public async void Handle(Vector2 cellPosition, Vector2 swipeDirection)
+        public async UniTaskVoid Handle(Vector2 cellPosition, Vector2 swipeDirection)
         {
+            if (!_isSwapHandling)
+                return;
+
             swipeDirection = swipeDirection.normalized;
 
             Vector2Int firstPosition = WorldPositionToCell(cellPosition);
@@ -259,6 +264,11 @@ namespace Core.Gameplay
             return list;
         }
 
+        public void SetSwipeHandlingStatus(bool isSwipeHandling)
+        {
+            _isSwapHandling = isSwipeHandling;
+        }
+
         public Vector2Int WorldPositionToCell(Vector3 position)
         {
             int x = Mathf.RoundToInt((position.x - _startMapPoint.position.x) / _interval);
@@ -271,6 +281,10 @@ namespace Core.Gameplay
                 _startMapPoint.position.y - _interval * cellPosition.y);
         }
 
+        private void HandleSwipeCellWithDirection(Vector2 cellPosition, Vector2 swipeDirection)
+        {
+            Handle(cellPosition, swipeDirection).Forget();
+        }
         private async UniTask SwapCellsAsync(Vector2Int firstPosition, Vector2Int secondPosition)
         {
             Cell firstCell = _map[firstPosition.y, firstPosition.x], secondCell = _map[secondPosition.y, secondPosition.x];
@@ -535,7 +549,7 @@ namespace Core.Gameplay
         private void TryFillBoard()
         {
             if (!_isBoardFillUp)
-                FillBoardAsync().Forget();
+                 FillBoardAsync().Forget();
         }
         private async UniTask FillBoardAsync()
         {

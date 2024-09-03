@@ -10,6 +10,7 @@ namespace Core.Infrastructure.Gameplay
 {
     public class LevelModeSimulation : IGameModeSimulation, IInitializable, IDisposable
     {
+        private GameField _gameField;
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveTracking _playerMoveTracking;
@@ -21,9 +22,13 @@ namespace Core.Infrastructure.Gameplay
 
         private bool _isLevelCompleted;
 
-        public LevelModeSimulation(PlayerMoveTracking playerMoveTracking, LevelTaskCompletionChecker levelTaskCompletionChecker,
+        public event Action OnGameCompele;
+
+        public LevelModeSimulation(GameField gameField, PlayerMoveTracking playerMoveTracking, LevelTaskCompletionChecker levelTaskCompletionChecker,
             GameScoreTracking gameScoreTracking, ILevelService levelService, IWindowService windowService, ISavingService savingService)
         {
+            _gameField = gameField;
+
             _gameScoreTracking = gameScoreTracking;
 
             _playerMoveTracking = playerMoveTracking;
@@ -69,13 +74,18 @@ namespace Core.Infrastructure.Gameplay
         {
             _isLevelCompleted = true;
 
+            _gameField.SetSwipeHandlingStatus(false);
             UniTask.Void(async () =>
             {
+                await UniTask.WaitWhile(() => _gameField.IsBoardFillUp);
+
                 CompletePopup completePopup = await _windowService.OpenPopup<CompletePopup>("CompletePopup");
                 completePopup.Activate(_taskCompletionChecker.GetProgress(), _gameScoreTracking.CurrentScore).Forget();
+                
+                HandleEndGame();
             });
 
-            HandleEndGame();
+            OnGameCompele?.Invoke();
         }
     }
 }
