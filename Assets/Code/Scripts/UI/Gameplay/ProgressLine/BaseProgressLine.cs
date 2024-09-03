@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using Zenject;
 using Core.Infrastructure.Service.Pause;
+using Core.Gameplay;
 
 namespace Core.UI.Gameplay
 {
