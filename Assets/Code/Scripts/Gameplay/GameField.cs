@@ -103,7 +103,7 @@ namespace Core.Gameplay
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= Handle;
             _pauseProvider.OnPause -= HandlePause;
         }
-        private async void Start()
+        private void Start()
         {
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
@@ -116,7 +116,7 @@ namespace Core.Gameplay
                     CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
 
-            await FillBoardAsync();
+            FillBoardAsync().Forget();
         }
         private void OnDrawGizmos()
         {
@@ -620,7 +620,7 @@ namespace Core.Gameplay
                     }
                 }
 
-                await UniTask.Yield();
+                await UniTask.Yield(this.GetCancellationTokenOnDestroy(), true);
             } while (!areElementsMoved);
 
             _isBoardFillUp = false;

@@ -29,6 +29,12 @@ namespace Core.Gameplay
         public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
         public bool IsSpecial { get => _isSpecial; private set => _isSpecial = value; }
 
+        private void OnDestroy()
+        {
+            _moveTweener.Kill();
+            _explosionTweener.Kill();
+        }
+
         public void Init(CellConfig config)
         {
             _spriteRenderer.sprite = config.Icon;
