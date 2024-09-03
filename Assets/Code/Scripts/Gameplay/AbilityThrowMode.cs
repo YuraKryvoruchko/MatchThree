@@ -15,6 +15,7 @@ namespace Core.Gameplay
 
         public event Action OnEnableMode;
         public event Action OnDisableMode;
+        public event Action OnUse;
 
         public AbilityThrowMode(GameField gameField, CellClickDetection cellClickDetection)
         {
@@ -26,6 +27,9 @@ namespace Core.Gameplay
         {
             Vector2Int cellPosition = _gameField.WorldPositionToCell(cell.transform.position);
             _gameField.UseAbility(_abilityType, cellPosition, cellPosition);
+
+            OnUse?.Invoke();
+
             DisableAbilityThrowMode();
         }
         public void EnableAbilityhrowMode(CellType abilityType)
