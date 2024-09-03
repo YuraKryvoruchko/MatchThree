@@ -3,6 +3,7 @@ using Zenject;
 using TMPro;
 using Core.Gameplay;
 using Core.Infrastructure.Service;
+using Core.Infrastructure.Gameplay;
 
 namespace Core.UI.Gameplay 
 {
@@ -27,7 +28,8 @@ namespace Core.UI.Gameplay
 
         private void Start()
         {
-            if (_levelService.IsLevelConfigSeted())
+            if (_levelService.IsLevelConfigSeted() 
+                && _levelService.GetCurrentLevelConfig().MoveCount != LevelConfig.ACCUMULATION_MODE)
             {
                 _maxMoveCount = _levelService.GetCurrentLevelConfig().MoveCount;
                 _moveCountText.text = _maxMoveCount.ToString();

@@ -7,6 +7,8 @@ namespace Core.Infrastructure.Service
     {
         private LevelConfigContainer _levelConfigContainer;
 
+        private LevelConfig _customLevelConfig;
+
         private const int RESET_INDEX_VALUE = -1;
 
         public int LevelConfigCount { get => _levelConfigContainer.LevelConfigs.Length; }
@@ -16,24 +18,36 @@ namespace Core.Infrastructure.Service
         {
             _levelConfigContainer = levelConfigContainer;
 
-            ResetLevelConfigIndex();
+            ResetLevelConfig();
         }
 
         public bool IsLevelConfigSeted()
         {
-            return CurentLevelConfigIndex != RESET_INDEX_VALUE;
+            return CurentLevelConfigIndex != RESET_INDEX_VALUE || _customLevelConfig != null;
+        }
+        public bool IsLevelConfigCustom()
+        {
+            return _customLevelConfig != null;
         }
         public void SetCurrentLevelConfigByIndex(int index)
         {
             CurentLevelConfigIndex = Mathf.Clamp(index, 0, LevelConfigCount);
         }
-        public void ResetLevelConfigIndex()
+        public void ResetLevelConfig()
         {
             CurentLevelConfigIndex = RESET_INDEX_VALUE;
+            _customLevelConfig = null;
+        }
+        public void SetCustomLevelConfig(LevelConfig config)
+        {
+            _customLevelConfig = config;
         }
         public LevelConfig GetCurrentLevelConfig()
         {
-            return GetLevelConfigByIndex(CurentLevelConfigIndex);
+            if(IsLevelConfigCustom())
+                return _customLevelConfig;
+            else
+                return GetLevelConfigByIndex(CurentLevelConfigIndex);
         }
         public LevelConfig GetLevelConfigByIndex(int index)
         {

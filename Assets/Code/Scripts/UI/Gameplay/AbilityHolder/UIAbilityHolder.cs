@@ -3,31 +3,39 @@ using UnityEngine.UI;
 using Zenject;
 using Core.Gameplay;
 using Core.Infrastructure.Service.Audio;
+using Core.Infrastructure.Service;
 
 namespace Core.UI.Gameplay
 {
     public class UIAbilityHolder : MonoBehaviour
     {
-        [SerializeField] private HolderAbilitySettings[] _settings;
         [SerializeField] private AbilityHolderButton[] _buttons;
         [SerializeField] private HorizontalLayoutGroup _layoutGroup;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _uiClickKey;
 
+        private HolderAbilitySettings[] _settings;
+
         private IAudioService _audioService;
+        private ILevelService _levelService;
         private AbilityThrowMode _abilityThrowMode;
 
         private AbilityHolderButton _clickedButton;
 
         [Inject] 
-        private void Construct(IAudioService audioService, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAudioService audioService, ILevelService levelService, AbilityThrowMode abilityThrowMode)
         {
             _audioService = audioService;
+            _levelService = levelService;
             _abilityThrowMode = abilityThrowMode;
         }
 
         private void Start()
         {
+            if (!_levelService.IsLevelConfigSeted())
+                return;
+
+            _settings = _levelService.GetCurrentLevelConfig().AbilitySettings;
             _abilityThrowMode.OnUse += OnUseAbility;
             for (int i = 0; i < _settings.Length; i++)
             {
@@ -44,6 +52,9 @@ namespace Core.UI.Gameplay
         }
         private void OnDestroy()
         {
+            if(_settings == null)
+                return;
+
             _abilityThrowMode.OnUse -= OnUseAbility;
             for (int i = 0; i < _settings.Length; i++)
             {
@@ -53,6 +64,9 @@ namespace Core.UI.Gameplay
 
         public void SetInteractable(bool value)
         {
+            if (_settings == null)
+                return; 
+
             for (int i = 0; i < _settings.Length; i++)
             {
                 _buttons[i].Interactable = value;

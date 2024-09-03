@@ -95,7 +95,7 @@ namespace Core.UI.Gameplay
         {
             _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             _gameModeSimulation.HandleEndGame();
-            _levelService.ResetLevelConfigIndex();
+            _levelService.ResetLevelConfig();
             _levelSceneSimulation.QuitToMainMenu();
         }
         private void RestartLevel()

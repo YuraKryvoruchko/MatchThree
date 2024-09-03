@@ -668,7 +668,7 @@ GameObject:
   - component: {fileID: 462547858700471442}
   - component: {fileID: 7884403761485986310}
   - component: {fileID: 4751843674468775189}
-  - component: {fileID: 1258017047259868212}
+  - component: {fileID: 8729832854377973034}
   m_Layer: 5
   m_Name: ThrowModeVignette
   m_TagString: Untagged
@@ -733,7 +733,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1258017047259868212
+--- !u!114 &8729832854377973034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -745,7 +745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a53d523ccde434428154f6ff7d2d4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _vingnetteColor: {r: 0, g: 0, b: 0, a: 0.72156864}
+  _vingnetteColor: {r: 0, g: 0, b: 0, a: 0.50980395}
   _vingnetteTimeDelay: 1
   _vingnetteImage: {fileID: 4751843674468775189}
 --- !u!1 &3943189793591273758

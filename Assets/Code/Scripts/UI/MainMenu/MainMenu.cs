@@ -10,6 +10,7 @@ using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Service.Saving;
+using Core.Infrastructure.Gameplay;
 
 namespace Core.UI
 {
@@ -22,8 +23,10 @@ namespace Core.UI
         [Header("Scene Keys")]
         [SerializeField] private AssetReference _mainMenuScene;
         [SerializeField] private AssetReference _gamePlayScene;
-        [Header("SelectLevelMenu")]
+        [Header("Select Level Menu")]
         [SerializeField] private AssetReferenceGameObject _selectLevelMenuReference;
+        [Header("Long Mode Settings")]
+        [SerializeField] private LevelConfig _longModeLevelConfig;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _clickAudioPath;
         [Header("Loadable Audio")]
@@ -35,16 +38,19 @@ namespace Core.UI
         private SceneService _sceneService;
         private IWindowService _windowService;
         private IAudioService _audioService;
+        private ILevelService _levelService;
 
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(SceneService sceneService, IWindowService windowService, IAudioService audioService, ILoadingScreenProvider loadingScreenProvider)
+        private void Construct(SceneService sceneService, IWindowService windowService, IAudioService audioService, 
+            ILoadingScreenProvider loadingScreenProvider, ILevelService levelService)
         {
             _windowService = windowService;
             _sceneService = sceneService;
             _audioService = audioService;
             _loadingScreenProvider = loadingScreenProvider;
+            _levelService = levelService;
         }
 
         protected override void OnShow()
@@ -76,6 +82,7 @@ namespace Core.UI
         private void LoadLongMode()
         {
             PlayerPrefs.SetInt(PlayerPrefsEnum.GameModeSettings.IS_LEVEL_MODE_VALUE, 0);
+            _levelService.SetCustomLevelConfig(_longModeLevelConfig);
             Queue<ILoadingOperation> queue = new Queue<ILoadingOperation>(4);
             queue.Enqueue(new AudioListUnloadingOperation(_unloadingAudioList));
             queue.Enqueue(new SceneUnloadingOperation(_sceneService, _mainMenuScene));

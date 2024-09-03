@@ -112,7 +112,7 @@ namespace Core.UI.Gameplay
         private void QuitToMainMenu()
         {
             _gameModeSimulation.HandleEndGame();
-            _levelService.ResetLevelConfigIndex();
+            _levelService.ResetLevelConfig();
             _levelSceneSimulation.QuitToMainMenu();
         }
 

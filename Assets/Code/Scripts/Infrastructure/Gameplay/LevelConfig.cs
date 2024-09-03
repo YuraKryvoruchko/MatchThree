@@ -13,5 +13,7 @@ namespace Core.Infrastructure.Gameplay
         public LevelTask[] Tasks;
         [Header("Abilities In Holder")]
         public HolderAbilitySettings[] AbilitySettings;
+
+        public const int ACCUMULATION_MODE = -1;
     }
 }

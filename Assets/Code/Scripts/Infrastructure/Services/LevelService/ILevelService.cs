@@ -8,9 +8,11 @@ namespace Core.Infrastructure.Service
         int CurentLevelConfigIndex { get; }
 
         bool IsLevelConfigSeted();
+        bool IsLevelConfigCustom();
 
         void SetCurrentLevelConfigByIndex(int index);
-        void ResetLevelConfigIndex();
+        void SetCustomLevelConfig(LevelConfig config);
+        void ResetLevelConfig();
         LevelConfig GetCurrentLevelConfig();
         LevelConfig GetLevelConfigByIndex(int index);
     }
