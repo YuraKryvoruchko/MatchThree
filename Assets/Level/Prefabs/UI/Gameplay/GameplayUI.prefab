@@ -668,7 +668,7 @@ GameObject:
   - component: {fileID: 462547858700471442}
   - component: {fileID: 7884403761485986310}
   - component: {fileID: 4751843674468775189}
-  - component: {fileID: 8178601162827419216}
+  - component: {fileID: 1258017047259868212}
   m_Layer: 5
   m_Name: ThrowModeVignette
   m_TagString: Untagged
@@ -733,7 +733,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8178601162827419216
+--- !u!114 &1258017047259868212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -742,10 +742,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3782483324142951250}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d404e15c8aec1a04b882c7e57b3bda35, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a53d523ccde434428154f6ff7d2d4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _vingnetteColor: {r: 1, g: 1, b: 1, a: 0.6509804}
+  _vingnetteColor: {r: 0, g: 0, b: 0, a: 0.72156864}
   _vingnetteTimeDelay: 1
   _vingnetteImage: {fileID: 4751843674468775189}
 --- !u!1 &3943189793591273758
@@ -1062,7 +1062,7 @@ MonoBehaviour:
   _isPopup: 0
   _menuCanvas: {fileID: 3722608786572638198}
   _pauseMenu: {fileID: 1669075347783396232}
-  _uiAbilityHolder: {fileID: 7367255405831650853}
+  _uiAbilityHolder: {fileID: 7091701797557612666}
   _popupPrefab: {fileID: -2494657810328607965, guid: 23fc5a063bf1f5944a635c0281e062ab, type: 3}
   _uiClickKey: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
 --- !u!1 &6839175524528490419
@@ -1367,15 +1367,15 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3439595333010660488, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
   m_PrefabInstance: {fileID: 2152088342632524795}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7367255405831650853 stripped
+--- !u!114 &7091701797557612666 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8926274306018973150, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
+  m_CorrespondingSourceObject: {fileID: 9202835101572225921, guid: 22f0861b8abf0d44bb9dcddfb786f2c5, type: 3}
   m_PrefabInstance: {fileID: 2152088342632524795}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61171e6bd132540488f7c718e5147c39, type: 3}
+  m_Script: {fileID: 11500000, guid: b06191c9a99feb74295849ec92b55deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3529236622067347477
