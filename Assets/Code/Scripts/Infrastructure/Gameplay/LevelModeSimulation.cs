@@ -15,6 +15,7 @@ namespace Core.Infrastructure.Gameplay
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveTracking _playerMoveTracking;
         private GameScoreTracking _gameScoreTracking;
+        private AbilityThrowMode _abilityThrowMode;
 
         private ILevelService _levelService;
         private IWindowService _windowService;
@@ -25,17 +26,18 @@ namespace Core.Infrastructure.Gameplay
         public event Action OnGameCompele;
 
         public LevelModeSimulation(GameField gameField, PlayerMoveTracking playerMoveTracking, LevelTaskCompletionChecker levelTaskCompletionChecker,
-            GameScoreTracking gameScoreTracking, ILevelService levelService, IWindowService windowService, ISavingService savingService)
+            GameScoreTracking gameScoreTracking, AbilityThrowMode abilityThrowMode,
+            ILevelService levelService, IWindowService windowService, ISavingService savingService)
         {
             _gameField = gameField;
 
             _gameScoreTracking = gameScoreTracking;
 
+            _abilityThrowMode = abilityThrowMode;
+
             _playerMoveTracking = playerMoveTracking;
-            _playerMoveTracking.OnMove += HandleMoveOnField;
 
             _taskCompletionChecker = levelTaskCompletionChecker;
-            _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
 
             _windowService = windowService;
             _levelService = levelService;
@@ -44,6 +46,8 @@ namespace Core.Infrastructure.Gameplay
         public void Initialize()
         {
             _levelConfig = _levelService.GetCurrentLevelConfig();
+            _playerMoveTracking.OnMove += HandleMoveOnField;
+            _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
         }
         public void Dispose()
         {
@@ -75,6 +79,7 @@ namespace Core.Infrastructure.Gameplay
             _isLevelCompleted = true;
 
             _gameField.SetSwipeHandlingStatus(false);
+            _abilityThrowMode.DisableAbilityThrowMode();
             UniTask.Void(async () =>
             {
                 await UniTask.WaitWhile(() => _gameField.IsBoardFillUp);

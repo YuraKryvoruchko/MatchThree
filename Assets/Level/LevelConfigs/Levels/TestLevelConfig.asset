@@ -20,4 +20,10 @@ MonoBehaviour:
   - Icon: {fileID: 21300000, guid: fbb6c45b2e0f5424cace793121f03e56, type: 3}
     Count: 30
     CellType: 2
-  AbilitySettings: []
+  AbilitySettings:
+  - Icon: {fileID: 21300000, guid: 2be55834e2ff7b144a243413f2979787, type: 3}
+    AbilityType: 5
+    Amount: 10
+  - Icon: {fileID: 21300000, guid: 01a34d9e0dade794188a273832564fb0, type: 3}
+    AbilityType: 6
+    Amount: 5

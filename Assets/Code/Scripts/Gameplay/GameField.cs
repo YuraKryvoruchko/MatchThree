@@ -188,9 +188,9 @@ namespace Core.Gameplay
             IAbility ability = swipedCell.IsSpecial ? _abilityFactory.GetAdvancedAbility(abilityType, swipedCell.Type)
                 : _abilityFactory.GetAbility(abilityType);
 
-            OnMove?.Invoke();
             ability.Init(this);
             ability.Execute(swipedCellPosition, abilityPosition).Forget();
+            OnMove?.Invoke();
         }
 
         public async UniTask ExplodeCellAsync(Vector2Int cellPosition)
