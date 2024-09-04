@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 
 namespace Core.Infrastructure.Service.Audio
 {
-    public class AudioClipSourceFabric : IDisposable
+    public class AudioClipSourcePool : IDisposable
     {
         private Queue<AudioClipSource> _audioClipSources;
 
@@ -13,7 +13,7 @@ namespace Core.Infrastructure.Service.Audio
 
         private int _startCapacity;
 
-        public AudioClipSourceFabric(Transform audioSourceContainer, int startCapacity = 15)
+        public AudioClipSourcePool(Transform audioSourceContainer, int startCapacity = 15)
         {
             _startCapacity = startCapacity;
             _audioClipSources = new Queue<AudioClipSource>(startCapacity);

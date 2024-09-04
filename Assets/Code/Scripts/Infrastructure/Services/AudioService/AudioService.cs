@@ -29,7 +29,7 @@ namespace Core.Infrastructure.Service.Audio
 
         private AudioServiceConfig _config;
 
-        private AudioClipSourceFabric _sourceFabric;
+        private AudioClipSourcePool _audioClipSourcePool;
 
         private class GroupAudioComponent
         {
@@ -49,8 +49,8 @@ namespace Core.Infrastructure.Service.Audio
         void IInitializable.Initialize() 
         {
             _sourceContainer = new GameObject("AudioSourceContainer").transform;
-            _sourceFabric = new AudioClipSourceFabric(_sourceContainer);
-            _sourceFabric.Init();
+            _audioClipSourcePool = new AudioClipSourcePool(_sourceContainer);
+            _audioClipSourcePool.Init();
             foreach (var groupKey in _config.TypeGroups)
             {
                 AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), groupKey.Type)}AudioSource", groupKey.Group);
@@ -66,7 +66,7 @@ namespace Core.Infrastructure.Service.Audio
             foreach (AudioClipSource instance in _sourceInstances)
                 ReleaseSourceWithoutRemoving(instance);
             _sourceInstances.Clear();
-            _sourceFabric.Dispose();
+            _audioClipSourcePool.Dispose();
         }
 
         public void PlayOneShot(ClipEvent clipEvent)
@@ -81,7 +81,7 @@ namespace Core.Infrastructure.Service.Audio
         }
         public void PlayOneShotOnPoint(ClipEvent clipEvent, Vector3 position) 
         {
-            AudioClipSource sourceInstance = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
+            AudioClipSource sourceInstance = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             sourceInstance.OnEndPlaying += HandleEndSourceInstancePlaying;
             sourceInstance.Play();
             _sourceInstances.Add(sourceInstance);
@@ -89,7 +89,7 @@ namespace Core.Infrastructure.Service.Audio
 
         public AudioClipSource PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true)
         {
-            AudioClipSource audioClipSource = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group);
+            AudioClipSource audioClipSource = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group);
             if (playOnAwake)
                 audioClipSource.Play();
 
@@ -98,7 +98,7 @@ namespace Core.Infrastructure.Service.Audio
         }
         public AudioClipSource PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true)
         {
-            AudioClipSource sourceInstance = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
+            AudioClipSource sourceInstance = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             if (playOnAwake)
                 sourceInstance.Play();
 
@@ -165,7 +165,7 @@ namespace Core.Infrastructure.Service.Audio
         private void ReleaseSourceWithoutRemoving(AudioClipSource sourceInstance)
         {
             sourceInstance.Stop();
-            _sourceFabric.ReturnAudioClipSource(sourceInstance);
+            _audioClipSourcePool.ReturnAudioClipSource(sourceInstance);
         }
     }
 }
