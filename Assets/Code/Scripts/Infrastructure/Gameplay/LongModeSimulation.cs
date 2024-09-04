@@ -1,4 +1,5 @@
-﻿using Core.Gameplay;
+﻿using System;
+using Core.Gameplay;
 using Core.Infrastructure.Service.Saving;
 
 namespace Core.Infrastructure.Gameplay
@@ -8,6 +9,8 @@ namespace Core.Infrastructure.Gameplay
         private GameScoreTracking _gameScoreObserver;
 
         private ISavingService _savingService;
+
+        public event Action OnGameComplete;
 
         public LongModeSimulation(GameScoreTracking gameScoreObserver,ISavingService savingService)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Gameplay.Input;
+using Core.Infrastructure.Gameplay;
 using UnityEngine;
 
 namespace Core.Gameplay
@@ -11,14 +12,20 @@ namespace Core.Gameplay
 
         private CellType _abilityType;
 
+        private IGameModeSimulation _gameModeSimulation;
+
         public bool IsActive { get; private set; }
 
         public event Action OnEnableMode;
         public event Action OnDisableMode;
         public event Action OnUse;
 
-        public AbilityThrowMode(GameField gameField, CellClickDetection cellClickDetection)
+        public AbilityThrowMode(IGameModeSimulation gameModeSimulation,
+            GameField gameField, CellClickDetection cellClickDetection)
         {
+            _gameModeSimulation = gameModeSimulation;
+            _gameModeSimulation.OnGameComplete += HandleGameComplete;
+
             _gameField = gameField;
             _cellClickDetection = cellClickDetection;
         }
@@ -48,6 +55,12 @@ namespace Core.Gameplay
         public void ChangeAbility(CellType abilityType)
         {
             _abilityType = abilityType;
+        }
+
+        private void HandleGameComplete()
+        {
+            _gameModeSimulation.OnGameComplete -= HandleGameComplete;
+            DisableAbilityThrowMode();
         }
     }
 }

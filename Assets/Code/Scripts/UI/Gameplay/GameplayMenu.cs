@@ -6,13 +6,14 @@ using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Service.Pause;
 using Zenject;
+using Core.Infrastructure.Gameplay;
 
 namespace Core.UI.Gameplay
 {
     public class GameplayMenu : WindowBase
     {
         [Header("Buttons")]
-        [SerializeField] private Button _pauseMenu;
+        [SerializeField] private Button _pauseMenuButton;
         [Header("Modules")]
         [SerializeField] private UIAbilityHolder _uiAbilityHolder;
         [Header("Popups")]
@@ -21,6 +22,7 @@ namespace Core.UI.Gameplay
         [SerializeField] private ClipEvent _uiClickKey;
 
         private IWindowService _windowService;
+        private IGameModeSimulation _gameModeSimulation;
         private IPauseService _pauseService;
         private IAudioService _audioService;
 
@@ -31,29 +33,40 @@ namespace Core.UI.Gameplay
         public override event Action OnMenuBack;
 
         [Inject]
-        private void Construct(IWindowService windowService, IPauseService pauseService, IAudioService audioService)
+        private void Construct(IWindowService windowService, IGameModeSimulation gameModeSimulation,
+            IPauseService pauseService, IAudioService audioService)
         {
+            _gameModeSimulation = gameModeSimulation;
             _windowService = windowService;
             _pauseService = pauseService;
             _audioService = audioService;
         }
 
+        private void OnEnable()
+        {
+            _gameModeSimulation.OnGameComplete += OnUnfocus;
+        }
+        private void OnDisable()
+        {
+            _gameModeSimulation.OnGameComplete -= OnUnfocus;
+        }
+
         protected override void OnShow()
         {
-            _pauseMenu.onClick.AddListener(CreateMenuPopup);
+            _pauseMenuButton.onClick.AddListener(CreateMenuPopup);
         }
         protected override void OnHide()
         {
-            _pauseMenu.onClick.RemoveListener(CreateMenuPopup);
+            _pauseMenuButton.onClick.RemoveListener(CreateMenuPopup);
         }
         protected override void OnFocus()
         {
-            _pauseMenu.interactable = true;
+            _pauseMenuButton.interactable = true;
             _uiAbilityHolder.SetInteractable(true);
         }
         protected override void OnUnfocus()
         {
-            _pauseMenu.interactable = false;
+            _pauseMenuButton.interactable = false;
             _uiAbilityHolder.SetInteractable(false);
         }
         protected override void OnClose()

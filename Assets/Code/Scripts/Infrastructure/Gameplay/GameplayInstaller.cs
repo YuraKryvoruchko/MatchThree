@@ -44,18 +44,22 @@ namespace Core.Infrastructure.Gameplay
             BindPauseServiceAndPauseProvider();
             BindCellFabric();
             BindAbilityFabric();
+
             BindSwipeDetection();
             BindCellClickDetection();
             BindCellSwipeDetection();
+
             BindGameField();
-            BindAbilityThrowMode();
             BindGameScoreTracking();
             BindPlayerMoveTracking();
-            BindGameplayUIStartup();
 
             BindLevelTaskCompletionChecker();
             BindGameModeSimulation();
             BindLevelSceneSimulation();
+
+            BindAbilityThrowMode();
+
+            BindGameplayUIStartup();
         }
 
         private void BindPauseServiceAndPauseProvider()
