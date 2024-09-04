@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Audio;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Infrastructure.Service.Audio
 {
@@ -20,6 +21,7 @@ namespace Core.Infrastructure.Service.Audio
         {
             _source = source;
             _audioSourceEventModule = _source.gameObject.AddComponent<AudioSourceEventModule>();
+            _audioSourceEventModule.enabled = false;
         }
 
         public void Init(ClipEvent clipEvent, AudioMixerGroup mixerGroup = null, float spatialBlend = 0, Vector3 position = default)
@@ -36,12 +38,13 @@ namespace Core.Infrastructure.Service.Audio
             _source.gameObject.SetActive(false);
         }
 
-        public async void Play()
+        public async UniTaskVoid Play()
         {
             _currentClipIndex = 0;
             AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex].AudioClip;
             _source.clip = await clipReference.GetOrLoad();
-            _audioSourceEventModule.OnEndPlay += SetNextClip;
+            _audioSourceEventModule.OnEndPlay += SetNextClipSync;
+            _audioSourceEventModule.enabled = true;
             _source.Play();
         }
         public void Stop() 
@@ -50,7 +53,8 @@ namespace Core.Infrastructure.Service.Audio
                 return;
 
             _source.Stop();
-            _audioSourceEventModule.OnEndPlay -= SetNextClip;
+            _audioSourceEventModule.enabled = false;
+            _audioSourceEventModule.OnEndPlay -= SetNextClipSync;
         }
         public void Pause(bool isPause)
         {
@@ -63,13 +67,18 @@ namespace Core.Infrastructure.Service.Audio
 
         public void Dispose()
         {
-            _audioSourceEventModule.OnEndPlay -= SetNextClip;
+            _audioSourceEventModule.OnEndPlay -= SetNextClipSync;
             if(_source != null)
                 GameObject.Destroy(_source.gameObject);
         }
 
-        private async void SetNextClip()
+        private void SetNextClipSync()
         {
+            SetNextClip().Forget();
+        }
+        private async UniTaskVoid SetNextClip()
+        {
+            _clipReference.Clips[_currentClipIndex].AudioClip.ReleaseAsset();
             _currentClipIndex++;
             if(_clipReference.Clips.Length == _currentClipIndex)
             {
@@ -79,7 +88,8 @@ namespace Core.Infrastructure.Service.Audio
                 }
                 else
                 {
-                    _source.GetComponent<AudioSourceEventModule>().OnEndPlay -= SetNextClip;
+                    _audioSourceEventModule.OnEndPlay -= SetNextClipSync;
+
                     OnEndPlaying?.Invoke(this);
                     return;
                 }

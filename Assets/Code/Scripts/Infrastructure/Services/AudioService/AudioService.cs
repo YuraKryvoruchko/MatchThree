@@ -83,7 +83,7 @@ namespace Core.Infrastructure.Service.Audio
         {
             AudioClipSource sourceInstance = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             sourceInstance.OnEndPlaying += HandleEndSourceInstancePlaying;
-            sourceInstance.Play();
+            sourceInstance.Play().Forget();
             _sourceInstances.Add(sourceInstance);
         }
 
@@ -91,7 +91,7 @@ namespace Core.Infrastructure.Service.Audio
         {
             AudioClipSource audioClipSource = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group);
             if (playOnAwake)
-                audioClipSource.Play();
+                audioClipSource.Play().Forget();
 
             _sourceInstances.Add(audioClipSource);
             return audioClipSource;
@@ -100,7 +100,7 @@ namespace Core.Infrastructure.Service.Audio
         {
             AudioClipSource sourceInstance = _audioClipSourcePool.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             if (playOnAwake)
-                sourceInstance.Play();
+                sourceInstance.Play().Forget();
 
             _sourceInstances.Add(sourceInstance);
             return sourceInstance;
