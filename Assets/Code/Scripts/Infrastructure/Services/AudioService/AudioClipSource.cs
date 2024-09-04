@@ -14,8 +14,6 @@ namespace Core.Infrastructure.Service.Audio
 
         public bool IsPause { get; private set; }
 
-        public bool IsDisposed { get; private set; }
-
         public event Action<AudioClipSource> OnEndPlaying;
 
         public AudioClipSource(AudioSource source)
@@ -48,6 +46,9 @@ namespace Core.Infrastructure.Service.Audio
         }
         public void Stop() 
         {
+            if (_source == null)
+                return;
+
             _source.Stop();
             _audioSourceEventModule.OnEndPlay -= SetNextClip;
         }
@@ -62,8 +63,9 @@ namespace Core.Infrastructure.Service.Audio
 
         public void Dispose()
         {
-            IsDisposed = true;
-            GameObject.Destroy(_source.gameObject);
+            _audioSourceEventModule.OnEndPlay -= SetNextClip;
+            if(_source != null)
+                GameObject.Destroy(_source.gameObject);
         }
 
         private async void SetNextClip()
