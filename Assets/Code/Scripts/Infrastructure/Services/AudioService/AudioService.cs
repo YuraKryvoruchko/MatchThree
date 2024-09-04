@@ -23,11 +23,13 @@ namespace Core.Infrastructure.Service.Audio
         private Dictionary<AudioGroupType, GroupAudioComponent> _audioBuses;
         private Dictionary<AudioSnapshotType, AudioMixerSnapshot> _snapshots;
 
-        private List<SourceInstance> _sourceInstances;
+        private List<AudioClipSource> _sourceInstances;
 
         private Transform _sourceContainer;
 
         private AudioServiceConfig _config;
+
+        private AudioClipSourceFabric _sourceFabric;
 
         private class GroupAudioComponent
         {
@@ -38,7 +40,7 @@ namespace Core.Infrastructure.Service.Audio
 
         public AudioService(AudioServiceConfig config) 
         {
-            _sourceInstances = new List<SourceInstance>();
+            _sourceInstances = new List<AudioClipSource>();
             _audioBuses = new Dictionary<AudioGroupType, GroupAudioComponent>(config.TypeGroups.Length);
             _snapshots = new Dictionary<AudioSnapshotType, AudioMixerSnapshot>();
             _config = config;
@@ -47,6 +49,8 @@ namespace Core.Infrastructure.Service.Audio
         void IInitializable.Initialize() 
         {
             _sourceContainer = new GameObject("AudioSourceContainer").transform;
+            _sourceFabric = new AudioClipSourceFabric(_sourceContainer);
+            _sourceFabric.Init();
             foreach (var groupKey in _config.TypeGroups)
             {
                 AudioSource source = CreateAudioSource($"{Enum.GetName(typeof(AudioGroupType), groupKey.Type)}AudioSource", groupKey.Group);
@@ -59,9 +63,10 @@ namespace Core.Infrastructure.Service.Audio
         }
         void IDisposable.Dispose()
         {
-            foreach (SourceInstance instance in _sourceInstances)
+            foreach (AudioClipSource instance in _sourceInstances)
                 ReleaseSourceWithoutRemoving(instance);
             _sourceInstances.Clear();
+            _sourceFabric.Dispose();
         }
 
         public void PlayOneShot(ClipEvent clipEvent)
@@ -76,40 +81,31 @@ namespace Core.Infrastructure.Service.Audio
         }
         public void PlayOneShotOnPoint(ClipEvent clipEvent, Vector3 position) 
         {
-            AudioSource audioSource = CreateAudioSource($"{clipEvent.name}AudioSource", _audioBuses[clipEvent.AudioGroup].Group);
-            audioSource.spatialBlend = 1;
-            audioSource.transform.position = position;
-            SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
+            AudioClipSource sourceInstance = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             sourceInstance.OnEndPlaying += HandleEndSourceInstancePlaying;
             sourceInstance.Play();
             _sourceInstances.Add(sourceInstance);
         }
 
-        public SourceInstance PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true)
+        public AudioClipSource PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true)
         {
-            AudioSource audioSource = CreateAudioSource($"{clipEvent.name}AudioSource", _audioBuses[clipEvent.AudioGroup].Group);
-            SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
+            AudioClipSource audioClipSource = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group);
+            if (playOnAwake)
+                audioClipSource.Play();
 
-            if(playOnAwake)
-                sourceInstance.Play();
-
-            _sourceInstances.Add(sourceInstance);
-            return sourceInstance;
+            _sourceInstances.Add(audioClipSource);
+            return audioClipSource;
         }
-        public SourceInstance PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true)
+        public AudioClipSource PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true)
         {
-            AudioSource audioSource = CreateAudioSource($"{clipEvent.name}AudioSource", _audioBuses[clipEvent.AudioGroup].Group);
-            audioSource.spatialBlend = 1;
-            audioSource.transform.position = position;
-            SourceInstance sourceInstance = new SourceInstance(audioSource, clipEvent);
-
+            AudioClipSource sourceInstance = _sourceFabric.GetAudioClipSource(clipEvent, _audioBuses[clipEvent.AudioGroup].Group, 1, position);
             if (playOnAwake)
                 sourceInstance.Play();
 
             _sourceInstances.Add(sourceInstance);
             return sourceInstance;
         }
-        public void ReleaseSource(SourceInstance sourceInstance)
+        public void ReleaseSource(AudioClipSource sourceInstance)
         {
             ReleaseSourceWithoutRemoving(sourceInstance);
             _sourceInstances.Remove(sourceInstance);
@@ -161,19 +157,15 @@ namespace Core.Infrastructure.Service.Audio
             source.outputAudioMixerGroup = group;
             return source;
         }
-        private void HandleEndSourceInstancePlaying(SourceInstance sourceInstance)
+        private void HandleEndSourceInstancePlaying(AudioClipSource audioClipSource)
         {
-            sourceInstance.OnEndPlaying -= HandleEndSourceInstancePlaying;
-            sourceInstance.Dispose();
-            _sourceInstances.Remove(sourceInstance);
+            audioClipSource.OnEndPlaying -= HandleEndSourceInstancePlaying;
+            ReleaseSource(audioClipSource);
         }
-        private void ReleaseSourceWithoutRemoving(SourceInstance sourceInstance)
+        private void ReleaseSourceWithoutRemoving(AudioClipSource sourceInstance)
         {
-            if (sourceInstance.IsDisposed)
-                return;
-
             sourceInstance.Stop();
-            sourceInstance.Dispose();
+            _sourceFabric.ReturnAudioClipSource(sourceInstance);
         }
     }
 }

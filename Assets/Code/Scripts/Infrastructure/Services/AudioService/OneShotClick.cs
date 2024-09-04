@@ -9,7 +9,7 @@ namespace Core.Infrastructure.Service.Audio
         [SerializeField] private ClipEvent _clickEvent;
 
         private AudioService _audioService;
-        private SourceInstance _sourceInstance;
+        private AudioClipSource _sourceInstance;
 
         [Inject]
         private void Construct(AudioService audioService)

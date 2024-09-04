@@ -27,7 +27,7 @@ namespace Core.Gameplay
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
-            SourceInstance audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
             SupperAbilityEffect abilityEffect = (await Addressables.InstantiateAsync(SupperAbilityEffectReference,
                 coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
 

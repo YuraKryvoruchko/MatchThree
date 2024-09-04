@@ -43,7 +43,7 @@ namespace Core.Gameplay
         public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             Vector3 cellPosition = _gameField.CellPositionToWorld(abilityPosition);
-            SourceInstance audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
+            AudioClipSource audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
             IBasicVFXEffect bombVFXEffect = (await Addressables.InstantiateAsync(_bombEffectReference,
                 cellPosition, Quaternion.identity)).GetComponent<IBasicVFXEffect>();
 

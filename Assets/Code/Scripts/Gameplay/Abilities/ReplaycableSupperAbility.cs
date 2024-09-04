@@ -45,7 +45,7 @@ namespace Core.Gameplay
 
             _ability.Init(GameFieldInstance);
 
-            SourceInstance audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
             SupperAbilityEffect abilityEffectInstance = (await Addressables.InstantiateAsync(SupperAbilityEffectReference,
                 coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
 

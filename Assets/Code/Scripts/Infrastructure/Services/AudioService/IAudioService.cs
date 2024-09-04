@@ -7,9 +7,9 @@ namespace Core.Infrastructure.Service.Audio
         void PlayOneShot(ClipEvent clipEvent);
         void PlayOneShotOnPoint(ClipEvent clipEvent, Vector3 position);
 
-        SourceInstance PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true);
-        SourceInstance PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true);
-        void ReleaseSource(SourceInstance sourceInstance);
+        AudioClipSource PlayWithSource(ClipEvent clipEvent, bool playOnAwake = true);
+        AudioClipSource PlayWithSourceOnPoint(ClipEvent clipEvent, Vector3 position, bool playOnAwake = true);
+        void ReleaseSource(AudioClipSource sourceInstance);
 
         void PauseAll(bool isPause);
         void PauseByGroup(AudioGroupType groupType, bool isPause);

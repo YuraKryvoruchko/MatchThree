@@ -25,7 +25,7 @@ namespace Core.Gameplay
 
             SupperAbilityEffect abilityEffectInstance = (await Addressables.InstantiateAsync(SupperAbilityEffectReference,
                 coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();    
-            SourceInstance audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
 
             OnPause += abilityEffectInstance.Pause;
             OnPause += audioSourceInstance.Pause;

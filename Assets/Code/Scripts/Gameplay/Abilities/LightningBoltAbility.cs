@@ -55,7 +55,7 @@ namespace Core.Gameplay
             if (_severalAbility != null)
                 _severalAbility.Init(_gameField);
 
-            SourceInstance audioInstance = _audioService.PlayWithSource(_clipEvent, false);
+            AudioClipSource audioInstance = _audioService.PlayWithSource(_clipEvent, false);
 
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);

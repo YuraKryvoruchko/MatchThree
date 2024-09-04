@@ -1,12 +1,13 @@
-﻿using Core.Infrastructure.Service;
-using System;
+﻿using System;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Core.Infrastructure.Service.Audio
 {
-    public class SourceInstance : IDisposable
+    public class AudioClipSource : IDisposable
     {
         private AudioSource _source;
+        private AudioSourceEventModule _audioSourceEventModule;
         private ClipEvent _clipReference;
 
         private int _currentClipIndex = 0;
@@ -15,12 +16,26 @@ namespace Core.Infrastructure.Service.Audio
 
         public bool IsDisposed { get; private set; }
 
-        public event Action<SourceInstance> OnEndPlaying;
+        public event Action<AudioClipSource> OnEndPlaying;
 
-        public SourceInstance(AudioSource source, ClipEvent clipReference)
+        public AudioClipSource(AudioSource source)
         {
             _source = source;
-            _clipReference = clipReference;
+            _audioSourceEventModule = _source.gameObject.AddComponent<AudioSourceEventModule>();
+        }
+
+        public void Init(ClipEvent clipEvent, AudioMixerGroup mixerGroup = null, float spatialBlend = 0, Vector3 position = default)
+        {
+            _clipReference = clipEvent;
+            _source.spatialBlend = spatialBlend;
+            _source.outputAudioMixerGroup = mixerGroup;
+            _source.transform.position = position;
+            _source.gameObject.SetActive(true);
+        }
+        public void Deinit()
+        {
+            _clipReference = null;
+            _source.gameObject.SetActive(false);
         }
 
         public async void Play()
@@ -28,18 +43,13 @@ namespace Core.Infrastructure.Service.Audio
             _currentClipIndex = 0;
             AssetReferenceAudioClip clipReference = _clipReference.Clips[_currentClipIndex].AudioClip;
             _source.clip = await clipReference.GetOrLoad();
-            AudioSourceEventModule module = _source.gameObject.AddComponent<AudioSourceEventModule>();
-            module.OnEndPlay += SetNextClip;
+            _audioSourceEventModule.OnEndPlay += SetNextClip;
             _source.Play();
         }
         public void Stop() 
         {
             _source.Stop();
-            if(_source.TryGetComponent(out AudioSourceEventModule module))
-            {
-                module.OnEndPlay -= SetNextClip;
-                Component.Destroy(module);
-            }
+            _audioSourceEventModule.OnEndPlay -= SetNextClip;
         }
         public void Pause(bool isPause)
         {
