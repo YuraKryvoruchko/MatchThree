@@ -12,7 +12,7 @@ namespace Core.Gameplay.Input
 
         private Vector2 _cellPosition;
 
-        private float RAY_DISTANCE = 100F;
+        private const float RAY_DISTANCE = 100F;
 
         public event Action<Vector2, Vector2> OnTrySwipeCellWithGetDirection;
 

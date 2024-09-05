@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using Cysharp.Threading.Tasks;
 using Core.Gameplay;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Service;
@@ -14,68 +16,67 @@ namespace Core.UI.Gameplay
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _uiClickKey;
 
-        private HolderAbilitySettings[] _settings;
+        private IReadOnlyCollection<HolderAbilitySettings> _settings;
 
         private IAudioService _audioService;
-        private ILevelService _levelService;
         private AbilityThrowMode _abilityThrowMode;
 
         private AbilityHolderButton _clickedButton;
 
         [Inject] 
-        private void Construct(IAudioService audioService, ILevelService levelService, AbilityThrowMode abilityThrowMode)
+        private void Construct(IAudioService audioService, AbilityThrowMode abilityThrowMode)
         {
             _audioService = audioService;
-            _levelService = levelService;
             _abilityThrowMode = abilityThrowMode;
         }
 
         private void Start()
         {
-            if (!_levelService.IsLevelConfigSeted())
-                return;
-
-            _settings = _levelService.GetCurrentLevelConfig().AbilitySettings;
             _abilityThrowMode.OnUse += OnUseAbility;
-            for (int i = 0; i < _settings.Length; i++)
+            _settings = _abilityThrowMode.GetHolderAbilitySettings();
+            int buttonIndex = 0;
+            foreach (HolderAbilitySettings abilitySettings in _settings)
             {
-                HolderAbilitySettings settings = _settings[i];
-                _buttons[i].Init(settings.Icon, settings.AbilityType, settings.Amount);
-                _buttons[i].OnClick += HandleClick;
-                _buttons[i].gameObject.SetActive(true);
+                InitButton(_buttons[buttonIndex], abilitySettings).Forget();
+                buttonIndex++;
             }
-            Cysharp.Threading.Tasks.UniTask.Void(async () =>
+            UniTask.Void(async () =>
             {
-                await Cysharp.Threading.Tasks.UniTask.Yield();
+                await UniTask.Yield();
                 _layoutGroup.enabled = false;
             });
         }
         private void OnDestroy()
         {
-            if(_settings == null)
-                return;
-
             _abilityThrowMode.OnUse -= OnUseAbility;
-            for (int i = 0; i < _settings.Length; i++)
+
+            int buttonIndex = 0;
+            foreach (HolderAbilitySettings abilitySettings in _settings)
             {
-                _buttons[i].OnClick -= HandleClick;
+                _buttons[buttonIndex].OnClick -= HandleClick;
+                abilitySettings.Icon.ReleaseAsset();
+                buttonIndex++;
             }
         }
 
         public void SetInteractable(bool value)
         {
-            if (_settings == null)
-                return; 
-
-            for (int i = 0; i < _settings.Length; i++)
+            for (int i = 0; i < _buttons.Length; i++)
             {
                 _buttons[i].Interactable = value;
             }
         }
 
+        private async UniTaskVoid InitButton(AbilityHolderButton button, HolderAbilitySettings settings)
+        {
+            Sprite icon = await settings.Icon.GetOrLoad();
+            button.Init(icon, settings.AbilityType, settings.Amount);
+            button.OnClick += HandleClick;
+            button.gameObject.SetActive(true);
+        }
         private void HandleClick(AbilityHolderButton button)
         {
-            if (button.Amount == 0)
+            if (!_abilityThrowMode.CanUseAbility(button.Type))
                 return;
 
             _audioService.PlayOneShot(_uiClickKey);
@@ -93,9 +94,9 @@ namespace Core.UI.Gameplay
                     _abilityThrowMode.EnableAbilityhrowMode(button.Type);
             }
         }
-        private void OnUseAbility()
+        private void OnUseAbility(CellType type, int count)
         {
-            _clickedButton.SetAmount(_clickedButton.Amount - 1);
+            _clickedButton.SetAmount(count);
             _clickedButton = null;
         }
     }

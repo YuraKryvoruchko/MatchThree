@@ -116,7 +116,7 @@ namespace Core.Infrastructure.Gameplay
         private void BindAbilityThrowMode()
         {
             Container
-                .Bind<AbilityThrowMode>()
+                .BindInterfacesAndSelfTo<AbilityThrowMode>()
                 .AsSingle();
         }
         private void BindPlayerMoveTracking()

@@ -1,13 +1,13 @@
 ﻿using System;
-using UnityEngine;
 using Core.Gameplay;
+using UnityEngine.AddressableAssets;
 
 namespace Core.UI.Gameplay
 {
     [Serializable]
     public class HolderAbilitySettings
     {
-        public Sprite Icon;
+        public AssetReferenceSprite Icon;
         public CellType AbilityType;
         public int Amount;
     }

@@ -13,7 +13,6 @@ namespace Core.UI.Gameplay
         [SerializeField] private Button _button;
 
         public CellType Type { get; private set; }
-        public int Amount { get; private set; }
 
         public bool Interactable { get => _button.interactable; set => _button.interactable = value; }
 
@@ -36,7 +35,6 @@ namespace Core.UI.Gameplay
         }
         public void SetAmount(int amount)
         {
-            Amount = amount;
             _amountText.text = amount.ToString();
         }
     }

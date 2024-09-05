@@ -21,9 +21,19 @@ MonoBehaviour:
     Count: 30
     CellType: 2
   AbilitySettings:
-  - Icon: {fileID: 21300000, guid: 2be55834e2ff7b144a243413f2979787, type: 3}
+  - Icon:
+      m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+      m_SubObjectName: bomb_icon
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_EditorAssetChanged: 1
     AbilityType: 5
     Amount: 10
-  - Icon: {fileID: 21300000, guid: 01a34d9e0dade794188a273832564fb0, type: 3}
+  - Icon:
+      m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+      m_SubObjectName: icon_lightning
+      m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      m_EditorAssetChanged: 1
     AbilityType: 6
     Amount: 5
