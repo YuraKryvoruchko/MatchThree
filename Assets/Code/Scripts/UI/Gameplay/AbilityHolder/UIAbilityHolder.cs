@@ -40,11 +40,6 @@ namespace Core.UI.Gameplay
                 InitButton(_buttons[buttonIndex], abilitySettings).Forget();
                 buttonIndex++;
             }
-            UniTask.Void(async () =>
-            {
-                await UniTask.Yield();
-                _layoutGroup.enabled = false;
-            });
         }
         private void OnDestroy()
         {
