@@ -40,7 +40,7 @@ namespace Core.Gameplay
         {
             OnPause?.Invoke(isPause);
         }
-        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback)
         {
             Vector3 cellPosition = _gameField.CellPositionToWorld(abilityPosition);
             AudioClipSource audioSourceInstance = _audioService.PlayWithSource(_explosiveEvent);
@@ -68,6 +68,8 @@ namespace Core.Gameplay
             OnPause -= audioSourceInstance.Pause;
             _audioService.ReleaseSource(audioSourceInstance);
             Addressables.ReleaseInstance((bombVFXEffect as MonoBehaviour).gameObject);
+
+            callback?.Invoke(this);
         }
     }
 }

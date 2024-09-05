@@ -37,6 +37,8 @@ namespace Core.Gameplay
 
         private Cell[,] _map;
 
+        private List<IAbility> _usedAbilities;
+
         private int _currentFindingCombinationIndex;
         private int[,] _findingCombinationIndexMap;
 
@@ -49,6 +51,7 @@ namespace Core.Gameplay
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
         public bool IsBoardFillUp { get => _isBoardFillUp; }
+        public bool IsBoardPlay { get => _usedAbilities.Count > 0 || _isBoardFillUp; }
 
         public event Action OnMove;
         public event Action<int> OnExplodeCellWithScore;
@@ -88,6 +91,7 @@ namespace Core.Gameplay
             _pauseProvider = pauseProvider;
             _cellSwipeDetection = cellSwipeDetection;
             _audioService = audioService;
+            _usedAbilities = new List<IAbility>();
         }
 
 #if UNITY_EDITOR
@@ -190,7 +194,8 @@ namespace Core.Gameplay
                 : _abilityFactory.GetAbility(abilityType);
 
             ability.Init(this);
-            ability.Execute(swipedCellPosition, abilityPosition).Forget();
+            ability.Execute(swipedCellPosition, abilityPosition, HandleAbilityCallback).Forget();
+            _usedAbilities.Add(ability);
             OnMove?.Invoke();
         }
 
@@ -646,6 +651,10 @@ namespace Core.Gameplay
                 _cellHandlingMap[position.y, position.x] = true;
                 _needHandleCells = true;
             }
+        }
+        private void HandleAbilityCallback(IAbility ability)
+        {
+            _usedAbilities.Remove(ability);
         }
         private CellType GetRandomElementType()
         {

@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
+using System;
 
 namespace Core.Gameplay
 {
@@ -14,7 +15,7 @@ namespace Core.Gameplay
         {
         }
 
-        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback)
         {
             Cell swipedCell = GameFieldInstance.GetCell(swipedCellPosition);
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
@@ -49,6 +50,8 @@ namespace Core.Gameplay
 
             OnPause -= abilityEffect.Pause;
             Addressables.ReleaseInstance(abilityEffect.gameObject);
+
+            callback?.Invoke(this);
         }
     }
 }

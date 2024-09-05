@@ -1,5 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Gameplay
 {
@@ -7,6 +8,6 @@ namespace Core.Gameplay
     {
         void Init(GameField gameField);
         void SetPause(bool isPause);
-        UniTask Execute(Vector2Int cellPosition, Vector2Int abilityPosition);
+        UniTask Execute(Vector2Int cellPosition, Vector2Int abilityPosition, Action<IAbility> callback = null);
     }
 }

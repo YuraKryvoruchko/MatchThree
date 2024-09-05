@@ -37,6 +37,6 @@ namespace Core.Gameplay
             OnPause?.Invoke(isPause);
         }
 
-        public abstract UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition);
+        public abstract UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback);
     }
 }

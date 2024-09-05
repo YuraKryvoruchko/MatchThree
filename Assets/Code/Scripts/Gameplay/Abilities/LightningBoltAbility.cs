@@ -50,7 +50,7 @@ namespace Core.Gameplay
             _isPaused = isPause;
             OnPause?.Invoke(isPause);
         }
-        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback = null)
         {
             if (_severalAbility != null)
                 _severalAbility.Init(_gameField);
@@ -99,6 +99,8 @@ namespace Core.Gameplay
             OnPause -= audioInstance.Pause;
             Addressables.ReleaseInstance(lightingBoltEffect.gameObject);
             _audioService.ReleaseSource(audioInstance);
+
+            callback?.Invoke(this);
         }
     }
 }

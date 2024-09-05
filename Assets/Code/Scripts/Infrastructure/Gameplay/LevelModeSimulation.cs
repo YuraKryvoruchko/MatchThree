@@ -78,7 +78,7 @@ namespace Core.Infrastructure.Gameplay
 
             UniTask.Void(async () =>
             {
-                await UniTask.WaitWhile(() => _gameField.IsBoardFillUp);
+                await UniTask.WaitWhile(() => _gameField.IsBoardPlay);
                 
                 HandleEndGame();
                 OnGameComplete?.Invoke();

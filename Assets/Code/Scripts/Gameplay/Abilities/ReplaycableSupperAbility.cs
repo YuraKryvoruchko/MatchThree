@@ -3,6 +3,9 @@ using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
+using System;
+
+using Random = UnityEngine.Random;
 
 namespace Core.Gameplay
 {
@@ -21,7 +24,7 @@ namespace Core.Gameplay
             _replaceObject = replaceObject;
         }
 
-        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback)
         {
             Cell swipedCell = GameFieldInstance.GetCell(swipedCellPosition);
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
@@ -71,6 +74,8 @@ namespace Core.Gameplay
             OnPause -= abilityEffectInstance.Pause;
             AudioService.ReleaseSource(audioSourceInstance);
             Addressables.ReleaseInstance(abilityEffectInstance.gameObject);
+
+            callback?.Invoke(this);
         }
     }
 }
