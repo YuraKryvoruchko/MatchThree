@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using Zenject;
 using Core.Gameplay;
 using Core.Infrastructure.Service;
-using Core.UI.Gameplay;
 using Core.Infrastructure.Service.Saving;
 
 namespace Core.Infrastructure.Gameplay
@@ -14,39 +13,39 @@ namespace Core.Infrastructure.Gameplay
         private LevelConfig _levelConfig;
         private LevelTaskCompletionChecker _taskCompletionChecker;
         private PlayerMoveTracking _playerMoveTracking;
-        private GameScoreTracking _gameScoreTracking;
 
         private ILevelService _levelService;
-        private IWindowService _windowService;
         private ISavingService _savingService;
 
         private bool _isLevelCompleted;
 
+        public event Action OnBlockGame;
         public event Action OnGameComplete;
 
         public LevelModeSimulation(GameField gameField, PlayerMoveTracking playerMoveTracking, LevelTaskCompletionChecker levelTaskCompletionChecker,
-            GameScoreTracking gameScoreTracking, ILevelService levelService, IWindowService windowService, ISavingService savingService)
+            ILevelService levelService, ISavingService savingService)
         {
             _gameField = gameField;
-
-            _gameScoreTracking = gameScoreTracking;
 
             _playerMoveTracking = playerMoveTracking;
 
             _taskCompletionChecker = levelTaskCompletionChecker;
 
-            _windowService = windowService;
             _levelService = levelService;
             _savingService = savingService;
         }
-        public void Initialize()
+        void IInitializable.Initialize()
         {
             _levelConfig = _levelService.GetCurrentLevelConfig();
             _playerMoveTracking.OnMove += HandleMoveOnField;
             _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
+
+            _gameField.Init();
         }
-        public void Dispose()
+        void IDisposable.Dispose()
         {
+            _gameField.Deinit();
+
             _playerMoveTracking.OnMove -= HandleMoveOnField;
             _taskCompletionChecker.OnAllTaskCompleted -= HandleTaskCompleting;
         }
@@ -75,17 +74,15 @@ namespace Core.Infrastructure.Gameplay
             _isLevelCompleted = true;
 
             _gameField.SetSwipeHandlingStatus(false);
+            OnBlockGame?.Invoke();
+
             UniTask.Void(async () =>
             {
                 await UniTask.WaitWhile(() => _gameField.IsBoardFillUp);
-
-                CompletePopup completePopup = await _windowService.OpenPopup<CompletePopup>("CompletePopup");
-                completePopup.Activate(_taskCompletionChecker.GetProgress(), _gameScoreTracking.CurrentScore).Forget();
                 
                 HandleEndGame();
+                OnGameComplete?.Invoke();
             });
-
-            OnGameComplete?.Invoke();
         }
     }
 }

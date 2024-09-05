@@ -24,7 +24,7 @@ namespace Core.Gameplay
             GameField gameField, CellClickDetection cellClickDetection)
         {
             _gameModeSimulation = gameModeSimulation;
-            _gameModeSimulation.OnGameComplete += HandleGameComplete;
+            _gameModeSimulation.OnBlockGame += HandleGameComplete;
 
             _gameField = gameField;
             _cellClickDetection = cellClickDetection;
@@ -59,7 +59,7 @@ namespace Core.Gameplay
 
         private void HandleGameComplete()
         {
-            _gameModeSimulation.OnGameComplete -= HandleGameComplete;
+            _gameModeSimulation.OnBlockGame -= HandleGameComplete;
             DisableAbilityThrowMode();
         }
     }

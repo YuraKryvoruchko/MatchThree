@@ -9,6 +9,7 @@ using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Gameplay;
 using Core.Infrastructure.Service;
+using Core.Gameplay;
 
 namespace Core.UI.Gameplay
 {
@@ -31,6 +32,9 @@ namespace Core.UI.Gameplay
         private ILevelSceneSimulation _levelSceneSimulation;
         private ILevelService _levelService;
 
+        private LevelTaskCompletionChecker _levelTaskCompletionChecker;
+        private GameScoreTracking _gameScoreTracking;
+
         public override event Action OnMenuBack;
 
         [Serializable]
@@ -42,12 +46,15 @@ namespace Core.UI.Gameplay
 
         [Inject]
         private void Construct(IAudioService audioService, IGameModeSimulation gameModeSimulation,
-            ILevelSceneSimulation levelSceneSimulation, ILevelService levelService)
+            ILevelSceneSimulation levelSceneSimulation, ILevelService levelService, LevelTaskCompletionChecker levelTaskCompletionChecker,
+            GameScoreTracking gameScoreTracking)
         {
             _audioService = audioService;
             _gameModeSimulation = gameModeSimulation;
             _levelSceneSimulation = levelSceneSimulation;
             _levelService = levelService;
+            _levelTaskCompletionChecker = levelTaskCompletionChecker;
+            _gameScoreTracking = gameScoreTracking;
         }
 
         protected override void OnShow()
@@ -78,8 +85,10 @@ namespace Core.UI.Gameplay
             OnUnfocus();
         }
 
-        public async UniTaskVoid Activate(float progress, int scoreCount)
+        public async UniTaskVoid Activate()
         {
+            float progress = _levelTaskCompletionChecker.GetProgress();
+            float scoreCount = _gameScoreTracking.CurrentScore;
             DOTween.To((value) => _scoreText.text = ((int)Mathf.Lerp(0, scoreCount, value)).ToString(), 0, 1, _scoreAccumulationTime);
 
             for(int i = 0; i < _stars.Length; i++)
@@ -97,7 +106,10 @@ namespace Core.UI.Gameplay
         {
             _audioService.ChangeSnapshot(AudioSnapshotType.Default);
             if (_levelService.LevelConfigCount - 1 == _levelService.CurentLevelConfigIndex)
+            {
                 QuitToMainMenu();
+                return;
+            }
 
             _levelService.SetCurrentLevelConfigByIndex(_levelService.CurentLevelConfigIndex + 1);
             _gameModeSimulation.HandleEndGame();

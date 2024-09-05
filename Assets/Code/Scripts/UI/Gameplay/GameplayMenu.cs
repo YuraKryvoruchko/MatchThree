@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
+using Zenject;
 using Core.Infrastructure.UI;
 using Core.Infrastructure.Service;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Service.Pause;
-using Zenject;
 using Core.Infrastructure.Gameplay;
 
 namespace Core.UI.Gameplay
@@ -17,7 +18,8 @@ namespace Core.UI.Gameplay
         [Header("Modules")]
         [SerializeField] private UIAbilityHolder _uiAbilityHolder;
         [Header("Popups")]
-        [SerializeField] private WindowBase _popupPrefab;
+        [SerializeField] private AssetReferenceGameObject _pausePopupReference;
+        [SerializeField] private AssetReferenceGameObject _completePopupReference;
         [Header("Audio Keys")]
         [SerializeField] private ClipEvent _uiClickKey;
 
@@ -27,6 +29,7 @@ namespace Core.UI.Gameplay
         private IAudioService _audioService;
 
         private WindowBase _pausePopup;
+        private WindowBase _completePopup;
 
         private const float SNAPSHOT_CHANGING_DELAY = 0.1F;
 
@@ -44,11 +47,13 @@ namespace Core.UI.Gameplay
 
         private void OnEnable()
         {
-            _gameModeSimulation.OnGameComplete += OnUnfocus;
+            _gameModeSimulation.OnBlockGame += OnUnfocus;
+            _gameModeSimulation.OnGameComplete += CreateCompletePopup;
         }
         private void OnDisable()
         {
-            _gameModeSimulation.OnGameComplete -= OnUnfocus;
+            _gameModeSimulation.OnBlockGame -= OnUnfocus;
+            _gameModeSimulation.OnGameComplete -= CreateCompletePopup;
         }
 
         protected override void OnShow()
@@ -80,8 +85,15 @@ namespace Core.UI.Gameplay
             _pauseService.SetPause(true);
             _audioService.PlayOneShot(_uiClickKey);
             _audioService.ChangeSnapshot(AudioSnapshotType.Paused, SNAPSHOT_CHANGING_DELAY);
-            _pausePopup = await _windowService.OpenPopup<WindowBase>(_popupPrefab.Path);
+            _pausePopup = await _windowService.OpenPopup<WindowBase>(_pausePopupReference.AssetGUID);
             _pausePopup.OnMenuBack += HandlePausePopupClosing;
+        }
+        private async void CreateCompletePopup()
+        {
+            _pauseService.SetPause(true);
+            CompletePopup completePopup = await _windowService.OpenPopup<CompletePopup>(_completePopupReference.AssetGUID);
+            _completePopup = completePopup;
+            completePopup.Activate().Forget();
         }
         private void HandlePausePopupClosing()
         {

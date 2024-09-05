@@ -97,7 +97,24 @@ namespace Core.Gameplay
             ReplaceCell(type, cellPosition);
         }
 #endif
-        private void Start()
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Vector3[] lines = new Vector3[4];
+            lines[0] = new Vector3(_startMapPoint.position.x, _startMapPoint.position.y, 0);
+            lines[1] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
+                _startMapPoint.position.y, 0);
+            lines[2] = new Vector3(_startMapPoint.position.x, 
+                _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
+            lines[3] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
+                _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
+            Gizmos.DrawLine(lines[0], lines[1]);
+            Gizmos.DrawLine(lines[1], lines[3]);
+            Gizmos.DrawLine(lines[3], lines[2]);
+            Gizmos.DrawLine(lines[2], lines[0]);
+        }
+
+        public void Init()
         {
             _pauseProvider.OnPause += HandlePause;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += HandleSwipeCellWithDirection;
@@ -115,26 +132,10 @@ namespace Core.Gameplay
 
             FillBoardAsync().Forget();
         }
-        private void OnDestroy()
+        public void Deinit()
         {
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection -= HandleSwipeCellWithDirection;
             _pauseProvider.OnPause -= HandlePause;
-        }
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.green;
-            Vector3[] lines = new Vector3[4];
-            lines[0] = new Vector3(_startMapPoint.position.x, _startMapPoint.position.y, 0);
-            lines[1] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
-                _startMapPoint.position.y, 0);
-            lines[2] = new Vector3(_startMapPoint.position.x, 
-                _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
-            lines[3] = new Vector3(_startMapPoint.position.x + _interval * (_horizontalMapSize - 1), 
-                _startMapPoint.position.y - _interval * (_verticalMapSize - 1), 0);
-            Gizmos.DrawLine(lines[0], lines[1]);
-            Gizmos.DrawLine(lines[1], lines[3]);
-            Gizmos.DrawLine(lines[3], lines[2]);
-            Gizmos.DrawLine(lines[2], lines[0]);
         }
 
         public async UniTaskVoid Handle(Vector2 cellPosition, Vector2 swipeDirection)

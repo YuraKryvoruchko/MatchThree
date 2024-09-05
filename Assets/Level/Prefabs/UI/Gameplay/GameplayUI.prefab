@@ -1063,7 +1063,16 @@ MonoBehaviour:
   _menuCanvas: {fileID: 3722608786572638198}
   _pauseMenuButton: {fileID: 1669075347783396232}
   _uiAbilityHolder: {fileID: 7091701797557612666}
-  _popupPrefab: {fileID: -2494657810328607965, guid: 23fc5a063bf1f5944a635c0281e062ab, type: 3}
+  _pausePopupReference:
+    m_AssetGUID: 23fc5a063bf1f5944a635c0281e062ab
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  _completePopupReference:
+    m_AssetGUID: c1b5547c8c16c374799866935b19b344
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _uiClickKey: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
 --- !u!1 &6839175524528490419
 GameObject:
