@@ -10,7 +10,7 @@ using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Loading;
 using Core.Infrastructure.Service.Saving;
 
-namespace Core.UI
+namespace Core.UI.Menu
 {
     public class SelectLevelMenu : WindowBase
     {

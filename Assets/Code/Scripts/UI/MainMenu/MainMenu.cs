@@ -12,7 +12,7 @@ using Core.Infrastructure.UI;
 using Core.Infrastructure.Service.Saving;
 using Core.Infrastructure.Gameplay;
 
-namespace Core.UI
+namespace Core.UI.Menu
 {
     public class MainMenu : WindowBase
     {
