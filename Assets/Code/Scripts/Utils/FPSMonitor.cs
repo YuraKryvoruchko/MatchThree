@@ -32,7 +32,7 @@ namespace Core.Utils
 
         private void UpdateTargetFrameRate()
         {
-            _trargetFrameRateText.text = _targetFrameRateTextDescription + Math.Round(Screen.currentResolution.refreshRateRatio.value).ToString();
+            _trargetFrameRateText.text = _targetFrameRateTextDescription + Application.targetFrameRate.ToString();
         }
         private void UpdateCurrentFrameRate()
         {
