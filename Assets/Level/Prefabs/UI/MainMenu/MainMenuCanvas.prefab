@@ -1325,6 +1325,11 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  _settingPopupReference:
+    m_AssetGUID: 2202d6ecda26d75499a6f27d6d775dae
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   _longModeLevelConfig: {fileID: 11400000, guid: fba3bb443daca3b4da26630545ccfa49, type: 2}
   _clickAudioPath: {fileID: 11400000, guid: b57e3d9263b78cc4abb4d80c4e4d3aad, type: 2}
   _unloadingAudioList:

@@ -25,6 +25,7 @@ namespace Core.UI.Menu
         [SerializeField] private AssetReference _gamePlayScene;
         [Header("Select Level Menu")]
         [SerializeField] private AssetReferenceGameObject _selectLevelMenuReference;
+        [SerializeField] private AssetReferenceGameObject _settingPopupReference;
         [Header("Long Mode Settings")]
         [SerializeField] private LevelConfig _longModeLevelConfig;
         [Header("Audio Keys")]
@@ -59,12 +60,15 @@ namespace Core.UI.Menu
             _startLongModeButton.onClick.AddListener(LoadLongMode);
             _chooseLevelButton.onClick.AddListener(() => _audioService.PlayOneShot(_clickAudioPath));
             _chooseLevelButton.onClick.AddListener(OpenSelectLevelMenu);
+            _settingsButton.onClick.AddListener(() => _audioService.PlayOneShot(_clickAudioPath));
+            _settingsButton.onClick.AddListener(OpenSettingPopup);
             gameObject.SetActive(true);
         }
         protected override void OnHide()
         {
             _startLongModeButton.onClick.RemoveAllListeners();
             _chooseLevelButton.onClick.RemoveAllListeners();
+            _settingsButton.onClick.RemoveAllListeners();
             gameObject.SetActive(false);
         }
         protected override void OnFocus()
@@ -97,6 +101,14 @@ namespace Core.UI.Menu
                 SelectLevelMenu selectLevelMenu = await _windowService.OpenWindow<SelectLevelMenu>(_selectLevelMenuReference.AssetGUID);
                 selectLevelMenu.transform.SetParent(transform.parent);
                 selectLevelMenu.ShowButtons();
+            });
+        }
+        private void OpenSettingPopup()
+        {
+            UniTask.Void(async () =>
+            {
+                SettingPopup selectLevelMenu = await _windowService.OpenPopup<SettingPopup>(_settingPopupReference.AssetGUID);
+                selectLevelMenu.transform.SetParent(transform.parent);
             });
         }
         private void SetInteractable(bool interactable)
