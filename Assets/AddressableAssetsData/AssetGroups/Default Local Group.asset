@@ -20,87 +20,278 @@ MonoBehaviour:
   - m_GUID: 14415af35cbfece48b17d4743cc79dbb
     m_Address: Scenes/Boot.unity
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Scene
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fd946f7ef756de9448dd1cfb2d804425
     m_Address: Scenes/MainMenu.unity
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Scene
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dbf358507f7a6224d89daef6be569d6f
     m_Address: bg_Grass
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dea399e55d8c7a54b840b364def11fed
     m_Address: bg_Trees
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 53870219c49a2004da93e488ba96ed8f
     m_Address: bg_night.png
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80470d52b250cf34f83808dd6803e5d7
     m_Address: hungry_bat
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1c5627402d68cd642b43a000a0e53686
     m_Address: hungry_bat_blur
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c40c52e69f4a55b46854e41d6dcf9d38
     m_Address: CellAtlas
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb7f10105313640a18ce7926041a4d76
     m_Address: Audio/Darkness.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 458dd8822518c4f37bc3edba9b6c57d9
     m_Address: Audio/Mystery.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 32d4b1811dda14a6cb9e059ee8ad17d2
     m_Address: Audio/DM-CGS-01.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81652031b64c342cc8dbc59c138d77c5
     m_Address: Audio/DM-CGS-19.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29bde6326b4c34ad8a12da475f79b50a
     m_Address: Audio/DM-CGS-32.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bef0064f8567430cac22499c6b93d4f
     m_Address: Audio/DM-CGS-49.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a15c0f3fe74004cf89b51cfd5604f582
     m_Address: Audio/AMP_Lightning_Impact_06.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0010a1a0c474473b81729eb770c485f
-    m_Address: Assets/Art/Audio/CasualGameSounds/DM-CGS-11.wav
+    m_Address: Audio/DM-CGS-11.wav
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Audio
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38bd489b673af414ba003580323f54e7
     m_Address: Scenes/Gameplay.unity
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Scene
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02116af72d403284d891ef602cc6ff18
+    m_Address: Cell
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a422b408c8c8ce14d86d2a701bcddb7c
+    m_Address: bg_Board
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f5f4b68deb43474f9d4eaf1e64aeed8
+    m_Address: GrapeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a099021626b8944d81de7bd6710bdb3
+    m_Address: BananaConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09b0ac1f48d1d524fa7a9226a3b11de1
+    m_Address: StaticCellConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d34f1eccd38108e45bf338f36b10f610
+    m_Address: BombConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f68bb8afb201794fb7ccd56562df8a9
+    m_Address: OrangeConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b07e11fe5b772bf4d90813eb39738ef9
+    m_Address: AppleConfig
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 537c8ec43cf45aa4bb5cbee170786596
+    m_Address: UI/LoadingScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d811543817b54214aacd95e6e2c3b8d3
+    m_Address: MainMenuCanvas.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fc7b2e386bbeca45ae6cf55270ff2da
+    m_Address: SelectLevelMenu
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2202d6ecda26d75499a6f27d6d775dae
+    m_Address: SettingsPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22f0861b8abf0d44bb9dcddfb786f2c5
+    m_Address: AbilityHolder
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d46a85dc917a73b4e8c2faf81219113d
+    m_Address: ThrowModeVignette
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23fc5a063bf1f5944a635c0281e062ab
+    m_Address: PausePopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24b3b896d51ebf94b9259d0c8565d48c
+    m_Address: PauseButton
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72dd13d23dd6a2843942e88803f01715
+    m_Address: GameplayUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32e6fc48ec0b3dc45a30dd0d678d994d
+    m_Address: LevelModeGameplayUI
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1b5547c8c16c374799866935b19b344
+    m_Address: CompletePopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ef3ae421f71c5c4e97fe12dc2fc6312
+    m_Address: VFX/CFXR Explosion 1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bda94453d2ca7444a0fff05b2d425f5
+    m_Address: VFX/CFXR Explosion Smoke 2 Solo (HDR).prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e31c720355f5c2143b0a4ca338183d8c
+    m_Address: VFX/LightningBoltPrefab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dee2a952f046be458b928bf213e2c20
+    m_Address: VFX/SmallBombEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94544fa4b297d4f42835ec22b9f5c781
+    m_Address: VFX/SuperAbilityEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c200d821c4a1bfe4aacb87719516199b
+    m_Address: VFX/Explosion.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d71202c72a21964ca4a0a5755111f0c
+    m_Address: VFX/BigBombEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}

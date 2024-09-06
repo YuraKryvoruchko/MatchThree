@@ -46,11 +46,6 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: 81d68afececad41428c779000affcd68, type: 2}
   - {fileID: 11400000, guid: 7ffd18a60a2c8c34cb0f0862f655f00e, type: 2}
-  - {fileID: 11400000, guid: b9573542e22021646a5be01c9604efa7, type: 2}
-  - {fileID: 11400000, guid: 14d11ea3c997fce499963c162729082e, type: 2}
-  - {fileID: 11400000, guid: e174b24222bb14c4a8f7b5e42ae53d6b, type: 2}
-  - {fileID: 11400000, guid: 73d56cf3e34a3a34e9de0194a9e34976, type: 2}
-  - {fileID: 11400000, guid: f5b7b170454e5ef4c9d9de67e3743548, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -92,6 +87,13 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - UI
+    - VFX
+    - Config
+    - Audio
+    - Sprite
+    - Prefab
+    - Scene
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 56245c4343eb5d744be011c1e09a0d16, type: 2}

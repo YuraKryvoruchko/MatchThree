@@ -26,6 +26,8 @@ namespace Core.UI.Menu
 
         public override event Action OnMenuBack;
 
+        private const int MIN_FRAME_RATE = 30;
+
         [Inject]
         private void Construct(IAudioService audioService)
         {
@@ -73,11 +75,14 @@ namespace Core.UI.Menu
 
         private void SetupDropdown()
         {
-            Resolution[] resolutions = Screen.resolutions;
-            for(int i = 0; i < resolutions.Length; i++)
+            int refreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
+            for (int i = 1; refreshRate / i >= MIN_FRAME_RATE; i++)
             {
-                _frameRateDropDown.options.Add(new TMP_Dropdown.OptionData(resolutions[i].refreshRateRatio.value.ToString()));
+                _frameRateDropDown.options.Add(new TMP_Dropdown.OptionData((refreshRate / i).ToString()));
+                if (Application.targetFrameRate == refreshRate / i)
+                    _frameRateDropDown.SetValueWithoutNotify(i - 1);
             }
+
             _frameRateDropDown.onValueChanged.AddListener(ChangeFrameRate);
         }
         private void SetupVolumeSwitches()
@@ -106,8 +111,8 @@ namespace Core.UI.Menu
         }
         private void ChangeFrameRate(int frameRateIndex)
         {
-            Resolution resolution = Screen.resolutions[frameRateIndex];
-            Application.targetFrameRate = (int)Math.Round(resolution.refreshRateRatio.value);
+            int refreshRate = (int)Math.Round(Screen.currentResolution.refreshRateRatio.value);
+            Application.targetFrameRate = refreshRate / (frameRateIndex + 1);
         }
     }
 }
