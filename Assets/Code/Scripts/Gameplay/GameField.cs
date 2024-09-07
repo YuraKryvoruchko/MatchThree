@@ -7,8 +7,6 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
-using static UnityEditor.PlayerSettings;
-
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;

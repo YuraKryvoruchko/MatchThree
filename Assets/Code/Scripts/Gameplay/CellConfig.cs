@@ -13,5 +13,6 @@ namespace Core.Gameplay
         [Header("Features")]
         public bool IsStatic = false;
         public bool IsSpecial = false;
+        public bool IsSpawn = false;
     }
 }

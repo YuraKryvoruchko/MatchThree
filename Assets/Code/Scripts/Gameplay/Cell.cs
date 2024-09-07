@@ -28,6 +28,7 @@ namespace Core.Gameplay
 
         public bool IsStatic { get => _isStatic; private set => _isStatic = value; }
         public bool IsSpecial { get => _isSpecial; private set => _isSpecial = value; }
+        public bool IsSpawn { get => _config.IsSpawn; }
 
         private void OnDestroy()
         {
