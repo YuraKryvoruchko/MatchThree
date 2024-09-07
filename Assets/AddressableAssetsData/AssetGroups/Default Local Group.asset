@@ -293,6 +293,20 @@ MonoBehaviour:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1015215e9e39b243899d0d023559ea7
+    m_Address: Switch
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - UI
+    - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f15452f62e825fa4092d8669f11eb86c
+    m_Address: Assets/Level/Audio
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Audio
+    - Config
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:

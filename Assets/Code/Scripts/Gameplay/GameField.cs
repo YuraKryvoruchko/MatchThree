@@ -306,8 +306,10 @@ namespace Core.Gameplay
 
         private bool HandleMove(Vector2Int cellPosition)
         {
+            const int SEARCH_DEPTH = 10;
+
             _currentFindingCombinationIndex++;
-            SearchResult bestResult = FindMaxScoreCombination(cellPosition, 5);
+            SearchResult bestResult = FindMaxScoreCombination(cellPosition, SEARCH_DEPTH);
             if (bestResult.ScoreNumber == 0)
                 return false;
 
