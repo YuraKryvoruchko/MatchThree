@@ -7,6 +7,8 @@ using Core.Gameplay.Input;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Factories;
 using Core.Infrastructure.Service.Pause;
+using static UnityEditor.PlayerSettings;
+
 
 #if UNITY_EDITOR
 using com.cyborgAssets.inspectorButtonPro;
@@ -583,8 +585,15 @@ namespace Core.Gameplay
                         }
                         else
                         {
-                            if (_map[j, i].IsStatic)
+                            if (_map[j, i].IsStatic )
+                            {
+                                if(j == 0)
+                                    continue;
+
+                                spawnQueue = 0;
+                                lowerElementIndex = 0;
                                 continue;
+                            }
 
                             if (_map[j, i].IsMove || _map[j, i].IsExplode)
                                 areElementsMoved = false;
@@ -650,8 +659,26 @@ namespace Core.Gameplay
             void DoCallback(Cell cell)
             {
                 Vector2Int position = WorldPositionToCell(cell.transform.position);
-                _cellHandlingMap[position.y, position.x] = true;
-                _needHandleCells = true;
+                if(IsPositionInBoard(position + Vector2Int.up + Vector2Int.right) && _map[position.y + 1, position.x + 1] == null)
+                {
+                    Debug.Log("Move right");
+                    _map[position.y, position.x] = null;
+                    _map[position.y + 1, position.x + 1] = cell;
+                    _map[position.y + 1, position.x + 1].MoveTo(CellPositionToWorld(position + Vector2Int.up + Vector2Int.right), true, DoCallback);
+                }
+                else if(IsPositionInBoard(position + Vector2Int.up + Vector2Int.left) && _map[position.y + 1, position.x - 1] == null)
+                {
+                    Debug.Log("Move left");
+                    _map[position.y, position.x] = null;
+                    _map[position.y + 1, position.x - 1] = cell;
+                    _map[position.y + 1, position.x - 1].MoveTo(CellPositionToWorld(position + Vector2Int.up + Vector2Int.left), true, DoCallback);
+                }
+                else
+                {
+                    Debug.Log("Handle");
+                    _cellHandlingMap[position.y, position.x] = true;
+                    _needHandleCells = true;
+                }
             }
         }
         private void HandleAbilityCallback(IAbility ability)

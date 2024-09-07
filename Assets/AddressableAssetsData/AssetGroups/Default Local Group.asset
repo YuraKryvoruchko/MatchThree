@@ -301,7 +301,7 @@ MonoBehaviour:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f15452f62e825fa4092d8669f11eb86c
-    m_Address: Assets/Level/Audio
+    m_Address: Assets/Level/AudioConfigs
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio

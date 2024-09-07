@@ -63,9 +63,10 @@ namespace Core.Gameplay
             else
                 _moveTweener = transform.DOMove(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond).SetEase(Ease.OutBack);
 
-            await _moveTweener.OnComplete(() => 
+            await _moveTweener.OnComplete(() =>
             {
                 IsMove = false;
+                _moveTweener.Kill();
                 onComplete?.Invoke(this);
             }).AsyncWaitForCompletion().AsUniTask();
         }

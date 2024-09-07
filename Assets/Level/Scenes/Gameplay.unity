@@ -1009,6 +1009,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1535543933}
     m_Modifications:
     - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
+      propertyPath: _cellConfigs.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
+      propertyPath: _cellConfigs.Array.data[4].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
       propertyPath: _cellConfigs.Array.data[1].Position.y
       value: 7
       objectReference: {fileID: 0}
@@ -1023,6 +1031,14 @@ PrefabInstance:
     - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
       propertyPath: _cellConfigs.Array.data[3].Position.y
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
+      propertyPath: _cellConfigs.Array.data[4].Position.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
+      propertyPath: _cellConfigs.Array.data[4].Position.y
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4540419977211362339, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1087,7 +1103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05000019
+      value: 1.7753849
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1123,7 +1139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100405787760873926, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: orthographic size
-      value: 8.4
+      value: 10.225385
       objectReference: {fileID: 0}
     - target: {fileID: 7573291798101294480, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_Name
