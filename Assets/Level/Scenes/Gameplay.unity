@@ -741,13 +741,14 @@ MonoBehaviour:
     CellConfigs:
     - {fileID: 11400000, guid: b07e11fe5b772bf4d90813eb39738ef9, type: 2}
     - {fileID: 11400000, guid: 0a099021626b8944d81de7bd6710bdb3, type: 2}
-    - {fileID: 11400000, guid: d34f1eccd38108e45bf338f36b10f610, type: 2}
     - {fileID: 11400000, guid: 7f5f4b68deb43474f9d4eaf1e64aeed8, type: 2}
     - {fileID: 11400000, guid: 5f68bb8afb201794fb7ccd56562df8a9, type: 2}
     - {fileID: 11400000, guid: 09b0ac1f48d1d524fa7a9226a3b11de1, type: 2}
+    - {fileID: 11400000, guid: cfa00481ffd8e74488f59798769296fc, type: 2}
+    - {fileID: 11400000, guid: d34f1eccd38108e45bf338f36b10f610, type: 2}
     - {fileID: 11400000, guid: e0cacd9cbef343446ada72a49d1e7448, type: 2}
     - {fileID: 11400000, guid: 4f419f186f9dd184cbf83a85875d4a4b, type: 2}
-    CellCount: 64
+    CellCount: 72
     CellContainer: {fileID: 80933700}
   _abilityFactoryConfig:
     LightingBoltEffectPrefabReference:
@@ -1008,38 +1009,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1535543933}
     m_Modifications:
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[4].Type
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[1].Position.y
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[2].Position.x
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[3].Position.x
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[3].Position.y
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[4].Position.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1739442778548057333, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
-      propertyPath: _cellConfigs.Array.data[4].Position.y
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 4540419977211362339, guid: 15292a6a68f4eea40aa9d8a38fe47b5c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1103,7 +1072,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.7753849
+      value: -0.05000019
       objectReference: {fileID: 0}
     - target: {fileID: 2621545926517566423, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1139,7 +1108,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100405787760873926, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: orthographic size
-      value: 10.225385
+      value: 8.4
       objectReference: {fileID: 0}
     - target: {fileID: 7573291798101294480, guid: e65a4233040a9644eba62fc3c537da32, type: 3}
       propertyPath: m_Name

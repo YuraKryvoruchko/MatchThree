@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b59ccaf4d09cc8149865e788ecde1545, type: 3}
-  m_Name: SupperCellConfig
+  m_Name: SpawnCellConfig
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: c1d5a6c1ade19d340922e895b71ec629, type: 3}
-  Type: 8
-  Score: 10
-  IsStatic: 0
-  IsSpecial: 1
-  IsSpawn: 0
+  Icon: {fileID: 0}
+  Type: 5
+  Score: 0
+  IsStatic: 1
+  IsSpecial: 0
+  IsSpawn: 1

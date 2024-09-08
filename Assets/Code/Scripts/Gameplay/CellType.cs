@@ -7,6 +7,7 @@
         Grape,
         Orange,
         Static,
+        Spawn,
         Bomb,
         LightningBolt,
         Supper

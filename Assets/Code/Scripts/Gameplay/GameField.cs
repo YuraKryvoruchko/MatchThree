@@ -201,7 +201,7 @@ namespace Core.Gameplay
 
         public async UniTask ExplodeCellAsync(Vector2Int cellPosition)
         {
-            if (cellPosition.x > _verticalMapSize - 1 || cellPosition.x < 0 || cellPosition.y > _horizontalMapSize - 1 || cellPosition.y < 0 
+            if (!IsPositionInBoard(cellPosition) 
                 || _map[cellPosition.y, cellPosition.x] == null
                 || _map[cellPosition.y, cellPosition.x].IsStatic 
                 || _map[cellPosition.y, cellPosition.x].IsMove 
@@ -329,15 +329,15 @@ namespace Core.Gameplay
             {
                 results[0] = FindMaxScoreCombination(cellPosition + Vector2Int.left, depth - 1);
             }
-            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.right, currentCell.Type))
+            if (CanHandleCellForGetScore(cellPosition + Vector2Int.right, currentCell.Type))
             {
                 results[1] = FindMaxScoreCombination(cellPosition + Vector2Int.right, depth - 1);
             }
-            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.up, currentCell.Type))
+            if (CanHandleCellForGetScore(cellPosition + Vector2Int.up, currentCell.Type))
             {
                 results[2] = FindMaxScoreCombination(cellPosition + Vector2Int.up, depth - 1);
             }
-            else if (CanHandleCellForGetScore(cellPosition + Vector2Int.down, currentCell.Type))
+            if (CanHandleCellForGetScore(cellPosition + Vector2Int.down, currentCell.Type))
             {
                 results[3] = FindMaxScoreCombination(cellPosition + Vector2Int.down, depth - 1);
             }
@@ -583,7 +583,7 @@ namespace Core.Gameplay
 
             void FillBoardColumn(int i)
             {
-                int lowerElementIndex = 0, spawnQueue = 0;
+                int lowerElementIndex = 0;
                 for (int j = _verticalMapSize - 1; j >= 0; j--)
                 {
                     if (_map[j, i] == null)
@@ -608,7 +608,6 @@ namespace Core.Gameplay
                             }
                         }
 
-                        spawnQueue++;
                         areElementsMoved = false;
                         if (lowerElementIndex < j)
                             lowerElementIndex = j;
@@ -620,7 +619,6 @@ namespace Core.Gameplay
                             if (j == 0)
                                 continue;
 
-                            spawnQueue = 0;
                             lowerElementIndex = 0;
                             continue;
                         }
@@ -630,7 +628,6 @@ namespace Core.Gameplay
                         if (_map[j, i].IsExplode)
                         {
                             lowerElementIndex = 0;
-                            spawnQueue = 0;
                             continue;
                         }
 
@@ -645,8 +642,7 @@ namespace Core.Gameplay
                     }
                 }
 
-                int upperElementIndex = GetUpperEllementIndex(i);
-                CreateEllementsFromQueue(i, upperElementIndex, spawnQueue);
+                CreateEllementsFromQueue(i);
             }
             void DoCallback(Cell cell)
             {
@@ -654,29 +650,32 @@ namespace Core.Gameplay
                 _cellHandlingMap[position.y, position.x] = true;
                 _needHandleCells = true;
             }
-            int GetUpperEllementIndex(int iIndex)
+            void CreateEllementsFromQueue(int iIndex)
             {
-                int upperElementIndex;
-                for (upperElementIndex = 0; upperElementIndex < _verticalMapSize; upperElementIndex++)
+                int spawnQueue = 0;
+                for (int j = _verticalMapSize - 1; j >= 0; j--)
                 {
-                    if (_map[upperElementIndex, iIndex] == null || !_map[upperElementIndex, iIndex].IsStatic)
-                        break;
-                }
-
-                return upperElementIndex;
-            }
-            void CreateEllementsFromQueue(int iIndex, int upperElementIndex, int spawnQueue)
-            {
-                for (int j = upperElementIndex; j < _verticalMapSize && spawnQueue > 0; j++)
-                {
-                    if (_map[j, iIndex] != null)
+                    if (_map[j, iIndex] == null)
+                    {
+                        spawnQueue++;
                         continue;
+                    }
 
-                    Vector2 pos = CellPositionToWorld(new Vector2Int(iIndex, upperElementIndex - spawnQueue));
-                    _map[j, iIndex] = _cellFabric.GetCell(GetRandomElementType(), pos, Quaternion.identity, _cellContainer);
-                    _map[j, iIndex].MoveTo(CellPositionToWorld(new Vector2Int(iIndex, j)), true, DoCallback);
-                    areElementsMoved = false;
-                    spawnQueue--;
+                    if(_map[j, iIndex].IsSpawn)
+                    {
+                        for (int d = j + 1; spawnQueue > 0; d++)
+                        {
+                            Vector2 pos = CellPositionToWorld(new Vector2Int(iIndex, j - spawnQueue + 1));
+                            _map[d, iIndex] = _cellFabric.GetCell(GetRandomElementType(), pos, Quaternion.identity, _cellContainer);
+                            _map[d, iIndex].MoveTo(CellPositionToWorld(new Vector2Int(iIndex, d)), true, DoCallback);
+                            areElementsMoved = false;
+                            spawnQueue--;
+                        }
+                    }
+                    else
+                    {
+                        spawnQueue = 0;
+                    }
                 }
             }
             void TryHandleCells()

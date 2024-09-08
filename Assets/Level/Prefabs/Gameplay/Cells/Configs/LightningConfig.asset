@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: LightningConfig
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 01a34d9e0dade794188a273832564fb0, type: 3}
-  Type: 6
+  Type: 7
   Score: 10
   IsStatic: 0
   IsSpecial: 1
+  IsSpawn: 0
