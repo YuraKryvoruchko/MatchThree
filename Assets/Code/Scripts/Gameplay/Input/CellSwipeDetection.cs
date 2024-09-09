@@ -25,7 +25,6 @@ namespace Core.Gameplay.Input
         void IInitializable.Initialize()
         {
             _swipeDetection.OnStartSwipe += GetCellFromPosition;
-            _swipeDetection.OnSwipe += MoveCell;
         }
         void IDisposable.Dispose()
         {
@@ -38,13 +37,15 @@ namespace Core.Gameplay.Input
             Ray ray = _mainCamera.ScreenPointToRay(screenPosition);
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 5f);
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, RAY_DISTANCE);
-            if (hit.collider == null)
-                return;
-
-            _cellPosition = hit.collider.transform.position;
+            if (hit.collider != null)
+            {
+                _cellPosition = hit.point;
+                _swipeDetection.OnSwipe += MoveCell;
+            }
         }
         private void MoveCell(Vector2 swipeDirection)
         {
+            _swipeDetection.OnSwipe -= MoveCell;
             OnTrySwipeCellWithGetDirection?.Invoke(_cellPosition, swipeDirection);
         }
     }
