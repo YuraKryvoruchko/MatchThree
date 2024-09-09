@@ -25,6 +25,7 @@ namespace Core.Gameplay
         public int Score { get => _config.Score; }
         public bool IsMove { get; private set; }
         public bool IsExplode { get; private set; }
+        public Vector3 MoveDirection { get; private set; }
 
         private const Ease MOVE_EASE = Ease.Linear;
 
@@ -53,6 +54,7 @@ namespace Core.Gameplay
         }
         public async UniTask MoveToWithTask(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
         {
+            SetMoveDirection(endPosition, inLocal);
             if (_moveTweener.IsActive())
             {
                 _moveTweener.ChangeEndValue(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond, true).SetEase(MOVE_EASE);
@@ -66,12 +68,17 @@ namespace Core.Gameplay
             else
                 _moveTweener = transform.DOMove(endPosition, Vector3.Distance(transform.position, endPosition) / _moveSpeedPerSecond).SetEase(MOVE_EASE);
 
-            await _moveTweener.OnComplete(() =>
+            _moveTweener.OnKill(() =>
             {
                 IsMove = false;
+                MoveDirection = Vector3.zero;
+            });
+            _moveTweener.OnComplete(() =>
+            {
                 _moveTweener.Kill();
                 onComplete?.Invoke(this);
-            }).AsyncWaitForCompletion().AsUniTask();
+            });
+            await _moveTweener.AsyncWaitForCompletion().AsUniTask();
         }
         public void StopMove()
         {
@@ -98,6 +105,16 @@ namespace Core.Gameplay
                 _moveTweener.Play();
                 _explosionTweener.Play();
             }
+        }
+
+        private void SetMoveDirection(Vector3 endPosition, bool inLocal)
+        {
+            if (inLocal)
+                MoveDirection = transform.TransformPoint(endPosition) - transform.position;
+            else
+                MoveDirection = endPosition - transform.position;
+
+            MoveDirection = MoveDirection.normalized;
         }
     }
 }
