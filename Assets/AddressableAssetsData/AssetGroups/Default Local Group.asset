@@ -29,32 +29,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - Scene
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dbf358507f7a6224d89daef6be569d6f
-    m_Address: bg_Grass
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Sprite
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dea399e55d8c7a54b840b364def11fed
-    m_Address: bg_Trees
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Sprite
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 53870219c49a2004da93e488ba96ed8f
-    m_Address: bg_night.png
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Sprite
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 80470d52b250cf34f83808dd6803e5d7
-    m_Address: hungry_bat
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Sprite
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1c5627402d68cd642b43a000a0e53686
-    m_Address: hungry_bat_blur
+  - m_GUID: 51a6a63661f1dda4e916f7bae2fac85d
+    m_Address: BackgroundSpriteAtlas
     m_ReadOnly: 0
     m_SerializedLabels:
     - Sprite
@@ -306,6 +282,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Audio
     - Config
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1a34d7563bf72144a74c9b9196839c2
+    m_Address: UIAtlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Sprite
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}

@@ -16,26 +16,26 @@ MonoBehaviour:
   Tasks: []
   AbilitySettings:
   - Icon:
-      m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+      m_AssetGUID: e1a34d7563bf72144a74c9b9196839c2
       m_SubObjectName: bomb_icon
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_EditorAssetChanged: 1
-    AbilityType: 5
+    AbilityType: 6
     Amount: 5
   - Icon:
-      m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+      m_AssetGUID: e1a34d7563bf72144a74c9b9196839c2
       m_SubObjectName: icon_potion
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_EditorAssetChanged: 1
-    AbilityType: 7
+    AbilityType: 8
     Amount: 3
   - Icon:
-      m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+      m_AssetGUID: e1a34d7563bf72144a74c9b9196839c2
       m_SubObjectName: icon_lightning
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_EditorAssetChanged: 1
-    AbilityType: 6
+    AbilityType: 7
     Amount: 10
