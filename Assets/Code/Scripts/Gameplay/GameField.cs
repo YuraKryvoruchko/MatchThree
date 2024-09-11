@@ -625,7 +625,7 @@ namespace Core.Gameplay
 
                         if (_map[j, i].IsMove || _map[j, i].IsExplode)
                             areElementsMoved = false;
-                        if (_map[j, i].IsExplode || _map[j, i].MoveDirection.y > -1)
+                        if (_map[j, i].IsExplode || _map[j, i].IsMove && _map[j, i].MoveDirection.y > -1)
                         {
                             lowerElementIndex = 0;
                             continue;
@@ -642,7 +642,7 @@ namespace Core.Gameplay
                     }
                 }
 
-                CreateEllementsFromQueue(i);
+                CreateElementsFromQueue(i);
             }
             void DoCallback(Cell cell)
             {
@@ -650,7 +650,7 @@ namespace Core.Gameplay
                 _cellHandlingMap[position.y, position.x] = true;
                 _needHandleCells = true;
             }
-            void CreateEllementsFromQueue(int iIndex)
+            void CreateElementsFromQueue(int iIndex)
             {
                 int spawnQueue = 0;
                 for (int j = _verticalMapSize - 1; j >= 0; j--)

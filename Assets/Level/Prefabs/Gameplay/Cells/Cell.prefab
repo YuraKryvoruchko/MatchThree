@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 1393836646070208606}
-  _moveSpeedPerSecond: 3
+  _moveSpeedPerSecond: 10
 --- !u!1 &1393836646070208601
 GameObject:
   m_ObjectHideFlags: 0
