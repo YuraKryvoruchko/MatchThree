@@ -95,7 +95,7 @@ namespace Core.Infrastructure.Gameplay
         private void BindCellClickDetection()
         {
             Container
-                .BindInterfacesAndSelfTo<CellClickDetection>()
+                .BindInterfacesAndSelfTo<BoardClickDetection>()
                 .AsSingle()
                 .WithArguments(_mainCamera);
         }

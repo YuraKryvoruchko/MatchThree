@@ -86,7 +86,7 @@ namespace Core.UI.Gameplay
                 if (_abilityThrowMode.IsActive)
                     _abilityThrowMode.ChangeAbility(button.Type);
                 else
-                    _abilityThrowMode.EnableAbilityhrowMode(button.Type);
+                    _abilityThrowMode.EnableAbilityThrowMode(button.Type);
             }
         }
         private void OnUseAbility(CellType type, int count)

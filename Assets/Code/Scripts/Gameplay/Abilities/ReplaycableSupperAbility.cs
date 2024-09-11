@@ -29,7 +29,7 @@ namespace Core.Gameplay
             Cell swipedCell = GameFieldInstance.GetCell(swipedCellPosition);
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
 
-            Cell[] cellList = GameFieldInstance.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
+            Cell[] cellList = GameFieldInstance.GetByCondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
             Vector2Int[] cellPositions = new Vector2Int[_creatingAbilityObjectNumber];
             Vector3[] worldCellPositions = new Vector3[_creatingAbilityObjectNumber];
 

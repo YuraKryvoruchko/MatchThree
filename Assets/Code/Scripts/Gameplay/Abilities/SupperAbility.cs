@@ -21,7 +21,7 @@ namespace Core.Gameplay
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
 
             List<Cell> cellList = swipedCell.IsSpecial && coreCell.IsSpecial ?
-                GameFieldInstance.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode) :
+                GameFieldInstance.GetByCondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode) :
                 GameFieldInstance.GetAllOfType(swipedCell.Type);
 
             Vector3[] cellPositions = new Vector3[cellList.Count];

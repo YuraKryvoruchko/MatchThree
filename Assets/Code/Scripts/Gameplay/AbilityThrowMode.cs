@@ -11,7 +11,7 @@ namespace Core.Gameplay
 {
     public class AbilityThrowMode : IInitializable
     {
-        private CellClickDetection _cellClickDetection;
+        private BoardClickDetection _cellClickDetection;
 
         private CellType _abilityType;
 
@@ -31,7 +31,7 @@ namespace Core.Gameplay
         public event Action<CellType, int> OnUse;
 
         public AbilityThrowMode(IGameModeSimulation gameModeSimulation, ILevelService levelService,
-            GameField gameField, CellClickDetection cellClickDetection)
+            GameField gameField, BoardClickDetection cellClickDetection)
         {
             _gameModeSimulation = gameModeSimulation;
             _gameModeSimulation.OnBlockGame += HandleGameComplete;
@@ -56,9 +56,9 @@ namespace Core.Gameplay
             }
         }
 
-        public void HandleClickOnCell(Cell cell)
+        public void HandleClickOnBoard(Vector3 worldClickPosition)
         {
-            Vector2Int cellPosition = _gameField.WorldPositionToCell(cell.transform.position);
+            Vector2Int cellPosition = _gameField.WorldPositionToCell(worldClickPosition);
             _gameField.UseAbility(_abilityType, cellPosition, cellPosition);
             _abilityCount[_abilityType]--;
 
@@ -66,16 +66,16 @@ namespace Core.Gameplay
 
             DisableAbilityThrowMode();
         }
-        public void EnableAbilityhrowMode(CellType abilityType)
+        public void EnableAbilityThrowMode(CellType abilityType)
         {
             _abilityType = abilityType;
-            _cellClickDetection.OnCellClick += HandleClickOnCell;
+            _cellClickDetection.OnBoardClick += HandleClickOnBoard;
             IsActive = true;
             OnEnableMode?.Invoke();
         }
         public void DisableAbilityThrowMode()
         {
-            _cellClickDetection.OnCellClick -= HandleClickOnCell;
+            _cellClickDetection.OnBoardClick -= HandleClickOnBoard;
             IsActive = false;
             OnDisableMode?.Invoke();
         }

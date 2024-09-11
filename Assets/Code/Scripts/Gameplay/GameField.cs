@@ -256,7 +256,7 @@ namespace Core.Gameplay
             }
             return list;
         }
-        public List<Cell> GetBy—ondition(Func<Cell, bool> condition)
+        public List<Cell> GetByCondition(Func<Cell, bool> condition)
         {
             List<Cell> list = new List<Cell>();
             for (int i = 0; i < _horizontalMapSize; i++)

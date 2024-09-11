@@ -5,16 +5,16 @@ using Core.Input;
 
 namespace Core.Gameplay.Input
 {
-    public class CellClickDetection : IInitializable, IDisposable
+    public class BoardClickDetection : IInitializable, IDisposable
     {
         private Camera _mainCamera;
         private SwipeDetection _swipeDetection;
 
         private float RAY_DISTANCE = 100F;
 
-        public event Action<Cell> OnCellClick;
+        public event Action<Vector3> OnBoardClick;
 
-        public CellClickDetection(Camera mainCamera, SwipeDetection swipeDetection)
+        public BoardClickDetection(Camera mainCamera, SwipeDetection swipeDetection)
         {
             _mainCamera = mainCamera;
             _swipeDetection = swipeDetection;
@@ -22,14 +22,14 @@ namespace Core.Gameplay.Input
 
         void IInitializable.Initialize()
         {
-            _swipeDetection.OnStartSwipe += GetCellFromPosition;
+            _swipeDetection.OnStartSwipe += GetPointFromPosition;
         }
         void IDisposable.Dispose()
         {
-            _swipeDetection.OnStartSwipe -= GetCellFromPosition;
+            _swipeDetection.OnStartSwipe -= GetPointFromPosition;
         }
 
-        private void GetCellFromPosition(Vector2 screenPosition)
+        private void GetPointFromPosition(Vector2 screenPosition)
         {
             Ray ray = _mainCamera.ScreenPointToRay(screenPosition);
             Debug.DrawRay(ray.origin, ray.direction * 100f, Color.blue, 5f);
@@ -37,7 +37,7 @@ namespace Core.Gameplay.Input
             if (hit.collider == null)
                 return;
 
-            OnCellClick?.Invoke(hit.collider.GetComponent<Cell>());
+            OnBoardClick?.Invoke(hit.point);
         }
     }
 }

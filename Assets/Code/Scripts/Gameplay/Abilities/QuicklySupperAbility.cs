@@ -33,7 +33,7 @@ namespace Core.Gameplay
             OnPause += abilityEffectInstance.Pause;
             OnPause += audioSourceInstance.Pause;
 
-            Cell[] cellList = GameFieldInstance.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
+            Cell[] cellList = GameFieldInstance.GetByCondition((cell) => cell != null && !cell.IsStatic && !cell.IsExplode && !cell.IsSpecial).ToArray();
             Vector2Int[] cellPositions = new Vector2Int[_creatingAbilityObjectNumber];
             Vector3[] worldCellPositions = new Vector3[_creatingAbilityObjectNumber];
 

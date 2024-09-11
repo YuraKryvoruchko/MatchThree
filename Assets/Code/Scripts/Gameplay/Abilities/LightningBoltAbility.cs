@@ -60,7 +60,7 @@ namespace Core.Gameplay
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);
             List<Cell> cells = abilityCell.IsSpecial && swipedCell.IsSpecial ? 
-                _gameField.GetByСondition((cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
+                _gameField.GetByCondition((cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
                 _gameField.GetAllOfType(swipedCell.Type);
 
             if(swipedCellPosition != abilityPosition)
