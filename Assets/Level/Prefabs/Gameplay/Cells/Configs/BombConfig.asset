@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b59ccaf4d09cc8149865e788ecde1545, type: 3}
   m_Name: BombConfig
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: 2be55834e2ff7b144a243413f2979787, type: 3}
+  Icon:
+    m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
+    m_SubObjectName: bomb_icon
+    m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    m_EditorAssetChanged: 1
   Type: 6
   Score: 10
   IsStatic: 0

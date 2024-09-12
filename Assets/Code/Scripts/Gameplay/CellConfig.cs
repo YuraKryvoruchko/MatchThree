@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Core.Gameplay
 {
@@ -6,7 +7,7 @@ namespace Core.Gameplay
     public class CellConfig : ScriptableObject
     {
         [Header("Visual")]
-        public Sprite Icon;
+        public AssetReferenceSprite Icon;
         [Header("Settings")]
         public CellType Type;
         public int Score;

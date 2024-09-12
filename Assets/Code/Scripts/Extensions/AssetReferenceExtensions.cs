@@ -9,7 +9,7 @@ namespace Core.Infrastructure.Service
         {
             if (assetReference.Asset == null)
             {
-                if (!assetReference.IsDone && assetReference.OperationHandle.PercentComplete < 1f)
+                if (assetReference.IsValid())
                     await assetReference.OperationHandle.Convert<T>();
                 else
                     await assetReference.LoadAssetAsync();

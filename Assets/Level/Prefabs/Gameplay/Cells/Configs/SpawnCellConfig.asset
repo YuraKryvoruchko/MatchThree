@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b59ccaf4d09cc8149865e788ecde1545, type: 3}
   m_Name: SpawnCellConfig
   m_EditorClassIdentifier: 
-  Icon: {fileID: 0}
+  Icon:
+    m_AssetGUID: 
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
   Type: 5
   Score: 0
   IsStatic: 1

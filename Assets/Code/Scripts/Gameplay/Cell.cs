@@ -2,6 +2,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Core.Infrastructure.Service;
 
 namespace Core.Gameplay
 {
@@ -37,15 +38,22 @@ namespace Core.Gameplay
         {
             _moveTweener.Kill();
             _explosionTweener.Kill();
+            _config.Icon.ReleaseAsset();
         }
 
         public void Init(CellConfig config)
         {
-            _spriteRenderer.sprite = config.Icon;
             _type = config.Type;
             _isSpecial = config.IsSpecial;
             _isStatic = config.IsStatic;
             _config = config;
+
+            if (string.IsNullOrEmpty(config.Icon.AssetGUID))
+                return;
+            UniTask.Void(async () => 
+            {
+                _spriteRenderer.sprite = await _config.Icon.GetOrLoad();
+            });
         }
 
         public void MoveTo(Vector3 endPosition, bool inLocal = true, Action<Cell> onComplete = null)
