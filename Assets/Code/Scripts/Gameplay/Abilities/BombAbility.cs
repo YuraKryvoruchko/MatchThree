@@ -20,6 +20,8 @@ namespace Core.Gameplay
         private IAudioService _audioService;
         private ClipEvent _explosiveEvent;
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         private event Action<bool> OnPause;
 
         public BombAbility(int lineLength, IAudioService audioService, ClipEvent explosiveEvent, AssetReferenceGameObject bombEffectReference)
@@ -28,9 +30,14 @@ namespace Core.Gameplay
             _audioService = audioService;
             _explosiveEvent = explosiveEvent;
             _bombEffectReference = bombEffectReference;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
         void IDisposable.Dispose()
         {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+
             if (_bombEffectReference.IsValid())
                 _bombEffectReference.ReleaseAsset();
         }
@@ -55,7 +62,7 @@ namespace Core.Gameplay
             try
             {
                 if (_bombEffectReference.Asset == null)
-                    await _bombEffectReference.GetOrLoad();
+                    await _bombEffectReference.GetOrLoad(_cancellationTokenSource.Token);
 
                 bombVFXEffect = GameObject.Instantiate((GameObject)_bombEffectReference.Asset, 
                     cellPosition, Quaternion.identity).GetComponent<IBasicVFXEffect>();
@@ -63,7 +70,7 @@ namespace Core.Gameplay
                 OnPause += bombVFXEffect.Pause;
                 OnPause += audioSourceInstance.Pause;
 
-                UniTask explosiveVFXAnimationTask = bombVFXEffect.Play();
+                UniTask explosiveVFXAnimationTask = bombVFXEffect.Play(_cancellationTokenSource.Token);
 
                 int lengthFromBombCell = (_lineLength - 1) / 2, taskArrayIndex = 0;
                 UniTask[] explodeTasks = new UniTask[_lineLength * _lineLength + 1];
@@ -75,7 +82,9 @@ namespace Core.Gameplay
                     }
                 }
                 explodeTasks[^1] = explosiveVFXAnimationTask;
-                await UniTask.WhenAll(explodeTasks);
+                await UniTask.WhenAll(explodeTasks).AttachExternalCancellation(_cancellationTokenSource.Token);
+
+                callback?.Invoke(this);
             }
             finally
             {
@@ -87,7 +96,6 @@ namespace Core.Gameplay
                     GameObject.Destroy(bombVFXEffect as MonoBehaviour);
                 }
 
-                callback?.Invoke(this);
             }
         }
     }

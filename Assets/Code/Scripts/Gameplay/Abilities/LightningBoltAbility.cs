@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Threading;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
-using System.Collections.Generic;
+using Core.Infrastructure.Service;
 
 using Random = UnityEngine.Random;
 
 namespace Core.Gameplay
 {
-    public class LightningBoltAbility : IAbility
+    public class LightningBoltAbility : IAbility, IDisposable
     {
         private GameField _gameField;
-        private AssetReference _lightingBoltEffectPrefab;
+        private AssetReferenceGameObject _lightingBoltEffectPrefab;
 
         private int _lightningBoltCount;
         private IAbility _severalAbility;
@@ -23,11 +25,13 @@ namespace Core.Gameplay
 
         private bool _isPaused;
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         private event Action<bool> OnPause;
 
         private const float LIGHTNING_DELAY = 0.4F;
 
-        public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReference lightingBoltEffectPrefab,
+        public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReferenceGameObject lightingBoltEffectPrefab,
             int lightningBoltCount, IAbility severalAbility = null)
         {
             _audioService = audioService;
@@ -35,6 +39,16 @@ namespace Core.Gameplay
             _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
             _lightningBoltCount = lightningBoltCount;
             _severalAbility = severalAbility;
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+        void IDisposable.Dispose()
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+
+            if (_lightingBoltEffectPrefab.IsValid())
+                _lightingBoltEffectPrefab.ReleaseAsset();
         }
 
         public void Init(GameField gameField)
@@ -66,41 +80,48 @@ namespace Core.Gameplay
             if(swipedCellPosition != abilityPosition)
                 _gameField.ExplodeCellAsync(abilityPosition).Forget();
 
-            LightingBoltEffect lightingBoltEffect = (await Addressables.InstantiateAsync(_lightingBoltEffectPrefab))
-                .GetComponent<LightingBoltEffect>();
-
-            OnPause += lightingBoltEffect.Pause;
-            OnPause += audioInstance.Pause;
-
-            Cell randomCell = swipedCell;
-            for (int i = 0; i < _lightningBoltCount && cells.Count > 0; i++)
+            LightingBoltEffect lightingBoltEffect = null;
+            try
             {
-                cells.Remove(randomCell);
+                if (_lightingBoltEffectPrefab.Asset == null)
+                    await _lightingBoltEffectPrefab.GetOrLoad(_cancellationTokenSource.Token);
+                lightingBoltEffect = GameObject.Instantiate(_lightingBoltEffectPrefab.Asset as GameObject).GetComponent<LightingBoltEffect>();
 
-                Vector3 startPosition = randomCell.transform.position;
-                startPosition.y = 5;
+                OnPause += lightingBoltEffect.Pause;
+                OnPause += audioInstance.Pause;
 
-                lightingBoltEffect.Play(startPosition, randomCell.transform.position);
-                audioInstance.Play().Forget();
-                if (_severalAbility == null)
-                    _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
-                else
-                    _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
+                Cell randomCell = swipedCell;
+                for (int i = 0; i < _lightningBoltCount && cells.Count > 0; i++)
+                {
+                    cells.Remove(randomCell);
 
-                if(cells.Count > 0)
-                    randomCell = cells[Random.Range(0, cells.Count - 1)];
+                    Vector3 startPosition = randomCell.transform.position;
+                    startPosition.y = 5;
 
-                await UniTask.WaitForSeconds(LIGHTNING_DELAY);
-                if (_isPaused)
-                    await UniTask.WaitWhile(() => _isPaused);
+                    lightingBoltEffect.Play(startPosition, randomCell.transform.position);
+                    audioInstance.Play().Forget();
+                    if (_severalAbility == null)
+                        _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
+                    else
+                        _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
+
+                    if(cells.Count > 0)
+                        randomCell = cells[Random.Range(0, cells.Count - 1)];
+
+                    await UniTask.WaitForSeconds(LIGHTNING_DELAY, cancellationToken: _cancellationTokenSource.Token);
+                    if (_isPaused)
+                        await UniTask.WaitWhile(() => _isPaused, cancellationToken: _cancellationTokenSource.Token);
+                }
+
+                callback?.Invoke(this);
             }
-
-            OnPause -= lightingBoltEffect.Pause;
-            OnPause -= audioInstance.Pause;
-            Addressables.ReleaseInstance(lightingBoltEffect.gameObject);
-            _audioService.ReleaseSource(audioInstance);
-
-            callback?.Invoke(this);
+            finally
+            {
+                OnPause -= lightingBoltEffect.Pause;
+                OnPause -= audioInstance.Pause;
+                GameObject.Destroy(lightingBoltEffect.gameObject);
+                _audioService.ReleaseSource(audioInstance);
+            }
         }
     }
 }

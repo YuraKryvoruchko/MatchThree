@@ -38,7 +38,9 @@ namespace Core.Gameplay
         {
             _moveTweener.Kill();
             _explosionTweener.Kill();
-            _config.Icon.ReleaseAsset();
+
+            if(_config.Icon.IsValid())
+                _config.Icon.ReleaseAsset();
         }
 
         public void Init(CellConfig config)
