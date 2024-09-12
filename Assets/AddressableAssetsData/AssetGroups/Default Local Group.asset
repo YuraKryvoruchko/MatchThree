@@ -221,49 +221,49 @@ MonoBehaviour:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ef3ae421f71c5c4e97fe12dc2fc6312
-    m_Address: VFX/CFXR Explosion 1.prefab
+    m_Address: VFX/Prefabs/CFXR Explosion 1.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4bda94453d2ca7444a0fff05b2d425f5
-    m_Address: VFX/CFXR Explosion Smoke 2 Solo (HDR).prefab
+    m_Address: VFX/Prefabs/CFXR Explosion Smoke 2 Solo (HDR).prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e31c720355f5c2143b0a4ca338183d8c
-    m_Address: VFX/LightningBoltPrefab.prefab
+    m_Address: VFX/Prefabs/LightningBoltPrefab.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2dee2a952f046be458b928bf213e2c20
-    m_Address: VFX/SmallBombEffect.prefab
+    m_Address: VFX/Prefabs/SmallBombEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94544fa4b297d4f42835ec22b9f5c781
-    m_Address: VFX/SuperAbilityEffect.prefab
+    m_Address: VFX/Prefabs/SuperAbilityEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c200d821c4a1bfe4aacb87719516199b
-    m_Address: VFX/Explosion.prefab
+    m_Address: VFX/Prefabs/Explosion.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d71202c72a21964ca4a0a5755111f0c
-    m_Address: VFX/BigBombEffect.prefab
+    m_Address: VFX/Prefabs/BigBombEffect.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
@@ -288,6 +288,78 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Sprite
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec1892961c3d27347b1ed3a3cb5f854e
+    m_Address: VFX/Materials/cfxr smoke cloud x4 second color ab.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d435dfcfea1eb64dba196af2f9490f4
+    m_Address: VFX/Textures/cfxr explosion smoke dissolve.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 914231f4fc2a7194b9323d6e2cf86df0
+    m_Address: VFX/Textures/cfxr explosion smoke alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbe9410b182e9cd4787d6f068c564ad7
+    m_Address: VFX/Textures/cfxr explosion second color map.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41e018a6cf0c896418fc0b89dda748c6
+    m_Address: VFX/Materials/cfxr magic star hdr ab.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 081073d8f2209c949819e1e5872845b3
+    m_Address: VFX/Textures/cfxr magic star.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 131d5a2c82c6cbb469ab522af6fe9aff
+    m_Address: VFX/Materials/cfxr stretch ray blur add.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea08f0da7f459e147ba80e6dd6e38bb9
+    m_Address: VFX/Textures/cfxr stretch ray blur.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a81df4963508f8c4e9c854c919c93b67
+    m_Address: VFX/Materials/cfxr proc ring hdr ab.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd8a92b47db41f644ae7188f06a986a2
+    m_Address: VFX/Mesh/cfxr magic star mesh.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a78b06c58d03f5d4fbb74ba21020241e
+    m_Address: VFX/Mesh/cfxr ring mesh.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e06ba9469eab2774f8c96527e1f9982e
+    m_Address: VFX/Materials/LightningBoltMaterialAdditive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
