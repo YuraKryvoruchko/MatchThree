@@ -80,8 +80,7 @@ namespace Core.Infrastructure.Gameplay
         private void BindAbilityFabric()
         {
             Container
-                .Bind<IAbilityFactory>()
-                .To<AbilityFactory>()
+                .BindInterfacesTo<AbilityFactory>()
                 .AsSingle()
                 .WithArguments(_abilityFactoryConfig);
         }

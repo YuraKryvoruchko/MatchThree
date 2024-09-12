@@ -7,7 +7,7 @@ using Core.Infrastructure.Service.Audio;
 
 namespace Core.Infrastructure.Factories
 {
-    public class AbilityFactory : IAbilityFactory
+    public class AbilityFactory : IAbilityFactory, IDisposable
     {
         private Dictionary<CellType, IAbility> _cellAbilityDictionary;
         private Dictionary<CellTypeCombination, IAbility> _advencedAbilityDictionary;
@@ -18,14 +18,14 @@ namespace Core.Infrastructure.Factories
         public class AbilityFactoryConfig
         {
             [Header("Lighting Bolt Settings")]
-            public AssetReference LightingBoltEffectPrefabReference;
+            public AssetReferenceGameObject LightingBoltEffectPrefabReference;
             public ClipEvent LightingBoltHitEvent;
-            [Header("Bomb Settigns")]
-            public AssetReference SmallBombEffectPrefabReference;
-            public AssetReference BigBombEffectPrefabReference;
+            [Header("Bomb Settings")]
+            public AssetReferenceGameObject SmallBombEffectPrefabReference;
+            public AssetReferenceGameObject BigBombEffectPrefabReference;
             public ClipEvent ExplosiveEvent;
             [Header("Supper Ability Settings")]
-            public AssetReference SupperCellEffectPrefabReference;
+            public AssetReferenceGameObject SupperCellEffectPrefabReference;
             public ClipEvent ElementCapturingEvent;
         }
 
@@ -86,6 +86,19 @@ namespace Core.Infrastructure.Factories
                 { new CellTypeCombination(CellType.Supper, CellType.Supper)
                     , new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
             };
+        }
+        void IDisposable.Dispose()
+        {
+            foreach(var keyValuePair in _cellAbilityDictionary)
+            {
+                if(keyValuePair.Value is IDisposable disposable)
+                    disposable.Dispose();
+            }
+            foreach (var keyValuePair in _advencedAbilityDictionary)
+            {
+                if (keyValuePair.Value is IDisposable disposable)
+                    disposable.Dispose();
+            }
         }
 
         IAbility IAbilityFactory.GetAbility(CellType type)

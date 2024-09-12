@@ -81,7 +81,7 @@ namespace Core.Gameplay
                 startPosition.y = 5;
 
                 lightingBoltEffect.Play(startPosition, randomCell.transform.position);
-                audioInstance.Play();
+                audioInstance.Play().Forget();
                 if (_severalAbility == null)
                     _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
                 else

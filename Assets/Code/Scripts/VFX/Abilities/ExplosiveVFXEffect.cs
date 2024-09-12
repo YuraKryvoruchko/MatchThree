@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using System;
+using System.Threading;
 
 namespace Core.VFX
 {
@@ -27,12 +28,13 @@ namespace Core.VFX
             OnPause?.Invoke(this, isPause);
         }
 
-        public async UniTask Play()
+        public async UniTask Play(CancellationToken cancellationToken = default)
         {
             OnStart?.Invoke(this);
 
             _explosiveEffectInstance.Play();
-            await UniTask.WaitWhile(() => _explosiveEffectInstance.time < _explosiveEffectInstance.main.duration || !_explosiveEffectInstance.isStopped);
+            await UniTask.WaitWhile(() => _explosiveEffectInstance.time < _explosiveEffectInstance.main.duration 
+            || !_explosiveEffectInstance.isStopped, PlayerLoopTiming.Update, cancellationToken);
 
             if(_explosiveEffectInstance.isStopped)
                 OnStoped?.Invoke(this);

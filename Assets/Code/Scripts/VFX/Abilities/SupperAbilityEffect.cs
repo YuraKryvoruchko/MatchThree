@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
@@ -40,7 +41,7 @@ namespace Core.VFX.Abilities
             }
         }
 
-        public async UniTask Play()
+        public async UniTask Play(CancellationToken cancellationToken = default)
         {
             OnStart?.Invoke(this);
 
@@ -56,7 +57,7 @@ namespace Core.VFX.Abilities
             for (int i = 0; i < endPositions.Length; i++)
             {
                 if (_isPaused)
-                    await UniTask.WaitWhile(() => _isPaused);
+                    await UniTask.WaitWhile(() => _isPaused, PlayerLoopTiming.Update, cancellationToken);
                 if (_isStoped)
                     return;
 
@@ -72,10 +73,10 @@ namespace Core.VFX.Abilities
                         OnLineReady?.Invoke(line.EndPosition);
                     });
 
-                await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds);
+                await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds, false, PlayerLoopTiming.Update, cancellationToken);
             }
 
-            await UniTask.WaitWhile(() => numberOfPositions > 0 || _isStoped);
+            await UniTask.WaitWhile(() => numberOfPositions > 0 || _isStoped, PlayerLoopTiming.Update, cancellationToken);
             if (_isStoped)
                 return;
 
