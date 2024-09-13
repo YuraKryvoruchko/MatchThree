@@ -13,6 +13,6 @@ namespace Core.VFX
         event Action<IBasicVFXEffect> OnStart;
         event Action<IBasicVFXEffect, bool> OnPause;
         event Action<IBasicVFXEffect> OnComplete;
-        event Action<IBasicVFXEffect> OnStoped;
+        event Action<IBasicVFXEffect> OnStopped;
     }
 }

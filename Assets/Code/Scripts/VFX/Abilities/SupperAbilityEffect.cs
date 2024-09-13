@@ -16,15 +16,15 @@ namespace Core.VFX.Abilities
 
         private SupperAbilityVFXParameters _parameters;
 
-        private bool _isStoped;
+        private bool _isStopped;
         private bool _isPaused;
 
-        private ParticleSystem[] _particlies;
+        private ParticleSystem[] _particles;
         private MagicLineEffect[] _magicLines;
 
         public event Action<IBasicVFXEffect> OnStart;
         public event Action<IBasicVFXEffect, bool> OnPause;
-        public event Action<IBasicVFXEffect> OnStoped;
+        public event Action<IBasicVFXEffect> OnStopped;
         public event Action<IBasicVFXEffect> OnComplete;
 
         public class SupperAbilityVFXParameters
@@ -49,79 +49,27 @@ namespace Core.VFX.Abilities
             Action<Vector3> OnLineReady = _parameters.OnLineReady;
             Action OnAllReady = _parameters.OnAllReady;
 
-            _isStoped = false;
-            int numberOfPositions = endPositions.Length;
+            _isStopped = false;
             _magicLines = new MagicLineEffect[endPositions.Length];
-            _particlies = new ParticleSystem[endPositions.Length * 2];
+            _particles = new ParticleSystem[endPositions.Length * 2];
             try
             {
-                for (int i = 0; i < endPositions.Length; i++)
-                {
-                    if (_isPaused)
-                        await UniTask.WaitWhile(() => _isPaused, PlayerLoopTiming.Update, cancellationToken);
-                    if (_isStoped)
-                        return;
-
-                    MagicLineEffect magicLine = Instantiate(_magicLineEffect, transform);
-                    _magicLines[i] = magicLine;
-                
-                    float duration = Vector3.Distance(transform.position, endPositions[i]) / _lineSpeed;
-                    magicLine.MoveFromAndTo(transform.position, endPositions[i], duration, 
-                        (line) => 
-                        { 
-                            numberOfPositions--;
-                            _particlies[numberOfPositions] = Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity, transform);
-                            OnLineReady?.Invoke(line.EndPosition);
-                        });
-
-                    await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds, false, PlayerLoopTiming.Update, cancellationToken);
-                }
-
-                await UniTask.WaitWhile(() => numberOfPositions > 0 || _isStoped, PlayerLoopTiming.Update, cancellationToken);
-                if (_isStoped)
+                await MoveMagicalLinesAsync(endPositions, OnLineReady, cancellationToken);
+                if (_isStopped)
                     return;
 
                 OnAllReady?.Invoke();
 
-                float particleDuration = 0f;
-                for (int i = 0; i < endPositions.Length; i++)
-                {
-                    Destroy(_magicLines[i].gameObject);
-                    _magicLines[i] = null;
-                    ParticleSystem particle = Instantiate(_explosionPrefab, transform);
-                    particle.transform.position = endPositions[i];
-                    _particlies[i].Stop();
-                    _particlies[endPositions.Length + i] = particle;
-                    particleDuration = particle.main.duration;
-                    particle.Play();
-                }
-                float elapsedTime = 0f;
-                while(elapsedTime < particleDuration)
-                {
-                    if(!_isPaused)
-                        elapsedTime += Time.deltaTime;
+                ReplaceMagicalLinesWithParticles(endPositions);
 
-                    await UniTask.Yield(cancellationToken);
-                }
+                float particleDuration = _explosionPrefab.main.duration;
+                await WaitParticleDurationAsync(particleDuration, cancellationToken);
+
                 OnComplete?.Invoke(this);
             }
             finally
             {
-                for(int i = 0; i < _magicLines.Length; i++)
-                {
-                    if(_magicLines[i] == null)
-                        continue;
-
-                    _magicLines[i].Stop(false);
-                    Destroy(_magicLines[i].gameObject);
-                }
-                for(int i = 0; i < _particlies.Length; i++)
-                {
-                    if (_particlies[i] == null)
-                        continue;
-
-                    Destroy(_particlies[i]);
-                }
+                DestroyAllEffectParts();
             }
         }
 
@@ -136,27 +84,97 @@ namespace Core.VFX.Abilities
                 if(_magicLines[i] != null)
                     _magicLines[i].SetPause(isPause);
             }
-            for (int i = 0; i < _particlies.Length; i++)
+            for (int i = 0; i < _particles.Length; i++)
             {
-                if (_particlies[i] == null)
+                if (_particles[i] == null)
                     continue;
 
                 if (isPause)
-                    _particlies[i].Pause();
+                    _particles[i].Pause();
                 else
-                    _particlies[i].Play();
+                    _particles[i].Play();
             }
 
             OnPause?.Invoke(this, isPause);
         }
         public void Stop()
         {
-            _isStoped = true;
-            OnStoped?.Invoke(this);
+            _isStopped = true;
+            OnStopped?.Invoke(this);
         }
         public void SetParameters(SupperAbilityVFXParameters parameters)
         {
             _parameters = parameters;
+        }
+
+        private async UniTask MoveMagicalLinesAsync(Vector3[] endPositions, Action<Vector3> OnLineReady, CancellationToken cancellationToken)
+        {
+            int numberOfPositions = endPositions.Length;
+            for (int i = 0; i < endPositions.Length; i++)
+            {
+                if (_isPaused)
+                    await UniTask.WaitWhile(() => _isPaused, PlayerLoopTiming.Update, cancellationToken);
+                if (_isStopped)
+                    return;
+
+                MagicLineEffect magicLine = Instantiate(_magicLineEffect, transform);
+                _magicLines[i] = magicLine;
+
+                float duration = Vector3.Distance(transform.position, endPositions[i]) / _lineSpeed;
+                magicLine.MoveFromAndTo(transform.position, endPositions[i], duration,
+                    (line) =>
+                    {
+                        numberOfPositions--;
+                        _particles[numberOfPositions] = Instantiate(_lightGlowPrefab, line.EndPosition, Quaternion.identity, transform);
+                        OnLineReady?.Invoke(line.EndPosition);
+                    });
+
+                await UniTask.WaitForSeconds(_lineCreatingDelayInSeconds, false, PlayerLoopTiming.Update, cancellationToken);
+            }
+
+            await UniTask.WaitWhile(() => numberOfPositions > 0 || _isStopped, PlayerLoopTiming.Update, cancellationToken);
+        }
+        private void ReplaceMagicalLinesWithParticles(Vector3[] endPositions)
+        {
+            for (int i = 0; i < endPositions.Length; i++)
+            {
+                Destroy(_magicLines[i].gameObject);
+                _magicLines[i] = null;
+                ParticleSystem particle = Instantiate(_explosionPrefab, transform);
+                particle.transform.position = endPositions[i];
+                _particles[i].Stop();
+                _particles[endPositions.Length + i] = particle;
+                particle.Play();
+            }
+        }
+        private async UniTask WaitParticleDurationAsync(float particleDuration, CancellationToken cancellationToken)
+        {
+            float elapsedTime = 0f;
+            while (elapsedTime < particleDuration)
+            {
+                if (!_isPaused)
+                    elapsedTime += Time.deltaTime;
+
+                await UniTask.Yield(cancellationToken);
+            }
+        }
+        private void DestroyAllEffectParts()
+        {
+            for (int i = 0; i < _magicLines.Length; i++)
+            {
+                if (_magicLines[i] == null)
+                    continue;
+
+                _magicLines[i].Stop(false);
+                Destroy(_magicLines[i].gameObject);
+            }
+            for (int i = 0; i < _particles.Length; i++)
+            {
+                if (_particles[i] == null)
+                    continue;
+
+                Destroy(_particles[i]);
+            }
         }
     }
 }

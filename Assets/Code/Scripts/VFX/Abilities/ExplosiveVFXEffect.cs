@@ -12,7 +12,7 @@ namespace Core.VFX
         public event Action<IBasicVFXEffect> OnStart;
         public event Action<IBasicVFXEffect, bool> OnPause;
         public event Action<IBasicVFXEffect> OnComplete;
-        public event Action<IBasicVFXEffect> OnStoped;
+        public event Action<IBasicVFXEffect> OnStopped;
 
         public class ExplosiveVFXEffectParameters
         {
@@ -37,7 +37,7 @@ namespace Core.VFX
             || !_explosiveEffectInstance.isStopped, PlayerLoopTiming.Update, cancellationToken);
 
             if(_explosiveEffectInstance.isStopped)
-                OnStoped?.Invoke(this);
+                OnStopped?.Invoke(this);
             else
                 OnComplete?.Invoke(this);
         }
