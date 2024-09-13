@@ -590,20 +590,14 @@ namespace Core.Gameplay
                     {
                         if (j > 0 && _map[j - 1, i] != null && _map[j - 1, i].IsStatic)
                         {
-                            if (i < _horizontalMapSize - 1 && _map[j - 1, i + 1] != null && !_map[j - 1, i + 1].IsStatic && !_map[j - 1, i + 1].IsMove)
+                            if (i < _horizontalMapSize - 1 && _map[j - 1, i + 1] != null && !_map[j - 1, i + 1].IsStatic && !_map[j - 1, i + 1].IsMove && !_map[j - 1, i + 1].IsExplode)
                             {
-                                _map[j, i] = _map[j - 1, i + 1];
-                                _map[j - 1, i + 1].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, DoCallback);
-                                _map[j - 1, i + 1] = null;
-                                areElementsMoved = false;
+                                MoveElement(new Vector2Int(i + 1, j - 1), new Vector2Int(i, j));
                                 continue;
                             }
-                            else if (i > 0 && _map[j - 1, i - 1] != null && !_map[j - 1, i - 1].IsStatic && !_map[j - 1, i - 1].IsMove)
+                            else if (i > 0 && _map[j - 1, i - 1] != null && !_map[j - 1, i - 1].IsStatic && !_map[j - 1, i - 1].IsMove && !_map[j - 1, i - 1].IsExplode)
                             {
-                                _map[j, i] = _map[j - 1, i - 1];
-                                _map[j - 1, i - 1].MoveTo(CellPositionToWorld(new Vector2Int(i, j)), true, DoCallback);
-                                _map[j - 1, i - 1] = null;
-                                areElementsMoved = false;
+                                MoveElement(new Vector2Int(i - 1, j - 1), new Vector2Int(i, j));
                                 continue;
                             }
                         }
@@ -634,10 +628,7 @@ namespace Core.Gameplay
                         if (lowerElementIndex <= j)
                             continue;
 
-                        areElementsMoved = false;
-                        _map[lowerElementIndex, i] = _map[j, i];
-                        _map[j, i] = null;
-                        _map[lowerElementIndex, i].MoveTo(CellPositionToWorld(new Vector2Int(i, lowerElementIndex)), true, DoCallback);
+                        MoveElement(new Vector2Int(i, j), new Vector2Int(i, lowerElementIndex));
                         lowerElementIndex--;
                     }
                 }
@@ -677,6 +668,13 @@ namespace Core.Gameplay
                         spawnQueue = 0;
                     }
                 }
+            }
+            void MoveElement(Vector2Int from, Vector2Int to)
+            {
+                areElementsMoved = false;
+                _map[to.y, to.x] = _map[from.y, from.x];
+                _map[from.y, from.x] = null;
+                _map[to.y, to.x].MoveTo(CellPositionToWorld(new Vector2Int(to.x, to.y)), true, DoCallback);
             }
             void TryHandleCells()
             {
