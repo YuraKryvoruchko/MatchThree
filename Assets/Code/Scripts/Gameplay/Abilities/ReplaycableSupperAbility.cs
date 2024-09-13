@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
-using System;
+using Core.Infrastructure.Service;
 
 using Random = UnityEngine.Random;
 
@@ -11,20 +13,29 @@ namespace Core.Gameplay
 {
     public class ReplaycableSupperAbility : BaseSupperAbility
     {
+        private CancellationTokenSource _cancellationTokenSource;
+
         private readonly CellType _replaceObject;
         private readonly IAbility _ability;
         private readonly int _creatingAbilityObjectNumber;
 
-        public ReplaycableSupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReference supperAbilityEffectReference,
+        public ReplaycableSupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReferenceGameObject supperAbilityEffectReference,
             CellType replaceObject, IAbility ability, int creatingAbilityObjectNumber) : 
             base(audioService, elementCapturingEvent, supperAbilityEffectReference)
         {
             _creatingAbilityObjectNumber = creatingAbilityObjectNumber;
             _ability = ability;
             _replaceObject = replaceObject;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback)
+        public override void OnDispose()
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+        public override async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback, CancellationToken cancellationToken)
         {
             Cell swipedCell = GameFieldInstance.GetCell(swipedCellPosition);
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
@@ -49,33 +60,47 @@ namespace Core.Gameplay
             _ability.Init(GameFieldInstance);
 
             AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
-            SupperAbilityEffect abilityEffectInstance = (await Addressables.InstantiateAsync(SupperAbilityEffectReference,
-                coreCell.transform.position, Quaternion.identity)).GetComponent<SupperAbilityEffect>();
+            SupperAbilityEffect abilityEffectInstance = null;
 
-            OnPause += audioSourceInstance.Pause;
-            OnPause += abilityEffectInstance.Pause;
+            CancellationTokenSource tokenSource = CancellationTokenSource
+                .CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
+            try 
+            {
+                if (SupperAbilityEffectReference.Asset == null)
+                    await SupperAbilityEffectReference.GetOrLoad(tokenSource.Token);
 
-            abilityEffectInstance.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(worldCellPositions,
-                (worldPosition) =>
-                {
-                    GameFieldInstance.ReplaceCell(_replaceObject, GameFieldInstance.WorldPositionToCell(worldPosition));
-                },
-                () =>
-                {
-                    for (int i = 0; i < _creatingAbilityObjectNumber; i++)
+                abilityEffectInstance = GameObject.Instantiate(SupperAbilityEffectReference.Asset as GameObject,
+                coreCell.transform.position, Quaternion.identity).GetComponent<SupperAbilityEffect>();
+
+                OnPause += audioSourceInstance.Pause;
+                OnPause += abilityEffectInstance.Pause;
+
+                abilityEffectInstance.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(worldCellPositions,
+                    (worldPosition) =>
                     {
-                        _ability.Execute(cellPositions[i], cellPositions[i]).Forget();
-                    }
-                    GameFieldInstance.ExplodeCellAsync(GameFieldInstance.WorldPositionToCell(coreCell.transform.position)).Forget();
-                }));
-            await abilityEffectInstance.Play();
+                        GameFieldInstance.ReplaceCell(_replaceObject, GameFieldInstance.WorldPositionToCell(worldPosition));
+                    },
+                    () =>
+                    {
+                        for (int i = 0; i < _creatingAbilityObjectNumber; i++)
+                        {
+                            _ability.Execute(cellPositions[i], cellPositions[i], null, tokenSource.Token).Forget();
+                        }
+                        GameFieldInstance.ExplodeCellAsync(GameFieldInstance.WorldPositionToCell(coreCell.transform.position)).Forget();
+                    }));
+                await abilityEffectInstance.Play(tokenSource.Token);
 
-            OnPause -= audioSourceInstance.Pause;
-            OnPause -= abilityEffectInstance.Pause;
-            AudioService.ReleaseSource(audioSourceInstance);
-            Addressables.ReleaseInstance(abilityEffectInstance.gameObject);
+                callback?.Invoke(this);
+            }
+            finally
+            {
+                OnPause -= audioSourceInstance.Pause;
+                OnPause -= abilityEffectInstance.Pause;
+                AudioService.ReleaseSource(audioSourceInstance);
+                GameObject.Destroy(abilityEffectInstance.gameObject);
 
-            callback?.Invoke(this);
+                tokenSource.Dispose();
+            }
         }
     }
 }

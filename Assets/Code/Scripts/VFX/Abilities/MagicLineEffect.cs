@@ -34,6 +34,10 @@ namespace Core.VFX.Abilities
             else
                 _moveTweener.Play();
         }
+        public void Stop(bool complete)
+        {
+            _moveTweener.Kill(complete);
+        }
 
         private void Lerp(float progress)
         {

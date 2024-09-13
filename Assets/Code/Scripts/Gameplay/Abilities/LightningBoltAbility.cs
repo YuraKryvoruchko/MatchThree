@@ -64,7 +64,7 @@ namespace Core.Gameplay
             _isPaused = isPause;
             OnPause?.Invoke(isPause);
         }
-        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback = null)
+        public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback, CancellationToken cancellationToken)
         {
             if (_severalAbility != null)
                 _severalAbility.Init(_gameField);
@@ -81,10 +81,11 @@ namespace Core.Gameplay
                 _gameField.ExplodeCellAsync(abilityPosition).Forget();
 
             LightingBoltEffect lightingBoltEffect = null;
+            CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
             try
             {
                 if (_lightingBoltEffectPrefab.Asset == null)
-                    await _lightingBoltEffectPrefab.GetOrLoad(_cancellationTokenSource.Token);
+                    await _lightingBoltEffectPrefab.GetOrLoad(tokenSource.Token);
                 lightingBoltEffect = GameObject.Instantiate(_lightingBoltEffectPrefab.Asset as GameObject).GetComponent<LightingBoltEffect>();
 
                 OnPause += lightingBoltEffect.Pause;
@@ -103,14 +104,14 @@ namespace Core.Gameplay
                     if (_severalAbility == null)
                         _gameField.ExplodeCellAsync(_gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
                     else
-                        _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position)).Forget();
+                        _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position), null, tokenSource.Token).Forget();
 
                     if(cells.Count > 0)
                         randomCell = cells[Random.Range(0, cells.Count - 1)];
 
-                    await UniTask.WaitForSeconds(LIGHTNING_DELAY, cancellationToken: _cancellationTokenSource.Token);
+                    await UniTask.WaitForSeconds(LIGHTNING_DELAY, cancellationToken: tokenSource.Token);
                     if (_isPaused)
-                        await UniTask.WaitWhile(() => _isPaused, cancellationToken: _cancellationTokenSource.Token);
+                        await UniTask.WaitWhile(() => _isPaused, cancellationToken: tokenSource.Token);
                 }
 
                 callback?.Invoke(this);
@@ -121,6 +122,7 @@ namespace Core.Gameplay
                 OnPause -= audioInstance.Pause;
                 GameObject.Destroy(lightingBoltEffect.gameObject);
                 _audioService.ReleaseSource(audioInstance);
+                tokenSource.Dispose();
             }
         }
     }
