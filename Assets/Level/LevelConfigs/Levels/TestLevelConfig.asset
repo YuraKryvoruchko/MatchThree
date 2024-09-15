@@ -27,7 +27,7 @@ MonoBehaviour:
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_EditorAssetChanged: 1
-    AbilityType: 5
+    AbilityType: 6
     Amount: 10
   - Icon:
       m_AssetGUID: c40c52e69f4a55b46854e41d6dcf9d38
@@ -35,5 +35,5 @@ MonoBehaviour:
       m_SubObjectType: UnityEngine.Sprite, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
       m_EditorAssetChanged: 1
-    AbilityType: 6
+    AbilityType: 7
     Amount: 5

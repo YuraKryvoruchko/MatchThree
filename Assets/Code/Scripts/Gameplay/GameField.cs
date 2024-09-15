@@ -597,23 +597,31 @@ namespace Core.Gameplay
         {
             if (_isBoardFillUp)
                 return;
-
-            _isBoardFillUp = true;
             bool areElementsMoved = false;
-            do
+            try
             {
-                areElementsMoved = true;
-                for (int i = 0; i < _horizontalMapSize; i++)
+                _isBoardFillUp = true;
+                do
                 {
-                    FillBoardColumn(i);
-                }
+                    areElementsMoved = true;
+                    for (int i = 0; i < _horizontalMapSize; i++)
+                    {
+                        FillBoardColumn(i);
+                    }
 
-                TryHandleCells();
+                    TryHandleCells();
 
-                await UniTask.Yield(this.GetCancellationTokenOnDestroy(), true);
-            } while (!areElementsMoved);
-
-            _isBoardFillUp = false;
+                    await UniTask.Yield(this.GetCancellationTokenOnDestroy(), true);
+                } while (!areElementsMoved);
+            }
+            catch (Exception ex) 
+            { 
+                Debug.LogException(ex, this);
+            }
+            finally
+            {
+                _isBoardFillUp = false;
+            }
 
             void FillBoardColumn(int i)
             {

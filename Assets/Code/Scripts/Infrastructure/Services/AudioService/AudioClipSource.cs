@@ -35,7 +35,8 @@ namespace Core.Infrastructure.Service.Audio
         public void Deinit()
         {
             _clipReference = null;
-            _source.gameObject.SetActive(false);
+            if(_source != null && _source.gameObject != null)
+                _source.gameObject.SetActive(false);
         }
 
         public async UniTaskVoid Play()
@@ -67,8 +68,10 @@ namespace Core.Infrastructure.Service.Audio
 
         public void Dispose()
         {
-            _audioSourceEventModule.OnEndPlay -= SetNextClipSync;
-            if(_source != null)
+            if(_audioSourceEventModule != null)
+                _audioSourceEventModule.OnEndPlay -= SetNextClipSync;
+
+            if(_source != null && _source.gameObject != null)
                 GameObject.Destroy(_source.gameObject);
         }
 
