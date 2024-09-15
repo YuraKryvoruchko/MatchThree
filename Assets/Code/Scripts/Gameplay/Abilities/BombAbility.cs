@@ -75,16 +75,14 @@ namespace Core.Gameplay
                 UniTask explosiveVFXAnimationTask = bombVFXEffect.Play(tokenSource.Token);
 
                 int lengthFromBombCell = (_lineLength - 1) / 2, taskArrayIndex = 0;
-                UniTask[] explodeTasks = new UniTask[_lineLength * _lineLength + 1];
                 for (int i = -lengthFromBombCell; i <= lengthFromBombCell; i++)
                 {
                     for (int j = -lengthFromBombCell; j <= lengthFromBombCell; j++, taskArrayIndex++)
                     {
-                        explodeTasks[taskArrayIndex] = _gameField.ExplodeCellAsync(new Vector2Int(abilityPosition.x + i, abilityPosition.y + j));
+                        _gameField.ExplodeCellAsync(new Vector2Int(abilityPosition.x + i, abilityPosition.y + j)).Forget();
                     }
                 }
-                explodeTasks[^1] = explosiveVFXAnimationTask;
-                await UniTask.WhenAll(explodeTasks).AttachExternalCancellation(tokenSource.Token);
+                await explosiveVFXAnimationTask;
 
                 callback?.Invoke(this);
             }

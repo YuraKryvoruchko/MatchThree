@@ -361,6 +361,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b969fc2a2c6ebd4c9c5d3d384108751
+    m_Address: Audio/triangle 1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Audio
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:

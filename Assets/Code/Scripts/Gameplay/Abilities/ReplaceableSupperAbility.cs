@@ -81,6 +81,11 @@ namespace Core.Gameplay
                     },
                     () =>
                     {
+                        OnPause -= audioSourceInstance.Pause;
+                        AudioService.ReleaseSource(audioSourceInstance);
+                        audioSourceInstance = AudioService.PlayWithSource(ElementExplosionEvent);
+                        OnPause += audioSourceInstance.Pause;
+
                         for (int i = 0; i < _creatingAbilityObjectNumber; i++)
                         {
                             _ability.Execute(cellPositions[i], cellPositions[i], null, tokenSource.Token).Forget();

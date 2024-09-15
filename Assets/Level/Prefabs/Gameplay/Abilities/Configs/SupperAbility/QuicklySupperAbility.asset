@@ -18,5 +18,5 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   ElementCapturingEvent: {fileID: 11400000, guid: 0e0dd54acfd443f44bd97cb44a9e6de5, type: 2}
-  ElementExplosionEvent: {fileID: 11400000, guid: a08e283986db7284c8b83d8ff1ec32e8, type: 2}
+  ElementExplosionEvent: {fileID: 11400000, guid: fd8c1fbeb2e293148a4d5dc153421c2f, type: 2}
   CreatingAbilityObjectNumber: 10

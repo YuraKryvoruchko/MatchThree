@@ -55,6 +55,10 @@ namespace Core.Gameplay
                 {
                     OnPause -= audioSourceInstance.Pause;
                     audioSourceInstance.Stop();
+                    AudioService.ReleaseSource(audioSourceInstance);
+                    audioSourceInstance = AudioService.PlayWithSource(ElementExplosionEvent);
+                    OnPause += audioSourceInstance.Pause;
+
                     for (int i = 0; i < cellList.Count; i++)
                     {
                         if (!cellList[i].IsExplode)

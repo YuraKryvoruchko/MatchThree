@@ -563,10 +563,12 @@ namespace Core.Gameplay
 
         private int GetElementsNumberOnDirection(Vector2Int position, Vector2Int direction)
         {
+            if (!IsPositionInBoard(position) || _map[position.y, position.x] == null)
+                return 0;
+
             Vector2Int newPosition = position + direction;
-            if (newPosition.x < 0 || newPosition.x >= _horizontalMapSize || newPosition.y < 0 || newPosition.y >= _verticalMapSize || 
-                _map[newPosition.y, newPosition.x] == null || _map[newPosition.y, newPosition.x].IsMove || _map[newPosition.y, newPosition.x].IsExplode ||
-                _map[position.y, position.x].Type != _map[newPosition.y, newPosition.x].Type)
+            if (!IsPositionInBoard(newPosition) || _map[newPosition.y, newPosition.x] == null || _map[newPosition.y, newPosition.x].IsMove 
+                || _map[newPosition.y, newPosition.x].IsExplode || _map[position.y, position.x].Type != _map[newPosition.y, newPosition.x].Type)
             {
                 return 0;
             }
