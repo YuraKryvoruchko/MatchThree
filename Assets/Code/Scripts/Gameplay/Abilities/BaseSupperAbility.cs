@@ -12,18 +12,19 @@ namespace Core.Gameplay
         protected event Action<bool> OnPause;
 
         protected IAudioService AudioService { get; private set; }
-        protected ClipEvent AudioClipEvent { get; private set; }
+        protected ClipEvent ElementCapturingEvent { get; private set; }
+        protected ClipEvent ElementExplosionEvent { get; private set; }
 
         protected AssetReferenceGameObject SupperAbilityEffectReference { get; private set; }
 
         protected GameField GameFieldInstance { get; private set; }
 
-        public BaseSupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent,
-            AssetReferenceGameObject supperAbilityEffectReference)
+        public BaseSupperAbility(IAudioService audioService, BaseSupperAbilityConfig config)
         {
             AudioService = audioService;
-            AudioClipEvent = elementCapturingEvent;
-            SupperAbilityEffectReference = supperAbilityEffectReference;
+            ElementCapturingEvent = config.ElementCapturingEvent;
+            ElementExplosionEvent = config.ElementExplosionEvent;
+            SupperAbilityEffectReference = config.VfxPrefab;
         }
         void IDisposable.Dispose()
         {

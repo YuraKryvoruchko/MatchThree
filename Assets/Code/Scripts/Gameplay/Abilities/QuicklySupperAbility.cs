@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
@@ -18,10 +17,10 @@ namespace Core.Gameplay
         private readonly IAbility _ability;
         private readonly int _creatingAbilityObjectNumber;
 
-        public QuicklySupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReferenceGameObject supperAbilityEffectReference,
-            IAbility ability, int creatingAbilityObjectNumber) : base(audioService, elementCapturingEvent, supperAbilityEffectReference)
+        public QuicklySupperAbility(IAudioService audioService, IAbility ability, QuicklySupperAbilityConfig config)
+            : base(audioService, config)
         {
-            _creatingAbilityObjectNumber = creatingAbilityObjectNumber;
+            _creatingAbilityObjectNumber = config.CreatingAbilityObjectNumber;
             _ability = ability;
             _cancellationTokenSource = new CancellationTokenSource();
         }
@@ -37,7 +36,7 @@ namespace Core.Gameplay
             Cell swipedCell = GameFieldInstance.GetCell(swipedCellPosition);
             Cell coreCell = GameFieldInstance.GetCell(abilityPosition);
 
-            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent, false);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(ElementCapturingEvent, false);
             SupperAbilityEffect abilityEffectInstance = null;
 
             CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);

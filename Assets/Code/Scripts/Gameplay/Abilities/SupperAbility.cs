@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
@@ -14,8 +13,7 @@ namespace Core.Gameplay
     {
         private CancellationTokenSource _cancellationTokenSource;
 
-        public SupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReferenceGameObject supperAbilityEffectReference) : 
-            base(audioService, elementCapturingEvent, supperAbilityEffectReference)
+        public SupperAbility(IAudioService audioService, BaseSupperAbilityConfig config) : base(audioService, config)
         {
             _cancellationTokenSource = new CancellationTokenSource();
         }
@@ -39,7 +37,7 @@ namespace Core.Gameplay
             for (int i = 0; i < cellList.Count; i++)
                 cellPositions[i] = cellList[i].transform.position;
 
-            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(ElementCapturingEvent);
             SupperAbilityEffect abilityEffect = null;
 
             CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);

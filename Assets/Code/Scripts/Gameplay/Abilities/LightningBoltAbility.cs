@@ -28,13 +28,12 @@ namespace Core.Gameplay
 
         private const float LIGHTNING_DELAY = 0.4F;
 
-        public LightningBoltAbility(IAudioService audioService, ClipEvent hitClipEvent, AssetReferenceGameObject lightingBoltEffectPrefab,
-            int lightningBoltCount, IAbility severalAbility = null)
+        public LightningBoltAbility(IAudioService audioService, LightningBoltAbilityConfig config, IAbility severalAbility = null)
         {
             _audioService = audioService;
-            _clipEvent = hitClipEvent;
-            _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
-            _maxLightningBoltCount = lightningBoltCount;
+            _clipEvent = config.HitEvent;
+            _lightingBoltEffectPrefab = config.VFXPrefab;
+            _maxLightningBoltCount = config.MaxLightningBoltCount;
             _severalAbility = severalAbility;
             _cancellationTokenSource = new CancellationTokenSource();
         }

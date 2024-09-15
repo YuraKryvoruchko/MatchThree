@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using Core.Gameplay;
 using Core.Infrastructure.Service.Audio;
 
@@ -18,15 +17,16 @@ namespace Core.Infrastructure.Factories
         public class AbilityFactoryConfig
         {
             [Header("Lighting Bolt Settings")]
-            public AssetReferenceGameObject LightingBoltEffectPrefabReference;
-            public ClipEvent LightingBoltHitEvent;
+            public LightningBoltAbilityConfig SingleLightningBoltAbilityConfig;
+            public LightningBoltAbilityConfig TripleLightningBoltAbilityConfig;
+            public LightningBoltAbilityConfig DecimalLightningBoltAbilityConfig;
             [Header("Bomb Settings")]
-            public AssetReferenceGameObject SmallBombEffectPrefabReference;
-            public AssetReferenceGameObject BigBombEffectPrefabReference;
-            public ClipEvent ExplosiveEvent;
+            public BombAbilityConfig SmallBombAbilityConfig;
+            public BombAbilityConfig BigBombAbilityConfig;
             [Header("Supper Ability Settings")]
-            public AssetReferenceGameObject SupperCellEffectPrefabReference;
-            public ClipEvent ElementCapturingEvent;
+            public BaseSupperAbilityConfig BaseSupperAbilityConfig;
+            public ReplaceableSupperAbilityConfig ReplaceableSupperAbilityConfig;
+            public QuicklySupperAbilityConfig QuicklySupperAbilityConfig;
         }
 
         public struct CellTypeCombination
@@ -59,32 +59,30 @@ namespace Core.Infrastructure.Factories
             _audioService = audioService;
             _cellAbilityDictionary = new Dictionary<CellType, IAbility>() 
             {
-                { CellType.Bomb, new BombAbility(3, _audioService, config.ExplosiveEvent, config.SmallBombEffectPrefabReference) },
-                { CellType.LightningBolt, new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3) },
-                { CellType.Supper, new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
+                { CellType.Bomb, new BombAbility(_audioService, config.SmallBombAbilityConfig) },
+                { CellType.LightningBolt, new LightningBoltAbility(_audioService, config.TripleLightningBoltAbilityConfig) },
+                { CellType.Supper, new SupperAbility(_audioService, config.BaseSupperAbilityConfig) }
             };
             _advencedAbilityDictionary = new Dictionary<CellTypeCombination, IAbility>()
             {
                 { new CellTypeCombination(CellType.Bomb, CellType.Bomb)
-                    , new BombAbility(5, _audioService, config.ExplosiveEvent, config.BigBombEffectPrefabReference) },
+                    , new BombAbility(_audioService, config.BigBombAbilityConfig) },
 
                 { new CellTypeCombination(CellType.Bomb, CellType.LightningBolt)
-                    , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 3
-                    , _cellAbilityDictionary[CellType.Bomb]) },
+                    , new LightningBoltAbility(_audioService, config.TripleLightningBoltAbilityConfig, _cellAbilityDictionary[CellType.Bomb]) },
 
                 { new CellTypeCombination(CellType.Bomb, CellType.Supper)
-                    , new ReplaycableSupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference, CellType.Bomb
-                    , _cellAbilityDictionary[CellType.Bomb], 5) },
+                    , new ReplaceableSupperAbility(_audioService, _cellAbilityDictionary[CellType.Bomb], config.ReplaceableSupperAbilityConfig) },
 
                 { new CellTypeCombination(CellType.LightningBolt, CellType.LightningBolt)
-                    , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 10) },
+                    , new LightningBoltAbility(_audioService, config.DecimalLightningBoltAbilityConfig) },
 
                 { new CellTypeCombination(CellType.LightningBolt, CellType.Supper)
-                    , new QuicklySupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference
-                    , new LightningBoltAbility(_audioService, config.LightingBoltHitEvent, config.LightingBoltEffectPrefabReference, 1), 15) },
+                    , new QuicklySupperAbility(_audioService, new LightningBoltAbility(_audioService, config.SingleLightningBoltAbilityConfig),
+                    config.QuicklySupperAbilityConfig) },
 
                 { new CellTypeCombination(CellType.Supper, CellType.Supper)
-                    , new SupperAbility(_audioService, config.ElementCapturingEvent, config.SupperCellEffectPrefabReference) }
+                    , new SupperAbility(_audioService, config.BaseSupperAbilityConfig) }
             };
         }
         void IDisposable.Dispose()

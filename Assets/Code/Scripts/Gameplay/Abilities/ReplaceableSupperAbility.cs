@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace Core.Gameplay
 {
-    public class ReplaycableSupperAbility : BaseSupperAbility
+    public class ReplaceableSupperAbility : BaseSupperAbility
     {
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -19,13 +19,12 @@ namespace Core.Gameplay
         private readonly IAbility _ability;
         private readonly int _creatingAbilityObjectNumber;
 
-        public ReplaycableSupperAbility(IAudioService audioService, ClipEvent elementCapturingEvent, AssetReferenceGameObject supperAbilityEffectReference,
-            CellType replaceObject, IAbility ability, int creatingAbilityObjectNumber) : 
-            base(audioService, elementCapturingEvent, supperAbilityEffectReference)
+        public ReplaceableSupperAbility(IAudioService audioService, IAbility ability, ReplaceableSupperAbilityConfig config) 
+            : base(audioService, config)
         {
-            _creatingAbilityObjectNumber = creatingAbilityObjectNumber;
+            _creatingAbilityObjectNumber = config.CreatingAbilityObjectNumber;
+            _replaceObject = config.ReplaceObjectType;
             _ability = ability;
-            _replaceObject = replaceObject;
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -59,7 +58,7 @@ namespace Core.Gameplay
 
             _ability.Init(GameFieldInstance);
 
-            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(AudioClipEvent);
+            AudioClipSource audioSourceInstance = AudioService.PlayWithSource(ElementCapturingEvent);
             SupperAbilityEffect abilityEffectInstance = null;
 
             CancellationTokenSource tokenSource = CancellationTokenSource

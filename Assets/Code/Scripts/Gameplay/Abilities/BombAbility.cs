@@ -24,12 +24,12 @@ namespace Core.Gameplay
 
         private event Action<bool> OnPause;
 
-        public BombAbility(int lineLength, IAudioService audioService, ClipEvent explosiveEvent, AssetReferenceGameObject bombEffectReference)
+        public BombAbility(IAudioService audioService, BombAbilityConfig config)
         {
-            _lineLength = lineLength;
+            _lineLength = config.LineLength;
             _audioService = audioService;
-            _explosiveEvent = explosiveEvent;
-            _bombEffectReference = bombEffectReference;
+            _explosiveEvent = config.ExplosiveEvent;
+            _bombEffectReference = config.VfxPrefab;
             _cancellationTokenSource = new CancellationTokenSource();
         }
         void IDisposable.Dispose()

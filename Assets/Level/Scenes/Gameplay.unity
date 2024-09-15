@@ -431,29 +431,14 @@ MonoBehaviour:
     CellCount: 72
     CellContainer: {fileID: 80933700}
   _abilityFactoryConfig:
-    LightingBoltEffectPrefabReference:
-      m_AssetGUID: e31c720355f5c2143b0a4ca338183d8c
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    LightingBoltHitEvent: {fileID: 11400000, guid: ae2497d9689ad0f4a8453d238b7c625b, type: 2}
-    SmallBombEffectPrefabReference:
-      m_AssetGUID: 2dee2a952f046be458b928bf213e2c20
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    BigBombEffectPrefabReference:
-      m_AssetGUID: 3d71202c72a21964ca4a0a5755111f0c
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    ExplosiveEvent: {fileID: 11400000, guid: de6b5804f9abb8241849fbd7162cc259, type: 2}
-    SupperCellEffectPrefabReference:
-      m_AssetGUID: 94544fa4b297d4f42835ec22b9f5c781
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-    ElementCapturingEvent: {fileID: 11400000, guid: 0e0dd54acfd443f44bd97cb44a9e6de5, type: 2}
+    SingleLightningBoltAbilityConfig: {fileID: 11400000, guid: 6d681d130ea8faf41a64bbbfed0e992c, type: 2}
+    TripleLightningBoltAbilityConfig: {fileID: 11400000, guid: 7c7e5cf45f91d0445b259c305ae41ae6, type: 2}
+    DecimalLightningBoltAbilityConfig: {fileID: 11400000, guid: 6585aefd8ec892746a7312e70691a2a7, type: 2}
+    SmallBombAbilityConfig: {fileID: 11400000, guid: d5de65e0e78d0524296f3696c7529f17, type: 2}
+    BigBombAbilityConfig: {fileID: 11400000, guid: 551e4b16146ff19429bbb5a00884841f, type: 2}
+    BaseSupperAbilityConfig: {fileID: 11400000, guid: bc2ce64a2190664488cd326d58ba55d5, type: 2}
+    ReplaceableSupperAbilityConfig: {fileID: 11400000, guid: 9a798434e0e89074db9cddf6da6e19b3, type: 2}
+    QuicklySupperAbilityConfig: {fileID: 11400000, guid: f5950e35448e1ab4b9d5277b45fb3813, type: 2}
 --- !u!114 &1408872459
 MonoBehaviour:
   m_ObjectHideFlags: 0
