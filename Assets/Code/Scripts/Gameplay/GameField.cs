@@ -39,6 +39,8 @@ namespace Core.Gameplay
 
         private List<IAbility> _usedAbilities;
 
+        private int _destroyedCellNumberInThisFrame;
+
         private int _currentFindingCombinationIndex;
         private int[,] _findingCombinationIndexMap;
 
@@ -116,6 +118,10 @@ namespace Core.Gameplay
             Gizmos.DrawLine(lines[1], lines[3]);
             Gizmos.DrawLine(lines[3], lines[2]);
             Gizmos.DrawLine(lines[2], lines[0]);
+        }
+        private void Update()
+        {
+            _destroyedCellNumberInThisFrame = 0;
         }
 
         public void Init()
@@ -201,15 +207,13 @@ namespace Core.Gameplay
 
         public async UniTask ExplodeCellAsync(Vector2Int cellPosition)
         {
-            if (!IsPositionInBoard(cellPosition) 
-                || _map[cellPosition.y, cellPosition.x] == null
-                || _map[cellPosition.y, cellPosition.x].IsStatic 
-                || _map[cellPosition.y, cellPosition.x].IsMove 
-                || _map[cellPosition.y, cellPosition.x].IsExplode)
-            {
+            if (!CanHandleCellForExplosion(cellPosition))
                 return;
-            }
-            _audioService.PlayOneShot(_destroyAudio);
+
+            if (_destroyedCellNumberInThisFrame == 0)
+                _audioService.PlayOneShot(_destroyAudio);
+            _destroyedCellNumberInThisFrame++;
+
             _cellHandlingMap[cellPosition.y, cellPosition.x] = false;
             Cell cell = _map[cellPosition.y, cellPosition.x];
             await cell.Explode();
@@ -716,6 +720,16 @@ namespace Core.Gameplay
         private bool CanHandleCellForSwipe(Cell cell)
         {
             return !(cell.IsMove || cell.IsExplode || cell.IsStatic);
+        }
+        private bool CanHandleCellForExplosion(Vector2Int cellPosition)
+        {
+            if(IsPositionInBoard(cellPosition) && _map[cellPosition.y, cellPosition.x] != null)
+            {
+                Cell cell = _map[cellPosition.y, cellPosition.x];
+                return !(cell.IsStatic || cell.IsMove || cell.IsExplode);
+            }
+
+            return false;
         }
         private bool CanHandleCellForGetScore(Vector2Int cellPosition, CellType type)
         {
