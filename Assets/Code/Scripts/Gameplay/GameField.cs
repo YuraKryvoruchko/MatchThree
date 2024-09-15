@@ -273,10 +273,9 @@ namespace Core.Gameplay
             }
             return list;
         }
-        public Cell GetRandomCellByCondition(Func<Cell, bool> condition)
+        public bool TryGetRandomCellByCondition(Func<Cell, bool> condition, out Cell cellRef)
         {
             Span<Vector2Int> span = stackalloc Vector2Int[_horizontalMapSize * _verticalMapSize];
-
             int length = 0;
             for (int i = 0; i < _horizontalMapSize; i++)
             {
@@ -290,12 +289,17 @@ namespace Core.Gameplay
                 }
             }
 
+            cellRef = null;
+            if(length == 0)
+                return false;
+
             int randomIndex = UnityEngine.Random.Range(0, length);
             if (randomIndex == length)
                 randomIndex--;
             
             Vector2Int cellPosition = span[randomIndex];
-            return _map[cellPosition.y, cellPosition.x];
+            cellRef = _map[cellPosition.y, cellPosition.x];
+            return true;
         }
 
         public void SetSwipeHandlingStatus(bool isSwipeHandling)

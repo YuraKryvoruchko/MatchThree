@@ -14,7 +14,7 @@ namespace Core.Gameplay
         private GameField _gameField;
         private AssetReferenceGameObject _lightingBoltEffectPrefab;
 
-        private int _lightningBoltCount;
+        private int _maxLightningBoltCount;
         private IAbility _severalAbility;
 
         private IAudioService _audioService;
@@ -34,7 +34,7 @@ namespace Core.Gameplay
             _audioService = audioService;
             _clipEvent = hitClipEvent;
             _lightingBoltEffectPrefab = lightingBoltEffectPrefab;
-            _lightningBoltCount = lightningBoltCount;
+            _maxLightningBoltCount = lightningBoltCount;
             _severalAbility = severalAbility;
             _cancellationTokenSource = new CancellationTokenSource();
         }
@@ -90,7 +90,7 @@ namespace Core.Gameplay
                         (cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode && cell.Type == swipedCell.Type;
 
                 Cell randomCell = swipedCell;
-                for (int i = 0; i < _lightningBoltCount; i++)
+                for (int i = 0; i < _maxLightningBoltCount; i++)
                 {
                     Vector3 startPosition = randomCell.transform.position;
                     startPosition.y = 5;
@@ -102,7 +102,8 @@ namespace Core.Gameplay
                     else
                         _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position), null, tokenSource.Token).Forget();
 
-                    randomCell = _gameField.GetRandomCellByCondition(condition);
+                    if (!_gameField.TryGetRandomCellByCondition(condition, out randomCell))
+                        break;
 
                     await UniTask.WaitForSeconds(LIGHTNING_DELAY, cancellationToken: tokenSource.Token);
                     if (_isPaused)
