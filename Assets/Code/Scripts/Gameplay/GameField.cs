@@ -355,30 +355,30 @@ namespace Core.Gameplay
             _findingCombinationIndexMap[cellPosition.y, cellPosition.x] = _currentFindingCombinationIndex;
 
             int scoreOnThisPoint = GetScore(cellPosition);
-            SearchResult[] results = new SearchResult[4];
+            Span<SearchResult> span = stackalloc SearchResult[4];
             Cell currentCell = GetCell(cellPosition);
             if (CanHandleCellForGetScore(cellPosition + Vector2Int.left, currentCell.Type))
             {
-                results[0] = FindMaxScoreCombination(cellPosition + Vector2Int.left, depth - 1);
+                span[0] = FindMaxScoreCombination(cellPosition + Vector2Int.left, depth - 1);
             }
             if (CanHandleCellForGetScore(cellPosition + Vector2Int.right, currentCell.Type))
             {
-                results[1] = FindMaxScoreCombination(cellPosition + Vector2Int.right, depth - 1);
+                span[1] = FindMaxScoreCombination(cellPosition + Vector2Int.right, depth - 1);
             }
             if (CanHandleCellForGetScore(cellPosition + Vector2Int.up, currentCell.Type))
             {
-                results[2] = FindMaxScoreCombination(cellPosition + Vector2Int.up, depth - 1);
+                span[2] = FindMaxScoreCombination(cellPosition + Vector2Int.up, depth - 1);
             }
             if (CanHandleCellForGetScore(cellPosition + Vector2Int.down, currentCell.Type))
             {
-                results[3] = FindMaxScoreCombination(cellPosition + Vector2Int.down, depth - 1);
+                span[3] = FindMaxScoreCombination(cellPosition + Vector2Int.down, depth - 1);
             }
 
             SearchResult bestResult = new SearchResult(scoreOnThisPoint, cellPosition);
-            for (int i = 0; i < results.Length; i++)
+            for (int i = 0; i < span.Length; i++)
             {
-                if (results[i].ScoreNumber > bestResult.ScoreNumber)
-                    bestResult = results[i];
+                if (span[i].ScoreNumber > bestResult.ScoreNumber)
+                    bestResult = span[i];
             }
 
             return bestResult;
