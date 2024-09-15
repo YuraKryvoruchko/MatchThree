@@ -273,6 +273,30 @@ namespace Core.Gameplay
             }
             return list;
         }
+        public Cell GetRandomCellByCondition(Func<Cell, bool> condition)
+        {
+            Span<Vector2Int> span = stackalloc Vector2Int[_horizontalMapSize * _verticalMapSize];
+
+            int length = 0;
+            for (int i = 0; i < _horizontalMapSize; i++)
+            {
+                for (int j = 0; j < _verticalMapSize; j++)
+                {
+                    if (condition.Invoke(_map[j, i]))
+                    {
+                        span[length] = new Vector2Int(i, j);
+                        length++;
+                    }
+                }
+            }
+
+            int randomIndex = UnityEngine.Random.Range(0, length);
+            if (randomIndex == length)
+                randomIndex--;
+            
+            Vector2Int cellPosition = span[randomIndex];
+            return _map[cellPosition.y, cellPosition.x];
+        }
 
         public void SetSwipeHandlingStatus(bool isSwipeHandling)
         {

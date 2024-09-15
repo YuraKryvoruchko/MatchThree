@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Threading;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
 using Core.VFX.Abilities;
 using Core.Infrastructure.Service.Audio;
 using Core.Infrastructure.Service;
-
-using Random = UnityEngine.Random;
 
 namespace Core.Gameplay
 {
@@ -73,9 +70,6 @@ namespace Core.Gameplay
 
             Cell swipedCell = _gameField.GetCell(swipedCellPosition);
             Cell abilityCell = _gameField.GetCell(abilityPosition);
-            List<Cell> cells = abilityCell.IsSpecial && swipedCell.IsSpecial ? 
-                _gameField.GetByCondition((cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode) :
-                _gameField.GetAllOfType(swipedCell.Type);
 
             if(swipedCellPosition != abilityPosition)
                 _gameField.ExplodeCellAsync(abilityPosition).Forget();
@@ -91,11 +85,13 @@ namespace Core.Gameplay
                 OnPause += lightingBoltEffect.Pause;
                 OnPause += audioInstance.Pause;
 
-                Cell randomCell = swipedCell;
-                for (int i = 0; i < _lightningBoltCount && cells.Count > 0; i++)
-                {
-                    cells.Remove(randomCell);
+                Func<Cell, bool> condition = abilityCell.IsSpecial && swipedCell.IsSpecial ?
+                        (cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode :
+                        (cell) => cell != null && !cell.IsStatic && !cell.IsSpecial && !cell.IsExplode && cell.Type == swipedCell.Type;
 
+                Cell randomCell = swipedCell;
+                for (int i = 0; i < _lightningBoltCount; i++)
+                {
                     Vector3 startPosition = randomCell.transform.position;
                     startPosition.y = 5;
 
@@ -106,8 +102,7 @@ namespace Core.Gameplay
                     else
                         _severalAbility.Execute(swipedCellPosition, _gameField.WorldPositionToCell(randomCell.transform.position), null, tokenSource.Token).Forget();
 
-                    if(cells.Count > 0)
-                        randomCell = cells[Random.Range(0, cells.Count - 1)];
+                    randomCell = _gameField.GetRandomCellByCondition(condition);
 
                     await UniTask.WaitForSeconds(LIGHTNING_DELAY, cancellationToken: tokenSource.Token);
                     if (_isPaused)
