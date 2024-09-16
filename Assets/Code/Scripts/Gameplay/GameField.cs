@@ -390,9 +390,12 @@ namespace Core.Gameplay
 
             _findingCombinationIndexMap[cellPosition.y, cellPosition.x] = _currentFindingCombinationIndex;
 
+            Cell currentCell = GetCell(cellPosition);
+            if(currentCell == null)
+                return new SearchResult(0, cellPosition);
+
             int scoreOnThisPoint = GetScore(cellPosition);
             Span<SearchResult> span = stackalloc SearchResult[4];
-            Cell currentCell = GetCell(cellPosition);
             if (CanHandleCellForGetScore(cellPosition + Vector2Int.left, currentCell.Type))
             {
                 span[0] = FindMaxScoreCombination(cellPosition + Vector2Int.left, depth - 1);
