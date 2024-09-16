@@ -14,7 +14,7 @@ using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.Gameplay
 {
-    public class GameField : MonoBehaviour
+    public partial class GameField : MonoBehaviour
     {
         [Header("Map Settings")]
         [SerializeField] private int _verticalMapSize = 5;
@@ -36,6 +36,8 @@ namespace Core.Gameplay
         private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
+
+        private CombinationBase[] _combinations;
 
         private List<IAbility> _usedAbilities;
 
@@ -78,6 +80,17 @@ namespace Core.Gameplay
                 CellPosition = cellPosition;
             }
         }
+        public struct SimilarCellsNumber
+        {
+            public int RightNumber;
+            public int LeftNumber;
+            public int UpNumber;
+            public int DownNumber;
+            public int RightUpNumber;
+            public int RightDownNumber;
+            public int LeftUpNumber;
+            public int LeftDownNumber;
+        }
         public struct CellExplosionResult
         {
             public int Score;
@@ -94,6 +107,15 @@ namespace Core.Gameplay
             _cellSwipeDetection = cellSwipeDetection;
             _audioService = audioService;
             _usedAbilities = new List<IAbility>();
+
+            _combinations = new CombinationBase[]
+            {
+                new SupperCombination(this, 6),
+                new BombCombination(this, 5),
+                new LightningBoltCombination(this, 4),
+                new LineCombination(this, 3, 4),
+                new LineCombination(this, 2, 3)
+            };
         }
 
 #if UNITY_EDITOR
@@ -233,11 +255,24 @@ namespace Core.Gameplay
 
             TryFillBoard();
         }
+        public void ExplodeCellsOnDirection(Vector2Int cellPosition, Vector2Int direction, int length)
+        {
+            for (int i = 1; i <= length; i++)
+                ExplodeCellAsync(cellPosition + direction * i).Forget();
+        }
         public void ReplaceCell(CellType newType, Vector2Int cellPosition)
         {
-            _cellFabric.ReturnCell(_map[cellPosition.y, cellPosition.x]);
+            if(_map[cellPosition.y, cellPosition.x] != null)
+                _cellFabric.ReturnCell(_map[cellPosition.y, cellPosition.x]);
+
             Vector2 worldPosition = CellPositionToWorld(cellPosition);
             _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(newType, worldPosition, Quaternion.identity, _cellContainer);
+        }
+        public async UniTaskVoid ExplodeCellAndReplace(Vector2Int cellPosition, CellType newElementType)
+        {
+            await ExplodeCellAsync(cellPosition);
+            _map[cellPosition.y, cellPosition.x] =
+                    _cellFabric.GetCell(newElementType, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
         }
 
         public Cell GetCell(Vector2Int cellPosition)
@@ -347,6 +382,7 @@ namespace Core.Gameplay
 
             return ExplodeCombinationForCell(bestResult.CellPosition);
         }
+
         private SearchResult FindMaxScoreCombination(Vector2Int cellPosition, int depth)
         {
             if (depth <= 0 || _findingCombinationIndexMap[cellPosition.y, cellPosition.x] == _currentFindingCombinationIndex)
@@ -383,70 +419,18 @@ namespace Core.Gameplay
 
             return bestResult;
         }
+
         private int GetScore(Vector2Int cellPosition)
         {
-            int rightNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right);
-            int leftNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left);
-            int upNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.down);
-            int downNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.up);
+            SimilarCellsNumber combinationResult = GetCombinationResult(cellPosition);
 
-            int rightUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.down);
-            int rightDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.up);
-            int leftUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.down);
-            int leftDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up);
+            for (int i = 0; i < _combinations.Length; i++)
+            {
+                if (_combinations[i].CanProcessedCombination(in combinationResult))
+                    return _combinations[i].Score;
+            }
 
-            if (upNumber + downNumber >= 4)
-            {
-                return 6;
-            }
-            else if (leftNumber + rightNumber >= 4)
-            {
-                return 6;
-            }
-            else if (upNumber >= 2 && leftNumber >= 2)
-            {
-                return 5;
-            }
-            else if (upNumber >= 2 && rightNumber >= 2)
-            {
-                return 5;
-            }
-            else if (downNumber >= 2 && leftNumber >= 2)
-            {
-                return 5;
-            }
-            else if (downNumber >= 2 && rightNumber >= 2)
-            {
-                return 5;
-            }
-            else if (rightNumber >= 1 && upNumber >= 1 && rightUpNumber >= 1)
-            {
-                return 4;
-            }
-            else if (rightNumber >= 1 && downNumber >= 1 && rightDownNumber >= 1)
-            {
-                return 4;
-            }
-            else if (leftNumber >= 1 && upNumber >= 1 && leftUpNumber >= 1)
-            {
-                return 4;
-            }
-            else if (leftNumber >= 1 && downNumber >= 1 && leftDownNumber >= 1)
-            {
-                return 4;
-            }
-            else if (rightNumber + leftNumber >= 2)
-            {
-                return rightNumber + leftNumber;
-            }
-            else if (upNumber + downNumber >= 2)
-            {
-                return upNumber + downNumber;
-            }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
         private bool ExplodeCombinationForCell(Vector2Int cellPosition)
@@ -454,98 +438,15 @@ namespace Core.Gameplay
             if (_map[cellPosition.y, cellPosition.x] == null || _map[cellPosition.y, cellPosition.x].IsSpecial)
                 return false;
 
-            int rightNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right);
-            int leftNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left);
-            int upNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.down);
-            int downNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.up);
+            SimilarCellsNumber combinationResult = GetCombinationResult(cellPosition);
 
-            int rightUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.down);
-            int rightDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.up);
-            int leftUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.down);
-            int leftDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up);
-
-            if (upNumber + downNumber >= 4)
+            for (int i = 0; i < _combinations.Length; i++)
             {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Supper).Forget();
-            }
-            else if (leftNumber + rightNumber >= 4)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Supper).Forget();
-            }
-            else if (upNumber >= 2 && leftNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
-            }
-            else if (upNumber >= 2 && rightNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
-            }
-            else if (downNumber >= 2 && leftNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
-            }
-            else if (downNumber >= 2 && rightNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
-                DeleteElementAndReplace(cellPosition, CellType.Bomb).Forget();
-            }
-            else if (rightNumber >= 1 && upNumber >= 1 && rightUpNumber >= 1)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.down, 1);
-                DeleteElementAndReplace(cellPosition, CellType.LightningBolt).Forget();
-            }
-            else if (rightNumber >= 1 && downNumber >= 1 && rightDownNumber >= 1)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right + Vector2Int.up, 1);
-                DeleteElementAndReplace(cellPosition, CellType.LightningBolt).Forget();
-            }
-            else if (leftNumber >= 1 && upNumber >= 1 && leftUpNumber >= 1)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.down, 1);
-                DeleteElementAndReplace(cellPosition, CellType.LightningBolt).Forget();
-            }
-            else if (leftNumber >= 1 && downNumber >= 1 && leftDownNumber >= 1)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, 1);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left + Vector2Int.up, 1);
-                DeleteElementAndReplace(cellPosition, CellType.LightningBolt).Forget();
-            }
-            else if (rightNumber + leftNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.right, rightNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.left, leftNumber);
-                ExplodeCellAsync(cellPosition).Forget();
-            }
-            else if (upNumber + downNumber >= 2)
-            {
-                DeleteElementsOnDirection(cellPosition, Vector2Int.down, upNumber);
-                DeleteElementsOnDirection(cellPosition, Vector2Int.up, downNumber);
-                ExplodeCellAsync(cellPosition).Forget();
-            }
-            else
-            {
-                return false;
+                if (_combinations[i].CanProcessedCombination(in combinationResult))
+                    return _combinations[i].TryProcess(cellPosition, in combinationResult);
             }
 
-            return true;
+            return false;
         }
         private void HandlePause(bool isPause)
         {
@@ -574,18 +475,6 @@ namespace Core.Gameplay
             }
 
             return 1 + GetElementsNumberOnDirection(newPosition, direction);
-        }
-
-        private void DeleteElementsOnDirection(Vector2Int cellPosition, Vector2Int direction, int lenght)
-        {
-            for (int i = 1; i <= lenght; i++)
-                ExplodeCellAsync(cellPosition + direction * i).Forget();
-        }
-        private async UniTaskVoid DeleteElementAndReplace(Vector2Int cellPosition, CellType newElementType)
-        {
-            await ExplodeCellAsync(cellPosition);
-            _map[cellPosition.y, cellPosition.x] =
-                    _cellFabric.GetCell(newElementType, CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
         }
 
         private void TryFillBoard()
@@ -750,6 +639,19 @@ namespace Core.Gameplay
                 index--;
 
             return _availableRandomCellTypes[index];
+        }
+        private SimilarCellsNumber GetCombinationResult(Vector2Int cellPosition)
+        {
+            SimilarCellsNumber combinationResult;
+            combinationResult.RightNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right);
+            combinationResult.LeftNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left);
+            combinationResult.UpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.down);
+            combinationResult.DownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.up);
+            combinationResult.RightUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.down);
+            combinationResult.RightDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.right + Vector2Int.up);
+            combinationResult.LeftUpNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.down);
+            combinationResult.LeftDownNumber = GetElementsNumberOnDirection(cellPosition, Vector2Int.left + Vector2Int.up);
+            return combinationResult;
         }
         private bool IsPositionInBoard(Vector2Int position)
         {
