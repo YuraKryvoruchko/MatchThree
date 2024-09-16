@@ -67,7 +67,6 @@ namespace Core.Gameplay
                     cellList[randomIndex] = tmp;
                 }
 
-                UniTask[] tasks = new UniTask[cellList.Length + 1];
                 _ability.Init(GameFieldInstance);
                 int index = 0;
                 abilityEffectInstance.SetParameters(new SupperAbilityEffect.SupperAbilityVFXParameters(worldCellPositions, (worldPosition) =>
