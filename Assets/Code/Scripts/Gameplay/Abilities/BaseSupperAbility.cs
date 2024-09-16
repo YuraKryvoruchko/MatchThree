@@ -28,7 +28,8 @@ namespace Core.Gameplay
         }
         void IDisposable.Dispose()
         {
-            GameFieldInstance.OnPause -= SetPause;
+            if(GameFieldInstance != null)
+                GameFieldInstance.OnPause -= SetPause;
             if (SupperAbilityEffectReference.IsValid())
                 SupperAbilityEffectReference.ReleaseAsset();
         }
