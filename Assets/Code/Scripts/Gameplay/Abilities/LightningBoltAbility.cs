@@ -60,6 +60,10 @@ namespace Core.Gameplay
             _isPaused = isPause;
             OnPause?.Invoke(isPause);
         }
+        public bool CanExecute()
+        {
+            return true;
+        }
         public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback, CancellationToken cancellationToken)
         {
             if (_severalAbility != null)

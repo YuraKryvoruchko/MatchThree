@@ -65,6 +65,7 @@ namespace Core.Gameplay
                 .CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
             try 
             {
+                GameFieldInstance.SetSwipeHandlingStatus(false);
                 if (SupperAbilityEffectReference.Asset == null)
                     await SupperAbilityEffectReference.GetOrLoad(tokenSource.Token);
 
@@ -102,6 +103,7 @@ namespace Core.Gameplay
                 OnPause -= abilityEffectInstance.Pause;
                 AudioService.ReleaseSource(audioSourceInstance);
                 GameObject.Destroy(abilityEffectInstance.gameObject);
+                GameFieldInstance.SetSwipeHandlingStatus(true);
 
                 tokenSource.Dispose();
             }

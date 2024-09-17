@@ -194,15 +194,27 @@ namespace Core.Gameplay
             bool isFirstElementMoved = true, isSecondElementMoved = true;
             if (firstCell.IsSpecial && !secondCell.IsSpecial)
             {
-                UseAbility(firstCell.Type, secondPosition, firstPosition);
+                if(!TryUseAbility(firstCell.Type, secondPosition, firstPosition))
+                {
+                    isFirstElementMoved = false;
+                    isSecondElementMoved = false;
+                }
             }
             else if (!firstCell.IsSpecial && secondCell.IsSpecial)
             {
-                UseAbility(secondCell.Type, firstPosition, secondPosition);
+                if(!TryUseAbility(secondCell.Type, firstPosition, secondPosition))
+                {
+                    isFirstElementMoved = false;
+                    isSecondElementMoved = false;
+                }
             }
             else if (firstCell.IsSpecial && secondCell.IsSpecial)
             {
-                UseAbility(secondCell.Type, firstPosition, secondPosition);
+                if(!TryUseAbility(secondCell.Type, firstPosition, secondPosition))
+                {
+                    isFirstElementMoved = false;
+                    isSecondElementMoved = false;
+                }
             }
             else {
                 isFirstElementMoved = HandleMove(firstPosition);
@@ -215,16 +227,19 @@ namespace Core.Gameplay
                 TryFillBoard();
         }
 
-        public void UseAbility(CellType abilityType, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
+        public bool TryUseAbility(CellType abilityType, Vector2Int swipedCellPosition, Vector2Int abilityPosition)
         {
             Cell swipedCell = GetCell(swipedCellPosition);
             IAbility ability = swipedCell.IsSpecial ? _abilityFactory.GetAdvancedAbility(abilityType, swipedCell.Type)
                 : _abilityFactory.GetAbility(abilityType);
-
             ability.Init(this);
+            if (!ability.CanExecute())
+                return false;
+
             ability.Execute(swipedCellPosition, abilityPosition, HandleAbilityCallback).Forget();
             _usedAbilities.Add(ability);
             OnMove?.Invoke();
+            return true;
         }
 
         public async UniTask ExplodeCellAsync(Vector2Int cellPosition)

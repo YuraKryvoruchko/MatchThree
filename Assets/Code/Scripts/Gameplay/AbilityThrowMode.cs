@@ -59,7 +59,9 @@ namespace Core.Gameplay
         public void HandleClickOnBoard(Vector3 worldClickPosition)
         {
             Vector2Int cellPosition = _gameField.WorldPositionToCell(worldClickPosition);
-            _gameField.UseAbility(_abilityType, cellPosition, cellPosition);
+            if (!_gameField.TryUseAbility(_abilityType, cellPosition, cellPosition))
+                return;
+
             _abilityCount[_abilityType]--;
 
             OnUse?.Invoke(_abilityType, _abilityCount[_abilityType]);

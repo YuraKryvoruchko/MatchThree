@@ -54,6 +54,10 @@ namespace Core.Gameplay
         {
             OnPause?.Invoke(isPause);
         }
+        public bool CanExecute()
+        {
+            return true;
+        }
         public async UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback, CancellationToken cancellationToken)
         {
             Vector3 cellPosition = _gameField.CellPositionToWorld(abilityPosition);

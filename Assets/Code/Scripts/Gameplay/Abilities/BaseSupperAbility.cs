@@ -48,6 +48,10 @@ namespace Core.Gameplay
         }
 
         public abstract void OnDispose();
+        public bool CanExecute()
+        {
+            return !GameFieldInstance.IsBoardPlay;
+        }
         public abstract UniTask Execute(Vector2Int swipedCellPosition, Vector2Int abilityPosition, Action<IAbility> callback, CancellationToken cancellationToken);
     }
 }
