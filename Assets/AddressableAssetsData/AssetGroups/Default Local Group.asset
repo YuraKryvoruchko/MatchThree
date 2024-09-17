@@ -367,6 +367,30 @@ MonoBehaviour:
     m_SerializedLabels:
     - Audio
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a29b4d27eb8b04479ef89c00dea533d
+    m_Address: VFX/Shaders/CFXR Particle Ubershader.cfxrshader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1581eccce46ba384596a1dce7936ab19
+    m_Address: VFX/Shaders/CFXR Particle Procedural Ring.cfxrshader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67dfcda17071f4a41be79c4049965e67
+    m_Address: VFX/Shaders/CFXR Particle Glow.cfxrshader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 304630dc6079b47419e5333f284382fd
+    m_Address: VFX/Shaders/CFXR Particle Distortion.cfxrshader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
