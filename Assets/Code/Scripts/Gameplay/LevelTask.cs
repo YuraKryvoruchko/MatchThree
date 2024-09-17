@@ -1,12 +1,12 @@
 ﻿using System;
-using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace Core.Gameplay
 {
     [Serializable]
     public class LevelTask
     {
-        public Sprite Icon;
+        public AssetReferenceSprite Icon;
         public int Count;
         public CellType CellType;
     }

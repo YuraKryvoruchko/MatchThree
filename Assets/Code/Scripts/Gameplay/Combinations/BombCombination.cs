@@ -42,7 +42,7 @@ namespace Core.Gameplay
 
                 return true;
             }
-            else if (combinationResult.DownNumber >= 2 && combinationResult.RightNumber >= 2)
+            else if (combinationResult.DownNumber >= 2 && combinationResult.LeftNumber >= 2)
             {
                 GameField.ExplodeCellsOnDirection(startPosition, Vector2Int.up, combinationResult.DownNumber);
                 GameField.ExplodeCellsOnDirection(startPosition, Vector2Int.left, combinationResult.LeftNumber);

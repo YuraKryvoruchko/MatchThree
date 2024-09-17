@@ -1,4 +1,6 @@
 ﻿using Core.Gameplay;
+using Core.Infrastructure.Service;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -42,7 +44,8 @@ namespace Core.UI.Gameplay
             for(int i = 0; i < _taskChecker.Tasks.Length; i++)
             {
                 UITaskItem taskItem = Instantiate(_itemPrefab, _itemContainer);
-                taskItem.SetIcon(_taskChecker.Tasks[i].Icon);
+                _taskChecker.Tasks[i].Icon.GetOrLoad(this.GetCancellationTokenOnDestroy())
+                    .ContinueWith(sprite => taskItem.SetIcon(sprite));
                 taskItem.UpdateCount(_taskChecker.Tasks[i].Count);
                 _taskItems.Add(_taskChecker.Tasks[i].CellType, taskItem);
 

@@ -13,4 +13,8 @@ MonoBehaviour:
   m_Name: LevelConfigContainer
   m_EditorClassIdentifier: 
   LevelConfigs:
+  - {fileID: 11400000, guid: f191fc9dd63402b468edd28dbed27160, type: 2}
+  - {fileID: 11400000, guid: eb5fb3530c156f046a7960191601083a, type: 2}
+  - {fileID: 11400000, guid: 4e2d48d1bc73d6749b885d0e53bd7c99, type: 2}
+  - {fileID: 11400000, guid: b7eaef95ff14141449c427466f8e4ae0, type: 2}
   - {fileID: 11400000, guid: 10a26a2a4ed18c5458d393c10c4e2a90, type: 2}
