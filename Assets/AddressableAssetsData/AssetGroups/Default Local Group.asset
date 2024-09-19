@@ -28,6 +28,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Scene
+    - MainMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 51a6a63661f1dda4e916f7bae2fac85d
     m_Address: BackgroundSpriteAtlas
@@ -40,6 +41,7 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Sprite
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: eb7f10105313640a18ce7926041a4d76
     m_Address: Audio/Darkness.wav
@@ -58,54 +60,63 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 81652031b64c342cc8dbc59c138d77c5
     m_Address: Audio/DM-CGS-19.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - UI
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29bde6326b4c34ad8a12da475f79b50a
     m_Address: Audio/DM-CGS-32.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bef0064f8567430cac22499c6b93d4f
     m_Address: Audio/DM-CGS-49.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a15c0f3fe74004cf89b51cfd5604f582
     m_Address: Audio/AMP_Lightning_Impact_06.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0010a1a0c474473b81729eb770c485f
     m_Address: Audio/DM-CGS-11.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 38bd489b673af414ba003580323f54e7
     m_Address: Scenes/Gameplay.unity
     m_ReadOnly: 0
     m_SerializedLabels:
     - Scene
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 02116af72d403284d891ef602cc6ff18
     m_Address: Cell
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a422b408c8c8ce14d86d2a701bcddb7c
     m_Address: bg_Board
     m_ReadOnly: 0
     m_SerializedLabels:
     - Sprite
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7f5f4b68deb43474f9d4eaf1e64aeed8
     m_Address: GrapeConfig
@@ -311,102 +322,119 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8d435dfcfea1eb64dba196af2f9490f4
     m_Address: VFX/Textures/cfxr explosion smoke dissolve.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 914231f4fc2a7194b9323d6e2cf86df0
     m_Address: VFX/Textures/cfxr explosion smoke alpha.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbe9410b182e9cd4787d6f068c564ad7
     m_Address: VFX/Textures/cfxr explosion second color map.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41e018a6cf0c896418fc0b89dda748c6
     m_Address: VFX/Materials/cfxr magic star hdr ab.mat
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 081073d8f2209c949819e1e5872845b3
     m_Address: VFX/Textures/cfxr magic star.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 131d5a2c82c6cbb469ab522af6fe9aff
     m_Address: VFX/Materials/cfxr stretch ray blur add.mat
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea08f0da7f459e147ba80e6dd6e38bb9
     m_Address: VFX/Textures/cfxr stretch ray blur.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a81df4963508f8c4e9c854c919c93b67
     m_Address: VFX/Materials/cfxr proc ring hdr ab.mat
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bd8a92b47db41f644ae7188f06a986a2
     m_Address: VFX/Mesh/cfxr magic star mesh.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a78b06c58d03f5d4fbb74ba21020241e
     m_Address: VFX/Mesh/cfxr ring mesh.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e06ba9469eab2774f8c96527e1f9982e
     m_Address: VFX/Materials/LightningBoltMaterialAdditive.mat
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b969fc2a2c6ebd4c9c5d3d384108751
     m_Address: Audio/triangle 1.wav
     m_ReadOnly: 0
     m_SerializedLabels:
     - Audio
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1a29b4d27eb8b04479ef89c00dea533d
     m_Address: VFX/Shaders/CFXR Particle Ubershader.cfxrshader
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1581eccce46ba384596a1dce7936ab19
     m_Address: VFX/Shaders/CFXR Particle Procedural Ring.cfxrshader
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 67dfcda17071f4a41be79c4049965e67
     m_Address: VFX/Shaders/CFXR Particle Glow.cfxrshader
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 304630dc6079b47419e5333f284382fd
     m_Address: VFX/Shaders/CFXR Particle Distortion.cfxrshader
     m_ReadOnly: 0
     m_SerializedLabels:
     - VFX
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f6c637e5cd7159245ac28ac04eb98659
     m_Address: Assets/Art/SpriteDefault.mat
