@@ -391,6 +391,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6c637e5cd7159245ac28ac04eb98659
+    m_Address: Assets/Art/SpriteDefault.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - default
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:
