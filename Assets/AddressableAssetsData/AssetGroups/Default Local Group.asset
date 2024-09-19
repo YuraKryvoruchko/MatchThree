@@ -156,6 +156,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - MainMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fc7b2e386bbeca45ae6cf55270ff2da
     m_Address: SelectLevelMenu
@@ -163,6 +164,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - MainMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2202d6ecda26d75499a6f27d6d775dae
     m_Address: SettingsPopup
@@ -170,6 +172,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - MainMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 22f0861b8abf0d44bb9dcddfb786f2c5
     m_Address: AbilityHolder
@@ -177,6 +180,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d46a85dc917a73b4e8c2faf81219113d
     m_Address: ThrowModeVignette
@@ -184,6 +188,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 23fc5a063bf1f5944a635c0281e062ab
     m_Address: PausePopup
@@ -191,6 +196,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24b3b896d51ebf94b9259d0c8565d48c
     m_Address: PauseButton
@@ -198,6 +204,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 72dd13d23dd6a2843942e88803f01715
     m_Address: GameplayUI
@@ -205,6 +212,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 32e6fc48ec0b3dc45a30dd0d678d994d
     m_Address: LevelModeGameplayUI
@@ -212,6 +220,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1b5547c8c16c374799866935b19b344
     m_Address: CompletePopup
@@ -219,6 +228,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - UI
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3ef3ae421f71c5c4e97fe12dc2fc6312
     m_Address: VFX/Prefabs/CFXR Explosion 1.prefab
@@ -226,6 +236,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4bda94453d2ca7444a0fff05b2d425f5
     m_Address: VFX/Prefabs/CFXR Explosion Smoke 2 Solo (HDR).prefab
@@ -233,6 +244,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e31c720355f5c2143b0a4ca338183d8c
     m_Address: VFX/Prefabs/LightningBoltPrefab.prefab
@@ -240,6 +252,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2dee2a952f046be458b928bf213e2c20
     m_Address: VFX/Prefabs/SmallBombEffect.prefab
@@ -247,6 +260,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94544fa4b297d4f42835ec22b9f5c781
     m_Address: VFX/Prefabs/SuperAbilityEffect.prefab
@@ -254,6 +268,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c200d821c4a1bfe4aacb87719516199b
     m_Address: VFX/Prefabs/Explosion.prefab
@@ -261,6 +276,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3d71202c72a21964ca4a0a5755111f0c
     m_Address: VFX/Prefabs/BigBombEffect.prefab
@@ -268,6 +284,7 @@ MonoBehaviour:
     m_SerializedLabels:
     - VFX
     - Prefab
+    - Gameplay
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e1015215e9e39b243899d0d023559ea7
     m_Address: Switch
