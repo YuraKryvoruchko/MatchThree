@@ -39,3 +39,4 @@ MonoBehaviour:
       m_EditorAssetChanged: 1
     AbilityType: 7
     Amount: 5
+  GameFieldConfig: {fileID: 11400000, guid: 4fb7650675bfd994b982883d92fcd96f, type: 2}

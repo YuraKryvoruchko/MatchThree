@@ -14,34 +14,20 @@ using com.cyborgAssets.inspectorButtonPro;
 
 namespace Core.Gameplay
 {
-    public partial class GameField : MonoBehaviour
+    public class GameField : MonoBehaviour
     {
         [Header("Map Settings")]
-        [SerializeField] private int _verticalMapSize = 5;
-        [SerializeField] private int _horizontalMapSize = 5;
         [SerializeField] private Transform _startMapPoint;
         [SerializeField] private Transform _cellContainer;
-        [SerializeField] private CellType[] _availableRandomCellTypes;
-        [SerializeField] private CellConfig[] _cellConfigs;
-        [Header("Cell Settings")]
-        [SerializeField] private float _interval;
-        [Header("Audio Keys")]
-        [SerializeField] private ClipEvent _swipeAudio;
-        [SerializeField] private ClipEvent _destroyAudio;
-
-        private ICellFabric _cellFabric;
-        private IAbilityFactory _abilityFactory;
-        private IPauseProvider _pauseProvider;
-        private IAudioService _audioService;
-        private CellSwipeDetection _cellSwipeDetection;
 
         private Cell[,] _map;
 
-        private CombinationBase[] _combinations;
+        private int _verticalMapSize;
+        private int _horizontalMapSize;
+
+        private float _interval;
 
         private List<IAbility> _usedAbilities;
-
-        private int _destroyedCellNumberInThisFrame;
 
         private int _currentFindingCombinationIndex;
         private int[,] _findingCombinationIndexMap;
@@ -49,8 +35,23 @@ namespace Core.Gameplay
         private bool _needHandleCells;
         private bool[,] _cellHandlingMap;
 
+        private int _destroyedCellNumberInThisFrame;
+
         private bool _isBoardFillUp = false;
         private bool _isSwapHandling = true;
+
+        private ICellFabric _cellFabric;
+        private IAbilityFactory _abilityFactory;
+        private IPauseProvider _pauseProvider;
+        private IAudioService _audioService;
+        private CellSwipeDetection _cellSwipeDetection;
+
+        private CellType[] _availableRandomCellTypes;
+
+        private CombinationBase[] _combinations;
+
+        private ClipEvent _swipeAudioEvent;
+        private ClipEvent _cellExplosionAudioEvent;
 
         public int VerticalSize { get => _verticalMapSize; }
         public int HorizontalSize { get => _horizontalMapSize; }
@@ -63,23 +64,12 @@ namespace Core.Gameplay
         public event Action<bool> OnPause;
 
         [Serializable]
-        private class CellConfig
+        public class BoardCellConfig
         {
             public Vector2Int Position = Vector2Int.zero;
             public CellType Type = 0;
         }
 
-        private struct SearchResult
-        {
-            public int ScoreNumber;
-            public Vector2Int CellPosition;
-
-            public SearchResult(int scoreNumber, Vector2Int cellPosition)
-            {
-                ScoreNumber = scoreNumber;
-                CellPosition = cellPosition;
-            }
-        }
         public struct SimilarCellsNumber
         {
             public int RightNumber;
@@ -95,6 +85,18 @@ namespace Core.Gameplay
         {
             public int Score;
             public CellType Type;
+        }
+
+        private struct SearchResult
+        {
+            public int ScoreNumber;
+            public Vector2Int CellPosition;
+
+            public SearchResult(int scoreNumber, Vector2Int cellPosition)
+            {
+                ScoreNumber = scoreNumber;
+                CellPosition = cellPosition;
+            }
         }
 
         [Inject]
@@ -146,19 +148,26 @@ namespace Core.Gameplay
             _destroyedCellNumberInThisFrame = 0;
         }
 
-        public void Init()
+        public void Init(GameFieldConfig gameFieldConfig)
         {
             _pauseProvider.OnPause += HandlePause;
             _cellSwipeDetection.OnTrySwipeCellWithGetDirection += HandleSwipeCellWithDirection;
+
+            _verticalMapSize = gameFieldConfig.VerticalMapSize;
+            _horizontalMapSize = gameFieldConfig.HorizontalMapSize;
+            _interval = gameFieldConfig.Interval;
+            _availableRandomCellTypes = gameFieldConfig.AvailableRandomCellTypes;
+            _swipeAudioEvent = gameFieldConfig.SwipeAudioEvent;
+            _cellExplosionAudioEvent = gameFieldConfig.CellExplosionAudioEvent;
 
             _cellFabric.Init();
             _map = new Cell[_verticalMapSize, _horizontalMapSize];
             _findingCombinationIndexMap = new int[_verticalMapSize, _horizontalMapSize];
             _cellHandlingMap = new bool[_verticalMapSize, _horizontalMapSize];
-            for (int i = 0; i < _cellConfigs.Length; i++)
+            for (int i = 0; i < gameFieldConfig.BoardCellConfigs.Length; i++)
             {
-                Vector2Int cellPosition = _cellConfigs[i].Position;
-                _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(_cellConfigs[i].Type,
+                Vector2Int cellPosition = gameFieldConfig.BoardCellConfigs[i].Position;
+                _map[cellPosition.y, cellPosition.x] = _cellFabric.GetCell(gameFieldConfig.BoardCellConfigs[i].Type,
                     CellPositionToWorld(cellPosition), Quaternion.identity, _cellContainer);
             }
 
@@ -248,7 +257,7 @@ namespace Core.Gameplay
                 return;
 
             if (_destroyedCellNumberInThisFrame == 0)
-                _audioService.PlayOneShot(_destroyAudio);
+                _audioService.PlayOneShot(_cellExplosionAudioEvent);
             _destroyedCellNumberInThisFrame++;
 
             _cellHandlingMap[cellPosition.y, cellPosition.x] = false;
@@ -381,7 +390,7 @@ namespace Core.Gameplay
             UniTask secondMoveTask = secondCell.MoveToWithTask(tmpPosition, false);
             _map[firstPosition.y, firstPosition.x] = secondCell;
             _map[secondPosition.y, secondPosition.x] = firstCell;
-            _audioService.PlayOneShot(_swipeAudio);
+            _audioService.PlayOneShot(_swipeAudioEvent);
 
             await UniTask.WhenAll(firstMoveTask, secondMoveTask);
         }

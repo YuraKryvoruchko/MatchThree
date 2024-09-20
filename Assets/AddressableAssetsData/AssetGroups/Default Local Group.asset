@@ -448,6 +448,13 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f97e3f3ba5607604ebbb92526081acf2
+    m_Address: VFX/Prefabs/LightGlow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - VFX
+    - Gameplay
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: f474844d2b176f14a8bb1e2b8d079d0f, type: 2}
   m_SchemaSet:

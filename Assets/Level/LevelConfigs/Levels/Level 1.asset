@@ -23,3 +23,4 @@ MonoBehaviour:
     Count: 30
     CellType: 0
   AbilitySettings: []
+  GameFieldConfig: {fileID: 11400000, guid: 4fb7650675bfd994b982883d92fcd96f, type: 2}

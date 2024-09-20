@@ -40,7 +40,7 @@ namespace Core.Infrastructure.Gameplay
             _playerMoveTracking.OnMove += HandleMoveOnField;
             _taskCompletionChecker.OnAllTaskCompleted += HandleTaskCompleting;
 
-            _gameField.Init();
+            _gameField.Init(_levelConfig.GameFieldConfig);
         }
         void IDisposable.Dispose()
         {

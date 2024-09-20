@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89faffc62d30f154a80e39a7dfc0272c, type: 3}
+  m_Name: GameFieldConfig
+  m_EditorClassIdentifier: 
+  VerticalMapSize: 9
+  HorizontalMapSize: 8
+  Interval: 1
+  BoardCellConfigs:
+  - Position: {x: 0, y: 0}
+    Type: 4
+  - Position: {x: 1, y: 0}
+    Type: 5
+  - Position: {x: 2, y: 0}
+    Type: 5
+  - Position: {x: 3, y: 0}
+    Type: 5
+  - Position: {x: 4, y: 0}
+    Type: 5
+  - Position: {x: 5, y: 0}
+    Type: 5
+  - Position: {x: 6, y: 0}
+    Type: 5
+  - Position: {x: 7, y: 0}
+    Type: 4
+  - Position: {x: 0, y: 1}
+    Type: 5
+  - Position: {x: 7, y: 1}
+    Type: 5
+  - Position: {x: 0, y: 8}
+    Type: 4
+  - Position: {x: 7, y: 8}
+    Type: 4
+  AvailableRandomCellTypes: 00000000010000000200000003000000
+  SwipeAudioEvent: {fileID: 11400000, guid: e887f1d9226d29e47b1667005b077881, type: 2}
+  CellExplosionAudioEvent: {fileID: 11400000, guid: a08e283986db7284c8b83d8ff1ec32e8, type: 2}
