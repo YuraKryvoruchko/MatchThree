@@ -62,6 +62,12 @@ The game has two game modes:
 
 ---
 
+# Arts:
+
+<img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwMC5qcGc=/794x1000/IrqZs7.jpg" width="250" /> <img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwMi5qcGc=/794x1000/GYUx7z.jpg" width="250" /> <img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwNC5qcGc=/794x1000/67%2FSqf.jpg" width="250" /> <img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwMy5qcGc=/794x1000/lflJ77.jpg" width="250" /> <img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwNS5qcGc=/794x1000/gGnNFh.jpg" width="250" /> <img src="https://img.itch.zone/aW1hZ2UvMjk5ODU5Mi8xNzk0MzcwMS5qcGc=/794x1000/FMm1By.jpg" width="250" /> 
+
+---
+
 # Resources used:
 
 ## Art:
